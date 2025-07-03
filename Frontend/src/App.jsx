@@ -1,12 +1,22 @@
-import './App.css'
+import { BrowserRouter } from 'react-router-dom'
+import AppRoutes from './routes/AppRoutes'
+import { AuthProvider } from './context/AuthContext'
+import { CartProvider } from './context/CartContext'
+import { ToastProvider } from './context/ToastContext'
+import "./index.css";
+
 
 function App() {
-
-
- return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-5xl font-extrabold text-indigo-600">Welcome to Cartly!</h1>
-    </div>
+  return (
+    <ToastProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <CartProvider>
+          <AppRoutes />
+        </CartProvider>
+      </AuthProvider>
+    </BrowserRouter>
+    </ToastProvider>
   )
 }
 

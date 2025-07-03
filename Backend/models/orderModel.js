@@ -33,14 +33,23 @@ const orderSchema = mongoose.Schema({
     enum: ['paid', 'unpaid'],
     default: 'unpaid'
   },
+  paymentMethod: {
+    type: String,
+    enum: ['COD', 'Card'],
+    default: 'COD',
+  },
   totalPrice: {
     type: Number,
     required: true
   },
   status: {
     type: String,
-    enum: ['pending', 'shipped', 'delivered'],
+    enum: ['pending', 'shipped', 'delivered', 'cancelled'],
     default: 'pending'
+  },
+  cancelReason: {
+    type: String,
+    default: ''
   }
 }, {
   timestamps: true

@@ -2,13 +2,31 @@ const Product = require('../models/productModel');
 
 // @desc    Get all products
 const getAllProducts = async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch products' });
-  }
+  const { category, minPrice, maxPrice } = req.query
+const { size } = req.query
+
+if (size) {
+  filter.size = size // Assumes product.size is an array like ['M', 'L']
+}
+
+const filter = {}
+
+if (category) filter.category = category
+if (minPrice && maxPrice) {
+  filter.price = { $gte: minPrice, $lte: maxPrice }
+}
+let sortBy = {}
+
+if (req.query.sort === 'priceAsc') sortBy.price = 1
+if (req.query.sort === 'priceDesc') sortBy.price = -1
+if (req.query.sort === 'newest') sortBy.createdAt = -1
+if (req.query.sort === 'az') sortBy.title = 1
+
+const products = await Product.find(filter).sort(sortBy)
+
+  res.json(products);
 };
+
 
 // @desc    Get single product
 const getProductById = async (req, res) => {
