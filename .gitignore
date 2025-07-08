@@ -1,3 +1,9 @@
 Frontend/node_modules
 Backend/node_modules
 Backend/.env
+Backend/.env.example
+EMAIL_VERIFICATION_SETUP.md
+FORGOT_PASSWORD_SETUP.md
+Gmail_Quick_Fix.md 
+Gmail_Setup_Guide.md
+QUICK_EMAIL_FIX.md
