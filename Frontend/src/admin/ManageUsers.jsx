@@ -13,7 +13,7 @@ const ManageUsers = () => {
   const loadUsers = useCallback(async () => {
     setLoading(true)
     try {
-      const data = await fetchAllUsers(user.token)
+      const data = await fetchAllUsers()
       setUsers(data)
     } catch (err) {
       console.error('❌ Failed to load users:', err)
@@ -21,7 +21,7 @@ const ManageUsers = () => {
     } finally {
       setLoading(false)
     }
-  }, [user.token, showToast])
+  }, [showToast])
 
   useEffect(() => {
     if (user?.isAdmin) loadUsers()
@@ -29,7 +29,7 @@ const ManageUsers = () => {
 
   const toggleRole = async (id, currentRole) => {
     try {
-      await updateUserRole(id, !currentRole, user.token)
+      await updateUserRole(id, !currentRole)
       showToast('✅ Role updated')
       loadUsers()
     } catch (err) {

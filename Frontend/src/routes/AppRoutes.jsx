@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import LayoutWrapper from '../components/layout/LayoutWrapper'
+import AdminLayout from '../components/layout/AdminLayout'
 
 // Public Pages
 import Home from '../pages/Home'
@@ -31,7 +32,7 @@ import PrivateRoute from '../auth/privateRoute'
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Main Layout */}
+      {/* Main Layout for regular users */}
       <Route path="/" element={<LayoutWrapper />}>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
@@ -63,9 +64,13 @@ const AppRoutes = () => {
           }
         />
 
-        {/* Admin Routes */}
+        <Route path="*" element={<NotFound />} />
+      </Route>
+
+      {/* Admin Layout for admin routes */}
+      <Route path="/admin" element={<AdminLayout />}>
         <Route
-          path="admin/dashboard"
+          path="dashboard"
           element={
             <PrivateRoute adminOnly={true}>
               <Dashboard />
@@ -73,7 +78,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="admin/products"
+          path="products"
           element={
             <PrivateRoute adminOnly={true}>
               <ManageProducts />
@@ -81,7 +86,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="admin/products/new"
+          path="add-product"
           element={
             <PrivateRoute adminOnly={true}>
               <AddNewProduct />
@@ -89,7 +94,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="admin/products/edit/:id"
+          path="products/edit/:id"
           element={
             <PrivateRoute adminOnly={true}>
               <EditProduct />
@@ -97,7 +102,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="admin/orders"
+          path="orders"
           element={
             <PrivateRoute adminOnly={true}>
               <ManageOrders />
@@ -105,15 +110,13 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="admin/users"
+          path="users"
           element={
             <PrivateRoute adminOnly={true}>
               <ManageUsers />
             </PrivateRoute>
           }
         />
-
-        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   )

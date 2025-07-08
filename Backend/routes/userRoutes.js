@@ -6,7 +6,12 @@ const {
   loginUser,
   getAllUsers,
   updateUserRole,
-  getAdminStats
+  getAdminStats,
+  forgotPassword,
+  verifyOTP,
+  resetPassword,
+  verifyEmailOTP,
+  resendEmailVerification
 } = require('../controllers/userController');
 
 const { protect, admin } = require('../middleware/authMiddleware');
@@ -14,6 +19,15 @@ const { protect, admin } = require('../middleware/authMiddleware');
 // Public routes
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+
+// Email verification route
+router.post('/verify-email', verifyEmailOTP);
+router.post('/resend-verification', resendEmailVerification);
+
+// Forgot password routes
+router.post('/forgot-password', forgotPassword);
+router.post('/verify-otp', verifyOTP);
+router.post('/reset-password', resetPassword);
 
 // Admin-only routes
 router.get('/', protect, admin, getAllUsers);

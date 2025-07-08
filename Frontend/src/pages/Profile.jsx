@@ -2,158 +2,290 @@ import { useContext } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { Link } from 'react-router-dom'
 import Orders from './Orders'
+import { 
+  UserCircleIcon, 
+  CogIcon, 
+  ShieldCheckIcon, 
+  ClockIcon, 
+  IdentificationIcon,
+  EnvelopeIcon,
+  CalendarDaysIcon,
+  ArrowRightIcon,
+  ChartBarIcon,
+  CubeIcon,
+  DocumentTextIcon,
+  UsersIcon,
+  StarIcon,
+  BellIcon
+} from '@heroicons/react/24/outline'
 
 const Profile = () => {
   const { user } = useContext(AuthContext)
 
   if (!user) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-10 text-center text-gray-500">
-        <h1 className="text-2xl font-bold mb-4">Not logged in</h1>
-        <p>Please log in to view your profile.</p>
-        <Link to="/login" className="text-indigo-600 underline mt-4 inline-block">Go to Login</Link>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
+        <div className="max-w-md w-full mx-4">
+          <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+            <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+              <UserCircleIcon className="w-8 h-8 text-gray-400" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-3">Access Required</h1>
+            <p className="text-gray-600 mb-6">Please log in to view your profile and manage your account.</p>
+            <Link 
+              to="/login" 
+              className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+            >
+              Go to Login
+              <ArrowRightIcon className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
       </div>
     )
   }
 
   if (user.isAdmin) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        {/* Admin Header with Badge */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
-         <div className="flex items-center gap-5">
-  <div className="bg-gradient-to-br from-blue-500 to-gray-700 p-3 rounded-xl shadow-md">
-    <span className="material-icons text-4xl text-white">admin_panel_settings</span>
-  </div>
-  <div>
-    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Administrator Dashboard</h1>
-    <p className="text-sm text-gray-600 mt-1">Privileged access to system management</p>
-  </div>
-</div>
-
-        <div className="bg-gradient-to-r from-blue-600 to-gray-700 text-white px-4 py-2 rounded-full text-sm font-medium shadow-md">
-  Administrator Access
-</div>
-
-        </div>
-
-        {/* Profile Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Profile Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-500">Full Name</p>
-                <p className="text-gray-800">{user.name}</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-500">Email Address</p>
-                <p className="text-gray-800">{user.email}</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-500">Account Type</p>
-                <p className="text-indigo-600 font-medium">Administrator</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-500">Login At</p>
-                <p className="text-gray-800">
-                  {new Date().toLocaleString()}
-                </p>
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          {/* Admin Header */}
+          <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 mb-8 overflow-hidden">
+            {/* Background decoration */}
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/90 to-purple-600/90"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full transform translate-x-32 -translate-y-32"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full transform -translate-x-24 translate-y-24"></div>
+            
+            <div className="relative z-10">
+              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+                <div className="flex items-center gap-6">
+                  <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl">
+                    <ShieldCheckIcon className="w-12 h-12 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
+                      Administrator Dashboard
+                    </h1>
+                    <p className="text-indigo-100 text-lg">
+                      Welcome back, <span className="font-semibold">{user.name}</span>
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+                  <span className="text-white font-medium text-sm">
+                    🛡️ Admin Access
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-          <div className="bg-gray-50 px-6 py-3 border-t border-gray-100">
-            <p className="text-xs text-gray-500">ID: {user.id || 'ADM-' + Math.random().toString(36).substr(2, 8).toUpperCase()}</p>
-          </div>
-        </div>
 
-        {/* Admin Notice */}
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg mb-8">
-          <div className="flex items-start">
-            <svg className="h-5 w-5 text-blue-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clipRule="evenodd" />
-            </svg>
-            <div>
-              <h3 className="text-sm font-medium text-blue-800">Administrator Notice</h3>
-              <div className="mt-1 text-sm text-blue-700">
-                <p>
-                  Welcome back, <span className="font-semibold">{user.name}</span>. As an administrator, you have full access to all system management features. 
-                  Please ensure you follow all security protocols when managing sensitive data.
-                </p>
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Profile Information */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Profile Card */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="bg-gradient-to-r from-gray-50 to-indigo-50 px-6 py-4 border-b border-gray-100">
+                  <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                    <IdentificationIcon className="w-5 h-5 text-indigo-600" />
+                    Profile Information
+                  </h2>
+                </div>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                        <UserCircleIcon className="w-4 h-4" />
+                        Full Name
+                      </div>
+                      <p className="text-gray-900 font-medium">{user.name}</p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                        <EnvelopeIcon className="w-4 h-4" />
+                        Email Address
+                      </div>
+                      <p className="text-gray-900">{user.email}</p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                        <ShieldCheckIcon className="w-4 h-4" />
+                        Account Type
+                      </div>
+                      <span className="inline-flex items-center gap-1 bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium">
+                        <StarIcon className="w-3 h-3" />
+                        Administrator
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                        <CalendarDaysIcon className="w-4 h-4" />
+                        Last Login
+                      </div>
+                      <p className="text-gray-900">
+                        {new Date().toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-6 py-3 border-t border-gray-100">
+                  <p className="text-xs text-gray-500 flex items-center gap-2">
+                    <ClockIcon className="w-3 h-3" />
+                    Admin ID: {user.id || 'ADM-' + Math.random().toString(36).substr(2, 8).toUpperCase()}
+                  </p>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                  <CogIcon className="w-5 h-5 text-indigo-600" />
+                  Quick Actions
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Link 
+                    to="/admin/dashboard" 
+                    className="group bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 hover:from-blue-100 hover:to-indigo-100 hover:border-indigo-300 transition-all duration-200 hover:shadow-md"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="bg-blue-500 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                        <ChartBarIcon className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-900">Dashboard</span>
+                        <p className="text-xs text-gray-600">Analytics & Overview</p>
+                      </div>
+                    </div>
+                  </Link>
+                  
+                  <Link 
+                    to="/admin/products" 
+                    className="group bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 hover:from-green-100 hover:to-emerald-100 hover:border-emerald-300 transition-all duration-200 hover:shadow-md"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="bg-green-500 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                        <CubeIcon className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-900">Products</span>
+                        <p className="text-xs text-gray-600">Manage Inventory</p>
+                      </div>
+                    </div>
+                  </Link>
+                  
+                  <Link 
+                    to="/admin/orders" 
+                    className="group bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-xl p-4 hover:from-orange-100 hover:to-amber-100 hover:border-amber-300 transition-all duration-200 hover:shadow-md"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="bg-orange-500 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                        <DocumentTextIcon className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-900">Orders</span>
+                        <p className="text-xs text-gray-600">Order Management</p>
+                      </div>
+                    </div>
+                  </Link>
+                  
+                  <Link 
+                    to="/admin/users" 
+                    className="group bg-gradient-to-br from-purple-50 to-violet-50 border border-purple-200 rounded-xl p-4 hover:from-purple-100 hover:to-violet-100 hover:border-violet-300 transition-all duration-200 hover:shadow-md"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="bg-purple-500 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                        <UsersIcon className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-900">Users</span>
+                        <p className="text-xs text-gray-600">User Management</p>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Quick Actions */}
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link 
-              to="/admin/dashboard" 
-              className="bg-white border border-gray-200 rounded-lg p-4 hover:border-indigo-500 hover:shadow-sm transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <div className="bg-indigo-100 p-2 rounded-lg">
-                  <svg className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                  </svg>
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* System Status */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <BellIcon className="w-5 h-5 text-green-600" />
+                  System Status
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Server Status</span>
+                    <span className="flex items-center gap-1 text-green-600 text-sm font-medium">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      Online
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Database</span>
+                    <span className="flex items-center gap-1 text-green-600 text-sm font-medium">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      Connected
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Last Backup</span>
+                    <span className="text-gray-900 text-sm">2 hours ago</span>
+                  </div>
                 </div>
-                <span className="font-medium text-gray-800">Dashboard</span>
               </div>
-            </Link>
-            <Link 
-              to="/admin/products" 
-              className="bg-white border border-gray-200 rounded-lg p-4 hover:border-indigo-500 hover:shadow-sm transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <div className="bg-indigo-100 p-2 rounded-lg">
-                  <svg className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                </div>
-                <span className="font-medium text-gray-800">Products</span>
-              </div>
-            </Link>
-            <Link 
-              to="/admin/orders" 
-              className="bg-white border border-gray-200 rounded-lg p-4 hover:border-indigo-500 hover:shadow-sm transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <div className="bg-indigo-100 p-2 rounded-lg">
-                  <svg className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                </div>
-                <span className="font-medium text-gray-800">Orders</span>
-              </div>
-            </Link>
-            <Link 
-              to="/admin/users" 
-              className="bg-white border border-gray-200 rounded-lg p-4 hover:border-indigo-500 hover:shadow-sm transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <div className="bg-indigo-100 p-2 rounded-lg">
-                  <svg className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                </div>
-                <span className="font-medium text-gray-800">Users</span>
-              </div>
-            </Link>
-          </div>
-        </div>
 
-        {/* Recent Activity (Placeholder) */}
-        <div>
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h2>
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="text-center py-8">
-              <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No recent activity</h3>
-              <p className="mt-1 text-sm text-gray-500">Your administrative actions will appear here.</p>
+              {/* Recent Activity */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                    <div>
+                      <p className="text-sm text-gray-900">System login detected</p>
+                      <p className="text-xs text-gray-500">Just now</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                    <div>
+                      <p className="text-sm text-gray-900">Database backup completed</p>
+                      <p className="text-xs text-gray-500">2 hours ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
+                    <div>
+                      <p className="text-sm text-gray-900">New order processed</p>
+                      <p className="text-xs text-gray-500">4 hours ago</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Security Notice */}
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6">
+                <div className="flex items-start gap-3">
+                  <ShieldCheckIcon className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="text-sm font-medium text-amber-800 mb-1">Security Notice</h3>
+                    <p className="text-sm text-amber-700">
+                      As an administrator, ensure you follow security protocols when accessing sensitive data.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -161,16 +293,123 @@ const Profile = () => {
     )
   }
 
-  // Regular user profile remains the same
+  // Regular user profile
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">👤 My Profile</h1>
-      <div className="bg-white shadow-md rounded-md p-4 mb-6 border">
-        <p className="text-lg font-semibold">{user.name}</p>
-        <p className="text-sm text-gray-600">{user.email}</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Profile Header */}
+        <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 mb-8 overflow-hidden">
+          {/* Background decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full transform translate-x-32 -translate-y-32"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full transform -translate-x-24 translate-y-24"></div>
+          
+          <div className="relative z-10">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl">
+                <UserCircleIcon className="w-16 h-16 text-white" />
+              </div>
+              <div className="flex-1">
+                <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
+                  Welcome back, {user.name}!
+                </h1>
+                <p className="text-blue-100 text-lg">
+                  Manage your account and track your orders
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Profile Information */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b border-gray-100">
+                <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                  <IdentificationIcon className="w-5 h-5 text-blue-600" />
+                  Profile Information
+                </h2>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                      <UserCircleIcon className="w-4 h-4" />
+                      Full Name
+                    </div>
+                    <p className="text-gray-900 font-medium text-lg">{user.name}</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                      <EnvelopeIcon className="w-4 h-4" />
+                      Email Address
+                    </div>
+                    <p className="text-gray-900">{user.email}</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                      <ShieldCheckIcon className="w-4 h-4" />
+                      Account Type
+                    </div>
+                    <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                      <UserCircleIcon className="w-3 h-3" />
+                      Customer
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                      <CalendarDaysIcon className="w-4 h-4" />
+                      Member Since
+                    </div>
+                    <p className="text-gray-900">
+                      {new Date().toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Order History Section */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b border-gray-100">
+                <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                  <DocumentTextIcon className="w-5 h-5 text-blue-600" />
+                  Order History
+                </h2>
+              </div>
+              <div className="p-6">
+                <Orders />
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Shopping Tips */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
+              <div className="flex items-start gap-3">
+                <div className="bg-blue-500 p-2 rounded-lg">
+                  <StarIcon className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-blue-800 mb-1">Shopping Tips</h3>
+                  <p className="text-sm text-blue-700">
+                    Get free shipping on orders over PKR 5,000. Add more items to your cart to qualify!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <h2 className="text-2xl font-semibold mb-3 mt-8">📦 Order History</h2>
-      <Orders />
     </div>
   )
 }
