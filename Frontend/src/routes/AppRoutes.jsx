@@ -25,6 +25,8 @@ import ManageOrders from '../admin/ManageOrders'
 import ManageUsers from '../admin/ManageUsers'
 import AddNewProduct from '../admin/AddNewProduct'
 import EditProduct from '../admin/EditProduct'
+import Analytics from '../admin/Analytics'
+import SystemSettings from '../admin/SystemSettings'
 
 // Auth utils
 import PrivateRoute from '../auth/privateRoute'
@@ -114,6 +116,22 @@ const AppRoutes = () => {
           element={
             <PrivateRoute adminOnly={true}>
               <ManageUsers />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="analytics"
+          element={
+            <PrivateRoute adminOnly={true}>
+              <Analytics />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="settings"
+          element={
+            <PrivateRoute adminOnly={true}>
+              <SystemSettings />
             </PrivateRoute>
           }
         />

@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbars globally */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+html, body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overflow-x: hidden;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Modern Animation Classes */
 @keyframes fadeIn {
   from {
@@ -22,6 +48,17 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -105,6 +142,10 @@
 
 .animate-slideIn {
   animation: slideIn 0.6s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out;
 }
 
 .animate-pulse-custom {
@@ -500,4 +541,28 @@
     color: black !important;
     background: white !important;
   }
+}
+
+/* Enhanced sticky navbar styles */
+.sticky-navbar {
+  position: -webkit-sticky;
+ position: fixed;
+
+ top: 0;
+    width: 100%;
+    z-index: 50;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background-color: rgba(255, 255, 255, 0.95);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sticky-navbar.scrolled {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+/* Ensure proper positioning context */
+body {
+  position: relative;
 }

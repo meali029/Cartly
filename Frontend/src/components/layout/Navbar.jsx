@@ -1,153 +1,219 @@
 import { Link, NavLink } from 'react-router-dom'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import { CartContext } from '../../context/CartContext'
+import { 
+  Bars3Icon, 
+  XMarkIcon, 
+  MagnifyingGlassIcon,
+  ShoppingCartIcon,
+  UserCircleIcon,
+  ArrowRightOnRectangleIcon
+} from '@heroicons/react/24/outline'
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext)
   const cartContext = useContext(CartContext)
   const { cartItems } = cartContext || { cartItems: [] }
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
 
   // Don't render navbar for admin users since they have their own layout
   if (user?.isAdmin) {
     return null
   }
 
-  return (
-    <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-xl border-b border-slate-700 sticky top-0 z-50 backdrop-blur-lg">
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          {/* LOGO */}
-          <Link
-            to={user?.isAdmin ? "/admin/dashboard" : "/"}
-            className="group flex items-center space-x-3"
-          >
-            <div className="relative">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                <span className="text-white font-bold text-lg">C</span>
-              </div>
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                Cartly
-              </h1>
-              <p className="text-xs text-gray-400 -mt-1">Premium Shopping</p>
-            </div>
-          </Link>
+  const navigationItems = [
+    { name: 'Men', href: '/men', icon: '👔', color: 'blue' },
+    { name: 'Women', href: '/women', icon: '👗', color: 'pink' },
+    { name: 'Kids', href: '/kids', icon: '🧒', color: 'green' },
+  ]
 
-          {/* NAV LINKS */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <NavLink to="/men" className={({ isActive }) => 
-              `group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
-                isActive 
-                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg' 
-                  : 'text-gray-300 hover:text-white hover:bg-slate-700/50'
-              }`
-            }>
-              <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center group-hover:bg-blue-500/30 transition-all">
-                <span className="text-lg">👔</span>
+  return (
+    <header className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center">
+            <Link to="/" className="group flex items-center space-x-3">
+              <div className="relative">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                  <span className="text-white font-bold text-lg">C</span>
+                </div>
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
               </div>
-              <div>
-                <span className="font-medium">Men</span>
-                <p className="text-xs opacity-75">Fashion</p>
+              <div className="hidden sm:block">
+                <h1 className="text-xl font-bold text-gray-900">Cartly</h1>
+                <p className="text-xs text-gray-500 -mt-1">Premium Shopping</p>
               </div>
-            </NavLink>
-            <NavLink to="/women" className={({ isActive }) => 
-              `group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
-                isActive 
-                  ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg' 
-                  : 'text-gray-300 hover:text-white hover:bg-slate-700/50'
-              }`
-            }>
-              <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center group-hover:bg-pink-500/30 transition-all">
-                <span className="text-lg">👗</span>
-              </div>
-              <div>
-                <span className="font-medium">Women</span>
-                <p className="text-xs opacity-75">Collection</p>
-              </div>
-            </NavLink>
-            <NavLink to="/kids" className={({ isActive }) => 
-              `group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
-                isActive 
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg' 
-                  : 'text-gray-300 hover:text-white hover:bg-slate-700/50'
-              }`
-            }>
-              <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center group-hover:bg-emerald-500/30 transition-all">
-                <span className="text-lg">🧒</span>
-              </div>
-              <div>
-                <span className="font-medium">Kids</span>
-                <p className="text-xs opacity-75">Wear</p>
-              </div>
-            </NavLink>
+            </Link>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            {navigationItems.map((item) => (
+              <NavLink
+                key={item.name}
+                to={item.href}
+                className={({ isActive }) =>
+                  `group flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    isActive
+                      ? `bg-${item.color}-100 text-${item.color}-700 shadow-md`
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`
+                }
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span>{item.name}</span>
+              </NavLink>
+            ))}
           </nav>
 
-          {/* RIGHT SIDE - SEARCH + CART + USER */}
+          {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center relative group">
-              <div className="absolute left-4 text-gray-400 group-focus-within:text-indigo-400 transition-colors">
-                <span className="text-lg">🔍</span>
-              </div>
+            {/* Search */}
+            <div className="hidden lg:flex items-center relative">
+              <MagnifyingGlassIcon className="absolute left-3 h-4 w-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search products..."
-                className="pl-12 pr-4 py-3 w-64 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
+                className="pl-10 pr-4 py-2 w-64 bg-gray-50 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
               />
             </div>
-            <Link to="/cart" className="relative group">
-              <div className="p-3 bg-slate-700/50 rounded-xl border border-slate-600 hover:bg-slate-600/50 transition-all duration-300 group-hover:scale-105">
-                <span className="text-xl text-gray-300 group-hover:text-white">🛒</span>
-              </div>
+
+            {/* Mobile Search Toggle */}
+            <button
+              onClick={() => setSearchOpen(!searchOpen)}
+              className="lg:hidden p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <MagnifyingGlassIcon className="h-5 w-5" />
+            </button>
+
+            {/* Cart */}
+            <Link
+              to="/cart"
+              className="relative group p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <ShoppingCartIcon className="h-6 w-6" />
               {cartItems?.length > 0 && (
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-red-500 to-pink-600 rounded-full flex items-center justify-center shadow-lg">
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-red-500 to-pink-600 rounded-full flex items-center justify-center shadow-lg">
                   <span className="text-white text-xs font-bold">
                     {cartItems.length > 99 ? '99+' : cartItems.length}
                   </span>
                 </div>
               )}
             </Link>
-            
-            {/* Auth Links */}
+
+            {/* User Menu */}
             {user ? (
-              <div className="flex items-center space-x-3">
-                <Link 
-                  to="/profile" 
-                  className="group flex items-center gap-3 px-4 py-3 bg-slate-700/50 rounded-xl border border-slate-600 hover:bg-slate-600/50 transition-all duration-300"
+              <div className="flex items-center space-x-2">
+                <Link
+                  to="/profile"
+                  className="group flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
+                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-md">
                     <span className="text-white text-sm font-bold">
-                      {user.name?.charAt(0)?.toUpperCase() || '👤'}
+                      {user.name?.charAt(0)?.toUpperCase() || 'U'}
                     </span>
                   </div>
                   <div className="hidden sm:block">
-                    <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">
+                    <span className="text-sm font-medium text-gray-900">
                       {user.name}
                     </span>
-                    <p className="text-xs text-gray-400">Customer</p>
                   </div>
                 </Link>
-                <button 
-                  onClick={logout} 
-                  className="group flex items-center gap-2 px-4 py-3 bg-red-500/20 text-red-400 rounded-xl border border-red-500/30 hover:bg-red-500/30 hover:text-red-300 transition-all duration-300"
+                <button
+                  onClick={logout}
+                  className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  title="Logout"
                 >
-                  <span className="text-lg">🚪</span>
-                  <span className="text-sm font-medium hidden sm:inline">Logout</span>
+                  <ArrowRightOnRectangleIcon className="h-5 w-5" />
                 </button>
               </div>
             ) : (
-              <Link 
-                to="/login" 
-                className="group flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              <Link
+                to="/login"
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
-                <span className="text-lg">🔐</span>
+                <UserCircleIcon className="h-5 w-5" />
                 <span className="font-medium">Login</span>
               </Link>
             )}
+
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              {mobileMenuOpen ? (
+                <XMarkIcon className="h-6 w-6" />
+              ) : (
+                <Bars3Icon className="h-6 w-6" />
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Search Bar */}
+        {searchOpen && (
+          <div className="lg:hidden py-4 border-t border-gray-200">
+            <div className="relative">
+              <MagnifyingGlassIcon className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search products..."
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Mobile Navigation Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
+            <div className="px-4 py-2 space-y-1">
+              {navigationItems.map((item) => (
+                <NavLink
+                  key={item.name}
+                  to={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `group flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      isActive
+                        ? 'bg-indigo-100 text-indigo-700'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`
+                  }
+                >
+                  <span className="text-xl">{item.icon}</span>
+                  <span>{item.name}</span>
+                </NavLink>
+              ))}
+              
+              {/* Mobile User Actions */}
+              {user && (
+                <div className="pt-4 mt-4 border-t border-gray-200">
+                  <Link
+                    to="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <UserCircleIcon className="h-5 w-5" />
+                    <span className="font-medium">Profile</span>
+                  </Link>
+                  <Link
+                    to="/orders"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <span className="text-lg">�</span>
+                    <span className="font-medium">Orders</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </header>
   )
