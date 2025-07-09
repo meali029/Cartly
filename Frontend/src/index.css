@@ -23,6 +23,21 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+/* Fixed navbar spacing */
+body {
+  padding-top: 0; /* Default no padding */
+}
+
+/* Add top padding only for customer pages */
+body.customer-layout {
+  padding-top: 80px; /* Account for fixed navbar height */
+}
+
+/* Ensure no top padding for admin pages */
+body.admin-layout {
+  padding-top: 0 !important;
+}
+
 /* Ensure smooth scrolling */
 html {
   scroll-behavior: smooth;

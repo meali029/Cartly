@@ -16,11 +16,12 @@ import {
   DocumentTextIcon,
   UsersIcon,
   StarIcon,
-  BellIcon
+  BellIcon,
+  ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline'
 
 const Profile = () => {
-  const { user } = useContext(AuthContext)
+  const { user, logout } = useContext(AuthContext)
 
   if (!user) {
     return (
@@ -139,10 +140,19 @@ const Profile = () => {
                   </div>
                 </div>
                 <div className="bg-gray-50 px-6 py-3 border-t border-gray-100">
-                  <p className="text-xs text-gray-500 flex items-center gap-2">
-                    <ClockIcon className="w-3 h-3" />
-                    Admin ID: {user.id || 'ADM-' + Math.random().toString(36).substr(2, 8).toUpperCase()}
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-gray-500 flex items-center gap-2">
+                      <ClockIcon className="w-3 h-3" />
+                      Admin ID: {user.id || 'ADM-' + Math.random().toString(36).substr(2, 8).toUpperCase()}
+                    </p>
+                    <button
+                      onClick={logout}
+                      className="group flex items-center gap-2 px-3 py-1 bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100 hover:text-red-700 transition-all duration-300 text-xs"
+                    >
+                      <ArrowRightOnRectangleIcon className="h-3 w-3" />
+                      <span className="font-medium">Sign Out</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -374,6 +384,17 @@ const Profile = () => {
                     </p>
                   </div>
                 </div>
+              </div>
+              
+              {/* Logout Button */}
+              <div className="border-t border-gray-100 pt-6">
+                <button
+                  onClick={logout}
+                  className="w-full group flex items-center justify-center gap-3 px-4 py-3 bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100 hover:text-red-700 transition-all duration-300"
+                >
+                  <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                  <span className="font-medium">Sign Out</span>
+                </button>
               </div>
             </div>
 

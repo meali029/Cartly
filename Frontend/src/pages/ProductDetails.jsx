@@ -204,10 +204,10 @@ const ProductDetails = () => {
               <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4">
                 <div className="flex items-center gap-2">
                   <span className="text-3xl font-bold text-indigo-600">
-                    PKR {product.price.toLocaleString()}
+                    PKR {typeof product.price === 'number' ? product.price.toLocaleString() : 'N/A'}
                   </span>
                   <span className="text-lg text-gray-500 line-through">
-                    PKR {(product.price * 1.2).toLocaleString()}
+                    PKR {typeof product.price === 'number' ? (product.price * 1.2).toLocaleString() : ''}
                   </span>
                   <Badge text="20% OFF" color="red" />
                 </div>

@@ -1,18 +1,29 @@
 import { useState, useRef, useEffect } from 'react'
+import { 
+  BarsArrowDownIcon, 
+  BarsArrowUpIcon, 
+  CurrencyDollarIcon, 
+  SparklesIcon, 
+  CalendarDaysIcon, 
+  StarIcon, 
+  FireIcon, 
+  ChevronDownIcon, 
+  CheckIcon 
+} from '@heroicons/react/24/outline'
 
 const SortDropdown = ({ sortOption, onChange }) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef(null)
 
   const sortOptions = [
-    { value: '', label: 'Default', icon: '🔧', description: 'Original order' },
-    { value: 'priceAsc', label: 'Price: Low to High', icon: '💰', description: 'Cheapest first' },
-    { value: 'priceDesc', label: 'Price: High to Low', icon: '💎', description: 'Most expensive first' },
-    { value: 'newest', label: 'Newest', icon: '🆕', description: 'Latest products' },
-    { value: 'az', label: 'A-Z', icon: '🔤', description: 'Alphabetical order' },
-    { value: 'za', label: 'Z-A', icon: '🔤', description: 'Reverse alphabetical' },
-    { value: 'rating', label: 'Best Rated', icon: '⭐', description: 'Highest rated first' },
-    { value: 'popular', label: 'Most Popular', icon: '🔥', description: 'Trending products' }
+    { value: '', label: 'Default', icon: BarsArrowDownIcon, description: 'Original order' },
+    { value: 'priceAsc', label: 'Price: Low to High', icon: CurrencyDollarIcon, description: 'Cheapest first' },
+    { value: 'priceDesc', label: 'Price: High to Low', icon: CurrencyDollarIcon, description: 'Most expensive first' },
+    { value: 'newest', label: 'Newest', icon: SparklesIcon, description: 'Latest products' },
+    { value: 'az', label: 'A-Z', icon: BarsArrowDownIcon, description: 'Alphabetical order' },
+    { value: 'za', label: 'Z-A', icon: BarsArrowUpIcon, description: 'Reverse alphabetical' },
+    { value: 'rating', label: 'Best Rated', icon: StarIcon, description: 'Highest rated first' },
+    { value: 'popular', label: 'Most Popular', icon: FireIcon, description: 'Trending products' }
   ]
 
   const currentOption = sortOptions.find(option => option.value === sortOption) || sortOptions[0]
@@ -45,25 +56,18 @@ const SortDropdown = ({ sortOption, onChange }) => {
       >
         <div className="flex items-center space-x-3">
           <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg text-white">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
-            </svg>
+            <BarsArrowDownIcon className="w-4 h-4" />
           </div>
           <div className="flex flex-col items-start">
             <span className="text-xs text-gray-500 font-normal">Sort by</span>
             <span className="text-sm font-semibold text-gray-900">{currentOption.label}</span>
           </div>
         </div>
-        <svg
+        <ChevronDownIcon
           className={`w-5 h-5 text-gray-400 transform transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        />
       </button>
 
       {/* Dropdown Menu */}
@@ -92,7 +96,7 @@ const SortDropdown = ({ sortOption, onChange }) => {
                   aria-selected={option.value === sortOption}
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="text-lg">{option.icon}</span>
+                    <option.icon className="w-5 h-5 text-gray-400" />
                     <div>
                       <div className="font-medium">{option.label}</div>
                       <div className="text-xs text-gray-500">{option.description}</div>
@@ -100,9 +104,7 @@ const SortDropdown = ({ sortOption, onChange }) => {
                   </div>
                   
                   {option.value === sortOption && (
-                    <svg className="w-4 h-4 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
+                    <CheckIcon className="w-4 h-4 text-indigo-500" />
                   )}
                 </button>
               ))}

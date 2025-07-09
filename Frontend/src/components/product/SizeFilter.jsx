@@ -1,7 +1,15 @@
 import { useState } from 'react'
+import { 
+  RectangleStackIcon, 
+  ChevronDownIcon, 
+  XMarkIcon, 
+  CheckIcon, 
+  InformationCircleIcon 
+} from '@heroicons/react/24/outline'
 
 const SizeFilter = ({ selectedSize, onChange }) => {
   const [isExpanded, setIsExpanded] = useState(true)
+  const [showNumeric, setShowNumeric] = useState(false)
 
   const sizeCategories = [
     {
@@ -31,22 +39,23 @@ const SizeFilter = ({ selectedSize, onChange }) => {
 
   const allSizes = sizeCategories.flatMap(cat => cat.sizes)
 
+  // Helper: is a size currently selected?
+  const isSelected = (val) => selectedSize === val
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
+        className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
       >
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-600 rounded-lg text-white">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-            </svg>
+        <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-center w-7 h-7 bg-gradient-to-r from-pink-500 to-rose-600 rounded-lg text-white">
+            <RectangleStackIcon className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Size</h3>
-            <p className="text-sm text-gray-500">
+            <h3 className="text-base font-semibold text-gray-900">Size</h3>
+            <p className="text-xs text-gray-500">
               {selectedSize ? `Selected: ${selectedSize}` : 'All sizes'}
             </p>
           </div>
@@ -57,29 +66,25 @@ const SizeFilter = ({ selectedSize, onChange }) => {
               1 selected
             </span>
           )}
-          <svg
+          <ChevronDownIcon
             className={`w-5 h-5 text-gray-400 transform transition-transform duration-200 ${
               isExpanded ? 'rotate-180' : ''
             }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+          />
         </div>
       </button>
 
       {/* Content */}
       {isExpanded && (
-        <div className="px-6 pb-6">
+        <div className="px-4 pb-4 max-h-64 overflow-y-auto transition-all duration-300">
           {/* Quick Actions */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">Quick select:</span>
+              <span className="text-xs text-gray-600">Quick select:</span>
               <button
                 onClick={() => onChange('M')}
-                className="text-xs px-2 py-1 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                className={`text-xs px-2 py-1 rounded-md transition-colors focus:outline-none ${isSelected('M') ? 'bg-indigo-100 text-indigo-700 font-bold' : 'bg-gray-100 hover:bg-indigo-100'}`}
+                aria-pressed={isSelected('M')}
               >
                 Most Popular (M)
               </button>
@@ -87,72 +92,86 @@ const SizeFilter = ({ selectedSize, onChange }) => {
             {selectedSize && (
               <button
                 onClick={() => onChange(null)}
-                className="text-sm text-red-600 hover:text-red-700 font-medium flex items-center space-x-1"
+                className="text-xs text-red-600 hover:text-white hover:bg-red-500 font-medium flex items-center space-x-1 px-2 py-1 rounded transition-colors"
+                aria-label="Clear size selection"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <XMarkIcon className="w-4 h-4" />
                 <span>Clear</span>
               </button>
             )}
           </div>
 
-          {/* Size Categories */}
-          <div className="space-y-4">
-            {sizeCategories.map((category) => (
-              <div key={category.category}>
-                <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                  <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
-                  {category.category} Sizes
+          {/* Standard Sizes */}
+          <div className="mb-2">
+            <h4 className="text-xs font-semibold text-gray-500 mb-1 flex items-center uppercase tracking-wide">
+              <span className="w-2 h-2 bg-gray-300 rounded-full mr-2"></span>
+              Standard Sizes
+            </h4>
+            <div className="grid grid-cols-3 gap-2">
+              {sizeCategories[0].sizes.map((size) => (
+                <button
+                  key={size.value}
+                  onClick={() => onChange(size.value)}
+                  className={`relative group p-2 rounded-lg border-2 transition-all duration-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 ${
+                    isSelected(size.value)
+                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700 scale-105 shadow-md'
+                      : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-sm'
+                  }`}
+                  title={size.description}
+                  aria-pressed={isSelected(size.value)}
+                >
+                  <div className="font-semibold text-xs">{size.label}</div>
+                  <div className="text-[10px] text-gray-400 mt-1">{size.description}</div>
+                  {isSelected(size.value) && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-indigo-500 rounded-full flex items-center justify-center">
+                      <CheckIcon className="w-3 h-3 text-white" />
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Numeric Sizes (collapsed by default) */}
+          <div>
+            <button
+              onClick={() => setShowNumeric((v) => !v)}
+              className="text-xs text-indigo-600 hover:underline mb-1"
+              aria-expanded={showNumeric}
+            >
+              {showNumeric ? 'Hide Numeric Sizes' : 'Show Numeric Sizes'}
+            </button>
+            {showNumeric && (
+              <div>
+                <h4 className="text-xs font-semibold text-gray-500 mb-1 flex items-center uppercase tracking-wide">
+                  <span className="w-2 h-2 bg-gray-300 rounded-full mr-2"></span>
+                  Numeric Sizes
                 </h4>
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                  {category.sizes.map((size) => (
+                <div className="grid grid-cols-3 gap-2">
+                  {sizeCategories[1].sizes.map((size) => (
                     <button
                       key={size.value}
                       onClick={() => onChange(size.value)}
-                      className={`relative group p-3 rounded-lg border-2 transition-all duration-200 text-center ${
-                        selectedSize === size.value
-                          ? 'border-indigo-500 bg-indigo-50 text-indigo-700 transform scale-105 shadow-md'
-                          : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:shadow-sm'
+                      className={`relative group p-2 rounded-lg border-2 transition-all duration-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 ${
+                        isSelected(size.value)
+                          ? 'border-indigo-500 bg-indigo-50 text-indigo-700 scale-105 shadow-md'
+                          : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-sm'
                       }`}
                       title={size.description}
+                      aria-pressed={isSelected(size.value)}
                     >
-                      <div className="font-semibold text-sm">{size.label}</div>
-                      <div className="text-xs text-gray-500 mt-1">{size.description}</div>
-                      
-                      {selectedSize === size.value && (
-                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center">
-                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
+                      <div className="font-semibold text-xs">{size.label}</div>
+                      <div className="text-[10px] text-gray-400 mt-1">{size.description}</div>
+                      {isSelected(size.value) && (
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-indigo-500 rounded-full flex items-center justify-center">
+                          <CheckIcon className="w-3 h-3 text-white" />
                         </div>
                       )}
                     </button>
                   ))}
                 </div>
               </div>
-            ))}
-          </div>
-
-          {/* Size Guide */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex items-center space-x-2 mb-2">
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <h4 className="text-sm font-medium text-blue-900">Size Guide</h4>
-            </div>
-            <p className="text-sm text-blue-700">
-              Not sure about your size? Check our detailed size guide for accurate measurements.
-            </p>
-            <button className="mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium underline">
-              View Size Chart
-            </button>
-          </div>
-
-          {/* Statistics */}
-          <div className="mt-4 text-xs text-gray-500 text-center">
-            {allSizes.length} sizes available • Most popular: Medium (M)
+            )}
           </div>
         </div>
       )}

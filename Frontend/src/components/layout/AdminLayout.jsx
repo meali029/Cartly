@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import { 
@@ -20,6 +20,14 @@ import { Outlet } from 'react-router-dom'
 const AdminLayout = () => {
   const { user, logout } = useContext(AuthContext)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // Add admin-layout class to body on mount, remove on unmount
+  useEffect(() => {
+    document.body.classList.add('admin-layout')
+    return () => {
+      document.body.classList.remove('admin-layout')
+    }
+  }, [])
 
   if (!user?.isAdmin) {
     return null

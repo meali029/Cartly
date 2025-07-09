@@ -1,17 +1,18 @@
 import { useState } from 'react'
+import { CurrencyDollarIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
 
 const PriceFilter = ({ onChange, currentRange }) => {
   const [min, setMin] = useState(currentRange?.min || '')
   const [max, setMax] = useState(currentRange?.max || '')
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const predefinedRanges = [
-    { label: 'Under PKR 1,000', min: 0, max: 1000 },
-    { label: 'PKR 1,000 - 2,500', min: 1000, max: 2500 },
-    { label: 'PKR 2,500 - 5,000', min: 2500, max: 5000 },
-    { label: 'PKR 5,000 - 10,000', min: 5000, max: 10000 },
-    { label: 'Above PKR 10,000', min: 10000, max: 999999 },
-  ]
+  // const predefinedRanges = [
+  //   { label: 'Under PKR 1,000', min: 0, max: 1000 },
+  //   { label: 'PKR 1,000 - 2,500', min: 1000, max: 2500 },
+  //   { label: 'PKR 2,500 - 5,000', min: 2500, max: 5000 },
+  //   { label: 'PKR 5,000 - 10,000', min: 5000, max: 10000 },
+  //   { label: 'Above PKR 10,000', min: 10000, max: 999999 },
+  // ]
 
   const handleApply = () => {
     const minValue = min ? parseInt(min) : 0
@@ -31,11 +32,11 @@ const PriceFilter = ({ onChange, currentRange }) => {
     onChange({ min: 0, max: 999999 })
   }
 
-  const handlePredefinedRange = (range) => {
-    setMin(range.min)
-    setMax(range.max === 999999 ? '' : range.max)
-    onChange({ min: range.min, max: range.max })
-  }
+  // const handlePredefinedRange = (range) => {
+  //   setMin(range.min)
+  //   setMax(range.max === 999999 ? '' : range.max)
+  //   onChange({ min: range.min, max: range.max })
+  // }
 
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
@@ -47,25 +48,27 @@ const PriceFilter = ({ onChange, currentRange }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
-              <span className="text-white text-lg">💰</span>
+              <CurrencyDollarIcon className="w-6 h-6 text-white" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900">Price Range</h3>
               <p className="text-sm text-gray-600">Filter by price</p>
             </div>
           </div>
-          <span className={`text-gray-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-            ⌄
+          <span>
+            <ChevronDownIcon
+              className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+            />
           </span>
         </div>
       </div>
 
       {/* Content */}
-      <div className={`transition-all duration-300 overflow-hidden ${isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+      <div className={`transition-all duration-300 overflow-hidden ${isExpanded ? 'max-h-80 opacity-100 overflow-y-auto' : 'max-h-0 opacity-0'}`}>
         <div className="p-6 space-y-6">
           
           {/* Predefined Ranges */}
-          <div>
+          {/* <div>
             <h4 className="text-sm font-semibold text-gray-700 mb-3">Quick Select</h4>
             <div className="space-y-2">
               {predefinedRanges.map((range, index) => (
@@ -78,7 +81,7 @@ const PriceFilter = ({ onChange, currentRange }) => {
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Custom Range */}
           <div>

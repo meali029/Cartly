@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useContext, useState } from 'react'
 import { CartContext } from '../../context/CartContext'
+import { EyeIcon } from '@heroicons/react/24/outline'
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useContext(CartContext)
@@ -40,7 +41,7 @@ const ProductCard = ({ product }) => {
           {/* Quick view button */}
           <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
             <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors">
-              <span className="text-lg">👁️</span>
+              <EyeIcon className="w-5 h-5 text-gray-600" />
             </button>
           </div>
 
