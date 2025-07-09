@@ -146,38 +146,48 @@ const ManageOrders = () => {
               </div>
             </div>
           )}
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          
+          {/* Desktop Table View */}
+          <div className="hidden lg:block">
+            <table className="w-full table-fixed">
+              <colgroup>
+                <col className="w-1/4" />
+                <col className="w-1/8" />
+                <col className="w-1/8" />
+                <col className="w-1/8" />
+                <col className="w-1/4" />
+                <col className="w-1/6" />
+              </colgroup>
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <div className="flex items-center space-x-2">
-                      <UserIcon className="h-4 w-4" />
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div className="flex items-center space-x-1">
+                      <UserIcon className="h-3 w-3" />
                       <span>Customer</span>
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <div className="flex items-center space-x-2">
-                      <CurrencyDollarIcon className="h-4 w-4" />
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div className="flex items-center space-x-1">
+                      <CurrencyDollarIcon className="h-3 w-3" />
                       <span>Total</span>
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <div className="flex items-center space-x-2">
-                      <CalendarDaysIcon className="h-4 w-4" />
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div className="flex items-center space-x-1">
+                      <CalendarDaysIcon className="h-3 w-3" />
                       <span>Date</span>
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <div className="flex items-center space-x-2">
-                      <MapPinIcon className="h-4 w-4" />
-                      <span>Shipping Address</span>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div className="flex items-center space-x-1">
+                      <MapPinIcon className="h-3 w-3" />
+                      <span>Address</span>
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -185,29 +195,29 @@ const ManageOrders = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {orders.map((order) => (
                   <tr key={order._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-3 py-3">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-8 w-8">
-                          <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">
-                            <UserIcon className="h-4 w-4 text-gray-500" />
+                        <div className="flex-shrink-0 h-6 w-6">
+                          <div className="h-6 w-6 rounded-full bg-gray-100 flex items-center justify-center">
+                            <UserIcon className="h-3 w-3 text-gray-500" />
                           </div>
                         </div>
-                        <div className="ml-3">
-                          <div className="text-sm font-medium text-gray-900">
+                        <div className="ml-2 min-w-0 flex-1">
+                          <div className="text-sm font-medium text-gray-900 truncate">
                             {order.userId?.name || 'Guest'}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-xs text-gray-500 truncate">
                             {order.userId?.email || 'No email'}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-3 py-3">
                       <div className="text-sm font-medium text-gray-900">
                         PKR {order.totalPrice.toLocaleString()}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-3 py-3">
                       <Badge
                         text={order.status}
                         color={
@@ -221,34 +231,33 @@ const ManageOrders = () => {
                         }
                       />
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-3 py-3 text-sm text-gray-900">
                       {new Date(order.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 py-3">
                       <div className="text-sm text-gray-900">
-                        <div className="font-medium">{order.shippingInfo?.address}</div>
-                        <div className="text-gray-500">
+                        <div className="font-medium truncate">{order.shippingInfo?.address}</div>
+                        <div className="text-xs text-gray-500 truncate">
                           {order.shippingInfo?.city}, {order.shippingInfo?.postalCode}
                         </div>
-                        <div className="text-gray-500">{order.shippingInfo?.country}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex items-center justify-end space-x-2">
+                    <td className="px-3 py-3 text-right text-sm font-medium">
+                      <div className="flex items-center justify-end space-x-1">
                         {order.status === 'pending' && (
                           <>
                             <button
                               onClick={() => handleStatusUpdate(order._id, 'shipped')}
-                              className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200"
+                              className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
                             >
                               <TruckIcon className="h-3 w-3 mr-1" />
                               Ship
                             </button>
                             {cancelId === order._id ? (
-                              <div className="flex flex-col gap-2 min-w-48">
+                              <div className="flex flex-col gap-1 min-w-40">
                                 <input
                                   type="text"
-                                  placeholder="Reason for cancellation"
+                                  placeholder="Reason"
                                   value={cancelReason}
                                   onChange={e => setCancelReason(e.target.value)}
                                   className="border border-gray-300 px-2 py-1 rounded text-xs focus:ring-2 focus:ring-red-500 focus:border-red-500"
@@ -272,7 +281,7 @@ const ManageOrders = () => {
                             ) : (
                               <button
                                 onClick={() => setCancelId(order._id)}
-                                className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200"
+                                className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200"
                               >
                                 <XMarkIcon className="h-3 w-3 mr-1" />
                                 Cancel
@@ -283,20 +292,20 @@ const ManageOrders = () => {
                         {order.status === 'shipped' && (
                           <button
                             onClick={() => handleStatusUpdate(order._id, 'delivered')}
-                            className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200"
+                            className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-green-700 bg-green-100 hover:bg-green-200"
                           >
                             <CheckCircleIcon className="h-3 w-3 mr-1" />
                             Deliver
                           </button>
                         )}
                         {order.status === 'delivered' && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium text-green-800 bg-green-100">
+                          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium text-green-800 bg-green-100">
                             <CheckCircleIcon className="h-3 w-3 mr-1" />
-                            Completed
+                            Done
                           </span>
                         )}
                         {order.status === 'cancelled' && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium text-red-800 bg-red-100">
+                          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium text-red-800 bg-red-100">
                             <XMarkIcon className="h-3 w-3 mr-1" />
                             Cancelled
                           </span>
@@ -307,6 +316,152 @@ const ManageOrders = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="lg:hidden">
+            <div className="divide-y divide-gray-200">
+              {orders.map((order) => (
+                <div key={order._id} className="p-3 space-y-2">
+                  {/* Header */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2 min-w-0 flex-1">
+                      <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                        <UserIcon className="h-4 w-4 text-gray-500" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-medium text-gray-900 truncate">
+                          {order.userId?.name || 'Guest'}
+                        </div>
+                        <div className="text-xs text-gray-500 truncate">
+                          {order.userId?.email || 'No email'}
+                        </div>
+                      </div>
+                    </div>
+                    <Badge
+                      text={order.status}
+                      color={
+                        order.status === 'delivered'
+                          ? 'green'
+                          : order.status === 'shipped'
+                          ? 'blue'
+                          : order.status === 'cancelled'
+                          ? 'red'
+                          : 'yellow'
+                      }
+                    />
+                  </div>
+
+                  {/* Details */}
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <div className="flex items-center space-x-1 text-gray-500 mb-1">
+                        <CurrencyDollarIcon className="h-3 w-3" />
+                        <span>Total</span>
+                      </div>
+                      <div className="font-medium text-gray-900">
+                        PKR {order.totalPrice.toLocaleString()}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center space-x-1 text-gray-500 mb-1">
+                        <CalendarDaysIcon className="h-3 w-3" />
+                        <span>Date</span>
+                      </div>
+                      <div className="text-gray-900">
+                        {new Date(order.createdAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Shipping Address */}
+                  <div>
+                    <div className="flex items-center space-x-1 text-gray-500 mb-1">
+                      <MapPinIcon className="h-3 w-3" />
+                      <span>Address</span>
+                    </div>
+                    <div className="text-sm text-gray-900">
+                      <div className="font-medium truncate">{order.shippingInfo?.address}</div>
+                      <div className="text-gray-500 truncate">
+                        {order.shippingInfo?.city}, {order.shippingInfo?.postalCode}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="pt-2 border-t border-gray-100">
+                    <div className="flex flex-wrap gap-2">
+                      {order.status === 'pending' && (
+                        <>
+                          <button
+                            onClick={() => handleStatusUpdate(order._id, 'shipped')}
+                            className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
+                          >
+                            <TruckIcon className="h-4 w-4 mr-1" />
+                            Ship
+                          </button>
+                          {cancelId === order._id ? (
+                            <div className="w-full mt-2 space-y-2">
+                              <input
+                                type="text"
+                                placeholder="Cancellation reason"
+                                value={cancelReason}
+                                onChange={e => setCancelReason(e.target.value)}
+                                className="w-full border border-gray-300 px-2 py-1 rounded text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                              />
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => handleCancel(order._id)}
+                                  className="flex-1 inline-flex items-center justify-center px-2 py-1 border border-transparent text-sm font-medium rounded text-red-700 bg-red-100 hover:bg-red-200"
+                                >
+                                  <XMarkIcon className="h-4 w-4 mr-1" />
+                                  Cancel
+                                </button>
+                                <button
+                                  onClick={() => { setCancelId(null); setCancelReason('') }}
+                                  className="flex-1 inline-flex items-center justify-center px-2 py-1 border border-gray-300 text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
+                                >
+                                  Dismiss
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => setCancelId(order._id)}
+                              className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded text-red-700 bg-red-100 hover:bg-red-200"
+                            >
+                              <XMarkIcon className="h-4 w-4 mr-1" />
+                              Cancel
+                            </button>
+                          )}
+                        </>
+                      )}
+                      {order.status === 'shipped' && (
+                        <button
+                          onClick={() => handleStatusUpdate(order._id, 'delivered')}
+                          className="w-full inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded text-green-700 bg-green-100 hover:bg-green-200"
+                        >
+                          <CheckCircleIcon className="h-4 w-4 mr-1" />
+                          Mark Delivered
+                        </button>
+                      )}
+                      {order.status === 'delivered' && (
+                        <span className="w-full inline-flex items-center justify-center px-3 py-2 rounded text-sm font-medium text-green-800 bg-green-100">
+                          <CheckCircleIcon className="h-4 w-4 mr-1" />
+                          Completed
+                        </span>
+                      )}
+                      {order.status === 'cancelled' && (
+                        <span className="w-full inline-flex items-center justify-center px-3 py-2 rounded text-sm font-medium text-red-800 bg-red-100">
+                          <XMarkIcon className="h-4 w-4 mr-1" />
+                          Cancelled
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
