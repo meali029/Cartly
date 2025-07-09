@@ -22,7 +22,8 @@ import {
   ChartBarIcon,
   EyeIcon,
   PencilIcon,
-  TrashIcon
+  TrashIcon,
+  ChevronDownIcon
 } from '@heroicons/react/24/outline'
 
 const SystemSettings = () => {
@@ -167,7 +168,7 @@ const SystemSettings = () => {
 
   const renderGeneralSettings = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Site Name</label>
           <input
@@ -196,7 +197,7 @@ const SystemSettings = () => {
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
           <select
@@ -233,19 +234,21 @@ const SystemSettings = () => {
         />
         <label className="text-sm text-gray-700">Enable Maintenance Mode</label>
       </div>
-      <button
-        onClick={() => handleSaveSettings('general')}
-        disabled={loading}
-        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
-      >
-        {loading ? 'Saving...' : 'Save General Settings'}
-      </button>
+      <div className="flex justify-end">
+        <button
+          onClick={() => handleSaveSettings('general')}
+          disabled={loading}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+        >
+          {loading ? 'Saving...' : 'Save General Settings'}
+        </button>
+      </div>
     </div>
   )
 
   const renderEmailSettings = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">SMTP Host</label>
           <input
@@ -265,7 +268,7 @@ const SystemSettings = () => {
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">SMTP Username</label>
           <input
@@ -285,7 +288,7 @@ const SystemSettings = () => {
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">From Email</label>
           <input
@@ -305,19 +308,21 @@ const SystemSettings = () => {
           />
         </div>
       </div>
-      <button
-        onClick={() => handleSaveSettings('email')}
-        disabled={loading}
-        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
-      >
-        {loading ? 'Saving...' : 'Save Email Settings'}
-      </button>
+      <div className="flex justify-end">
+        <button
+          onClick={() => handleSaveSettings('email')}
+          disabled={loading}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+        >
+          {loading ? 'Saving...' : 'Save Email Settings'}
+        </button>
+      </div>
     </div>
   )
 
   const renderSecuritySettings = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
           <input
@@ -366,13 +371,15 @@ const SystemSettings = () => {
           <label className="text-sm text-gray-700">Allow Guest Checkout</label>
         </div>
       </div>
-      <button
-        onClick={() => handleSaveSettings('security')}
-        disabled={loading}
-        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
-      >
-        {loading ? 'Saving...' : 'Save Security Settings'}
-      </button>
+      <div className="flex justify-end">
+        <button
+          onClick={() => handleSaveSettings('security')}
+          disabled={loading}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+        >
+          {loading ? 'Saving...' : 'Save Security Settings'}
+        </button>
+      </div>
     </div>
   )
 
@@ -485,7 +492,7 @@ const SystemSettings = () => {
 
   const renderSystemInfo = () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-gray-50 p-4 rounded-lg">
           <h4 className="font-medium text-gray-900 mb-2">System Information</h4>
           <div className="space-y-2 text-sm">
@@ -523,14 +530,14 @@ const SystemSettings = () => {
       </div>
       <div className="bg-gray-50 p-4 rounded-lg">
         <h4 className="font-medium text-gray-900 mb-2">Backup Information</h4>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
           <div className="text-sm">
             <p>Last Backup: {systemInfo.lastBackup}</p>
           </div>
           <button
             onClick={handleBackup}
             disabled={loading}
-            className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+            className="flex items-center justify-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
           >
             <CircleStackIcon className="h-4 w-4" />
             <span>{loading ? 'Backing up...' : 'Backup Now'}</span>
@@ -542,11 +549,11 @@ const SystemSettings = () => {
 
   const renderLogs = () => (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
         <h4 className="font-medium text-gray-900">System Logs</h4>
         <button
           onClick={handleClearLogs}
-          className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          className="flex items-center justify-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
         >
           <TrashIcon className="h-4 w-4" />
           <span>Clear Logs</span>
@@ -561,16 +568,17 @@ const SystemSettings = () => {
           ) : (
             logs.map((log) => (
               <div key={log.id} className="p-4 border-b border-gray-100 hover:bg-gray-50">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
                   <div className="flex items-center space-x-3">
                     {getLogIcon(log.level)}
                     <span className={`text-xs px-2 py-1 rounded-full ${getLogColor(log.level)}`}>
                       {log.level}
                     </span>
-                    <span className="text-sm text-gray-900">{log.message}</span>
+                    <span className="text-sm text-gray-900 break-words">{log.message}</span>
                   </div>
-                  <div className="text-xs text-gray-500">
-                    {log.timestamp} | {log.ip}
+                  <div className="text-xs text-gray-500 sm:text-right">
+                    <div>{log.timestamp}</div>
+                    <div>{log.ip}</div>
                   </div>
                 </div>
               </div>
@@ -582,30 +590,48 @@ const SystemSettings = () => {
   )
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center space-x-3">
-          <CogIcon className="h-8 w-8 text-indigo-600" />
-          <h1 className="text-3xl font-bold text-gray-900">System Settings</h1>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
-            <ServerIcon className="h-4 w-4" />
-            <span>System Status: Online</span>
+      <div className="flex-shrink-0 px-4 sm:px-6 py-6 bg-white border-b border-gray-200">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+          <div className="flex items-center space-x-3">
+            <CogIcon className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-600" />
+            <h1 className="text-xl sm:text-3xl font-bold text-gray-900">System Settings</h1>
+          </div>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <ServerIcon className="h-4 w-4" />
+              <span>System Status: Online</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="mb-8">
-        <div className="border-b border-gray-200">
-          <nav className="flex space-x-8">
+      {/* Tabs - Mobile Dropdown and Desktop Horizontal */}
+      <div className="flex-shrink-0 bg-white border-b border-gray-200">
+        {/* Mobile Dropdown */}
+        <div className="sm:hidden px-4 py-3">
+          <select
+            value={activeTab}
+            onChange={(e) => setActiveTab(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            {tabs.map((tab) => (
+              <option key={tab.id} value={tab.id}>
+                {tab.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Desktop Horizontal Tabs */}
+        <div className="hidden sm:block px-4 sm:px-6">
+          <nav className="flex space-x-2 lg:space-x-8 overflow-x-auto">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                className={`py-3 px-2 lg:px-4 border-b-2 font-medium text-sm whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'border-indigo-500 text-indigo-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -621,15 +647,19 @@ const SystemSettings = () => {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        {activeTab === 'general' && renderGeneralSettings()}
-        {activeTab === 'email' && renderEmailSettings()}
-        {activeTab === 'security' && renderSecuritySettings()}
-        {activeTab === 'payment' && renderPaymentSettings()}
-        {activeTab === 'notifications' && renderNotificationSettings()}
-        {activeTab === 'system' && renderSystemInfo()}
-        {activeTab === 'logs' && renderLogs()}
+      {/* Content - Scrollable */}
+      <div className="flex-1 min-h-0 overflow-y-auto bg-gray-50">
+        <div className="p-4 sm:p-6">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+            {activeTab === 'general' && renderGeneralSettings()}
+            {activeTab === 'email' && renderEmailSettings()}
+            {activeTab === 'security' && renderSecuritySettings()}
+            {activeTab === 'payment' && renderPaymentSettings()}
+            {activeTab === 'notifications' && renderNotificationSettings()}
+            {activeTab === 'system' && renderSystemInfo()}
+            {activeTab === 'logs' && renderLogs()}
+          </div>
+        </div>
       </div>
     </div>
   )
