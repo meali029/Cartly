@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
+import ScrollManager from '../ui/ScrollManager'
 import { 
   HomeIcon, 
   ShoppingBagIcon, 
@@ -172,6 +173,15 @@ const AdminLayout = () => {
           onClick={() => setSidebarOpen(false)}
         />
       )}
+      
+      {/* Scroll Management for Admin */}
+      <ScrollManager 
+        threshold={300}
+        smooth={true}
+        showProgress={true}
+        size="md"
+        position="bottom-right"
+      />
     </div>
   )
 }

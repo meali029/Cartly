@@ -30,16 +30,17 @@ const Spinner = ({
   }
 
   const colors = {
-    indigo: 'border-indigo-500',
-    blue: 'border-blue-500',
-    green: 'border-green-500',
+    slate: 'border-slate-500',
+    indigo: 'border-slate-500',
+    blue: 'border-slate-600',
+    green: 'border-emerald-500',
     red: 'border-red-500',
-    yellow: 'border-yellow-500',
-    purple: 'border-purple-500',
-    pink: 'border-pink-500',
-    gray: 'border-gray-500',
+    yellow: 'border-amber-500',
+    purple: 'border-slate-700',
+    pink: 'border-rose-500',
+    gray: 'border-slate-500',
     white: 'border-white',
-    black: 'border-black',
+    black: 'border-slate-900',
   }
 
   const variants = {
@@ -87,7 +88,9 @@ const Spinner = ({
       
       case 'gradient':
         return (
-          <div className={`${sizes[size]} ${baseClasses} bg-gradient-to-r from-indigo-500 to-purple-500 border-0`} />
+          <div className={`${sizes[size]} rounded-full animate-spin border-4 border-transparent bg-gradient-to-r from-slate-500 to-slate-700 relative`}>
+            <div className={`${sizes[size]} rounded-full bg-white absolute inset-1`}></div>
+          </div>
         )
       
       default:
@@ -96,10 +99,10 @@ const Spinner = ({
   }
 
   const content = (
-    <div className={`flex items-center space-x-2 ${className}`}>
+    <div className={`flex items-center space-x-3 ${className}`}>
       {renderSpinner()}
       {label && (
-        <span className="text-sm font-medium text-gray-600">
+        <span className="text-sm font-semibold text-slate-600 animate-pulse">
           {label}
         </span>
       )}
@@ -121,7 +124,7 @@ export const LoadingSpinner = ({ text = 'Loading...', ...props }) => (
 )
 
 export const ProcessingSpinner = ({ text = 'Processing...', ...props }) => (
-  <Spinner label={text} color="blue" {...props} />
+  <Spinner label={text} color="slate" {...props} />
 )
 
 export const SavingSpinner = ({ text = 'Saving...', ...props }) => (

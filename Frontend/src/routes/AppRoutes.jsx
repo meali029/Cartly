@@ -14,9 +14,7 @@ import Orders from '../pages/Orders'
 import NotFound from '../pages/NotFound'
 
 // Categories
-import Men from '../pages/categories/Men'
-import Women from '../pages/categories/Women'
-import Kids from '../pages/categories/Kids'
+import Categories from '../pages/Categories'
 
 // Admin
 import Dashboard from '../admin/Dashboard'
@@ -40,9 +38,9 @@ const AppRoutes = () => {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
 
-        <Route path="men" element={<Men />} />
-        <Route path="women" element={<Women />} />
-        <Route path="kids" element={<Kids />} />
+        <Route path="men" element={<Categories />} />
+        <Route path="women" element={<Categories />} />
+        <Route path="kids" element={<Categories />} />
 
         <Route path="product/:id" element={<ProductDetails />} />
         <Route path="cart" element={<Cart />} />

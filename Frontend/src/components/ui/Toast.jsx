@@ -26,33 +26,33 @@ const Toast = ({
 
   const typeStyles = {
     success: {
-      bg: 'bg-green-50 border-green-200',
-      text: 'text-green-800',
-      icon: 'text-green-400',
+      bg: 'bg-gradient-to-r from-emerald-50 to-emerald-100 border-emerald-200',
+      text: 'text-emerald-800',
+      icon: 'text-emerald-500',
       iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
     },
     error: {
-      bg: 'bg-red-50 border-red-200',
+      bg: 'bg-gradient-to-r from-red-50 to-red-100 border-red-200',
       text: 'text-red-800',
-      icon: 'text-red-400',
+      icon: 'text-red-500',
       iconPath: 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
     },
     warning: {
-      bg: 'bg-yellow-50 border-yellow-200',
-      text: 'text-yellow-800',
-      icon: 'text-yellow-400',
+      bg: 'bg-gradient-to-r from-amber-50 to-amber-100 border-amber-200',
+      text: 'text-amber-800',
+      icon: 'text-amber-500',
       iconPath: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z'
     },
     info: {
-      bg: 'bg-blue-50 border-blue-200',
-      text: 'text-blue-800',
-      icon: 'text-blue-400',
+      bg: 'bg-gradient-to-r from-slate-50 to-slate-100 border-slate-200',
+      text: 'text-slate-800',
+      icon: 'text-slate-500',
       iconPath: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
     },
     loading: {
-      bg: 'bg-gray-50 border-gray-200',
-      text: 'text-gray-800',
-      icon: 'text-gray-400',
+      bg: 'bg-gradient-to-r from-slate-50 to-slate-100 border-slate-200',
+      text: 'text-slate-800',
+      icon: 'text-slate-500',
       iconPath: null
     }
   }
@@ -82,7 +82,7 @@ const Toast = ({
     
     if (type === 'loading') {
       return (
-        <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-400 border-t-transparent" />
+        <div className="animate-spin rounded-full h-4 w-4 border-2 border-slate-400 border-t-transparent" />
       )
     }
 
@@ -98,15 +98,15 @@ const Toast = ({
   return (
     <div
       className={`fixed z-50 max-w-md transition-all duration-300 ${positions[position]} ${
-        isAnimating ? 'opacity-0 transform scale-95' : 'opacity-100 transform scale-100'
+        isAnimating ? 'opacity-0 transform scale-95 translate-y-2' : 'opacity-100 transform scale-100 translate-y-0'
       } ${className}`}
     >
-      <div className={`rounded-lg border shadow-lg overflow-hidden ${currentStyle.bg}`}>
+      <div className={`rounded-3xl border shadow-2xl overflow-hidden backdrop-blur-sm ${currentStyle.bg}`}>
         {/* Progress bar for auto-dismiss */}
         {duration > 0 && (
-          <div className="h-1 bg-gray-200">
+          <div className="h-1 bg-slate-200/50">
             <div 
-              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-linear"
+              className="h-full bg-gradient-to-r from-slate-500 to-slate-700 transition-all duration-linear"
               style={{ 
                 width: '100%', 
                 animation: `shrink ${duration}ms linear forwards` 
@@ -125,11 +125,11 @@ const Toast = ({
             {/* Content */}
             <div className="flex-1 min-w-0">
               {title && (
-                <h4 className={`text-sm font-semibold ${currentStyle.text} mb-1`}>
+                <h4 className={`text-sm font-bold ${currentStyle.text} mb-1`}>
                   {title}
                 </h4>
               )}
-              <p className={`text-sm ${currentStyle.text} ${title ? 'font-normal' : 'font-medium'}`}>
+              <p className={`text-sm ${currentStyle.text} ${title ? 'font-normal' : 'font-semibold'}`}>
                 {message}
               </p>
               
@@ -144,7 +144,8 @@ const Toast = ({
             {closable && (
               <button
                 onClick={handleClose}
-                className={`flex-shrink-0 rounded-md p-1 transition-colors duration-200 ${currentStyle.icon} hover:bg-black/10`}
+                className={`flex-shrink-0 rounded-xl p-1.5 transition-all duration-300 ${currentStyle.icon} hover:bg-black/10 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-current focus:ring-offset-1`}
+                aria-label="Close notification"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -41,10 +41,11 @@ const Input = forwardRef(({
   }
 
   const variantStyles = {
-    default: 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',
-    filled: 'border-gray-200 bg-gray-50 focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white',
-    flushed: 'border-0 border-b-2 border-gray-300 rounded-none focus:border-indigo-500 focus:ring-0 px-0',
-    unstyled: 'border-0 focus:ring-0 px-0',
+    default: 'border-slate-300 focus:border-slate-500 focus:ring-slate-500 bg-white',
+    filled: 'border-slate-200 bg-slate-50 focus:border-slate-500 focus:ring-slate-500 focus:bg-white',
+    flushed: 'border-0 border-b-2 border-slate-300 rounded-none focus:border-slate-500 focus:ring-0 px-0 bg-transparent',
+    unstyled: 'border-0 focus:ring-0 px-0 bg-transparent',
+    modern: 'border-slate-200 bg-gradient-to-r from-slate-50 to-white focus:border-slate-400 focus:ring-slate-400 focus:from-slate-50 focus:to-white',
   }
 
   const handleFocus = (e) => {
@@ -70,10 +71,10 @@ const Input = forwardRef(({
   const iconColor = hasError 
     ? 'text-red-500' 
     : hasSuccess 
-    ? 'text-green-500' 
+    ? 'text-emerald-500' 
     : isFocused 
-    ? 'text-indigo-500' 
-    : 'text-gray-400'
+    ? 'text-slate-500' 
+    : 'text-slate-400'
 
   return (
     <div className={`relative ${className}`}>
@@ -82,7 +83,7 @@ const Input = forwardRef(({
         <label
           htmlFor={name}
           className={`block text-sm font-medium mb-2 transition-colors duration-200 ${
-            hasError ? 'text-red-700' : hasSuccess ? 'text-green-700' : 'text-gray-700'
+            hasError ? 'text-red-700' : hasSuccess ? 'text-emerald-700' : 'text-slate-700'
           }`}
         >
           {label}
@@ -95,7 +96,7 @@ const Input = forwardRef(({
         {/* Left Addon */}
         {leftAddon && (
           <div className="absolute left-0 inset-y-0 flex items-center">
-            <span className="bg-gray-50 border border-r-0 border-gray-300 rounded-l-lg px-3 text-gray-500 text-sm">
+            <span className="bg-slate-50 border border-r-0 border-slate-300 rounded-l-lg px-3 text-slate-500 text-sm">
               {leftAddon}
             </span>
           </div>
@@ -120,12 +121,14 @@ const Input = forwardRef(({
           maxLength={maxLength}
           minLength={minLength}
           pattern={pattern}
-          className={`w-full border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 ${
+          className={`w-full border rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-100 placeholder-slate-400 ${
             sizeStyles[size]
           } ${borderColor} ${
             leftIcon || leftAddon ? 'pl-10' : ''
           } ${
             rightIcon || rightAddon || (type === 'password' && showPasswordToggle) ? 'pr-10' : ''
+          } ${
+            isFocused ? 'shadow-xl transform scale-[1.02]' : 'shadow-sm'
           } ${inputClassName}`}
           {...props}
         />
@@ -146,7 +149,7 @@ const Input = forwardRef(({
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className={`transition-colors duration-200 hover:text-gray-600 ${iconColor}`}
+                className={`transition-colors duration-200 hover:text-slate-600 ${iconColor}`}
                 tabIndex={-1}
               >
                 {showPassword ? (
@@ -171,7 +174,7 @@ const Input = forwardRef(({
         {/* Right Addon */}
         {rightAddon && (
           <div className="absolute right-0 inset-y-0 flex items-center">
-            <span className="bg-gray-50 border border-l-0 border-gray-300 rounded-r-lg px-3 text-gray-500 text-sm">
+            <span className="bg-slate-50 border border-l-0 border-slate-300 rounded-r-lg px-3 text-slate-500 text-sm">
               {rightAddon}
             </span>
           </div>
@@ -195,7 +198,7 @@ const Input = forwardRef(({
 
       {/* Help Text */}
       {helpText && !hasError && (
-        <p className="text-xs text-gray-500 mt-1">{helpText}</p>
+        <p className="text-xs text-slate-500 mt-1">{helpText}</p>
       )}
 
       {/* Error Message */}
@@ -210,7 +213,7 @@ const Input = forwardRef(({
 
       {/* Success Message */}
       {hasSuccess && (
-        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+        <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
@@ -220,7 +223,7 @@ const Input = forwardRef(({
 
       {/* Character Count */}
       {maxLength && (
-        <p className="text-xs text-gray-500 mt-1 text-right">
+        <p className="text-xs text-slate-500 mt-1 text-right">
           {value?.length || 0}/{maxLength}
         </p>
       )}

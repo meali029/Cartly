@@ -7,9 +7,11 @@ const Badge = ({
   pulse = false, 
   removable = false, 
   onRemove = null,
+  animate = false,
   className = ''
 }) => {
   const sizeStyles = {
+    xs: 'px-2 py-0.5 text-xs',
     sm: 'px-2 py-1 text-xs',
     md: 'px-3 py-1.5 text-sm',
     lg: 'px-4 py-2 text-base',
@@ -17,10 +19,16 @@ const Badge = ({
 
   const colorStyles = {
     gray: {
-      solid: 'bg-gray-100 text-gray-800 border-gray-200',
-      outline: 'bg-transparent text-gray-700 border-gray-300',
-      gradient: 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 border-gray-200',
-      ghost: 'bg-gray-50 text-gray-600 border-transparent hover:bg-gray-100',
+      solid: 'bg-slate-100 text-slate-800 border-slate-200',
+      outline: 'bg-transparent text-slate-700 border-slate-300',
+      gradient: 'bg-gradient-to-r from-slate-100 to-slate-200 text-slate-800 border-slate-200',
+      ghost: 'bg-slate-50 text-slate-600 border-transparent hover:bg-slate-100',
+    },
+    slate: {
+      solid: 'bg-slate-100 text-slate-800 border-slate-200',
+      outline: 'bg-transparent text-slate-700 border-slate-300',
+      gradient: 'bg-gradient-to-r from-slate-100 to-slate-200 text-slate-800 border-slate-200',
+      ghost: 'bg-slate-50 text-slate-600 border-transparent hover:bg-slate-100',
     },
     red: {
       solid: 'bg-red-100 text-red-700 border-red-200',
@@ -29,40 +37,40 @@ const Badge = ({
       ghost: 'bg-red-50 text-red-600 border-transparent hover:bg-red-100',
     },
     green: {
-      solid: 'bg-green-100 text-green-700 border-green-200',
-      outline: 'bg-transparent text-green-600 border-green-300',
-      gradient: 'bg-gradient-to-r from-green-100 to-green-200 text-green-700 border-green-200',
-      ghost: 'bg-green-50 text-green-600 border-transparent hover:bg-green-100',
+      solid: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      outline: 'bg-transparent text-emerald-600 border-emerald-300',
+      gradient: 'bg-gradient-to-r from-emerald-100 to-emerald-200 text-emerald-700 border-emerald-200',
+      ghost: 'bg-emerald-50 text-emerald-600 border-transparent hover:bg-emerald-100',
     },
     blue: {
-      solid: 'bg-blue-100 text-blue-700 border-blue-200',
-      outline: 'bg-transparent text-blue-600 border-blue-300',
-      gradient: 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 border-blue-200',
-      ghost: 'bg-blue-50 text-blue-600 border-transparent hover:bg-blue-100',
+      solid: 'bg-slate-100 text-slate-700 border-slate-200',
+      outline: 'bg-transparent text-slate-600 border-slate-300',
+      gradient: 'bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 border-slate-200',
+      ghost: 'bg-slate-50 text-slate-600 border-transparent hover:bg-slate-100',
     },
     yellow: {
-      solid: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      outline: 'bg-transparent text-yellow-700 border-yellow-300',
-      gradient: 'bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border-yellow-200',
-      ghost: 'bg-yellow-50 text-yellow-700 border-transparent hover:bg-yellow-100',
+      solid: 'bg-amber-100 text-amber-800 border-amber-200',
+      outline: 'bg-transparent text-amber-700 border-amber-300',
+      gradient: 'bg-gradient-to-r from-amber-100 to-amber-200 text-amber-800 border-amber-200',
+      ghost: 'bg-amber-50 text-amber-700 border-transparent hover:bg-amber-100',
     },
     indigo: {
-      solid: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-      outline: 'bg-transparent text-indigo-600 border-indigo-300',
-      gradient: 'bg-gradient-to-r from-indigo-100 to-indigo-200 text-indigo-700 border-indigo-200',
-      ghost: 'bg-indigo-50 text-indigo-600 border-transparent hover:bg-indigo-100',
+      solid: 'bg-slate-200 text-slate-800 border-slate-300',
+      outline: 'bg-transparent text-slate-700 border-slate-400',
+      gradient: 'bg-gradient-to-r from-slate-200 to-slate-300 text-slate-800 border-slate-300',
+      ghost: 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200',
     },
     purple: {
-      solid: 'bg-purple-100 text-purple-700 border-purple-200',
-      outline: 'bg-transparent text-purple-600 border-purple-300',
-      gradient: 'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 border-purple-200',
-      ghost: 'bg-purple-50 text-purple-600 border-transparent hover:bg-purple-100',
+      solid: 'bg-slate-200 text-slate-800 border-slate-300',
+      outline: 'bg-transparent text-slate-700 border-slate-400',
+      gradient: 'bg-gradient-to-r from-slate-200 to-slate-300 text-slate-800 border-slate-300',
+      ghost: 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200',
     },
     pink: {
-      solid: 'bg-pink-100 text-pink-700 border-pink-200',
-      outline: 'bg-transparent text-pink-600 border-pink-300',
-      gradient: 'bg-gradient-to-r from-pink-100 to-pink-200 text-pink-700 border-pink-200',
-      ghost: 'bg-pink-50 text-pink-600 border-transparent hover:bg-pink-100',
+      solid: 'bg-rose-100 text-rose-700 border-rose-200',
+      outline: 'bg-transparent text-rose-600 border-rose-300',
+      gradient: 'bg-gradient-to-r from-rose-100 to-rose-200 text-rose-700 border-rose-200',
+      ghost: 'bg-rose-50 text-rose-600 border-transparent hover:bg-rose-100',
     },
     success: {
       solid: 'bg-emerald-100 text-emerald-700 border-emerald-200',
@@ -89,21 +97,23 @@ const Badge = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-1 font-medium rounded-full border transition-all duration-200 ${
+      className={`inline-flex items-center gap-1.5 font-medium rounded-xl border transition-all duration-300 ${
         sizeStyles[size]
       } ${currentVariantStyles} ${pulse ? 'animate-pulse' : ''} ${
+        animate ? 'hover:scale-105 transform' : ''
+      } ${
         removable ? 'pr-1' : ''
       } ${className}`}
     >
       {icon && <span className="flex-shrink-0">{icon}</span>}
-      <span className="truncate">{text}</span>
+      <span className="truncate font-semibold">{text}</span>
       {removable && (
         <button
           onClick={onRemove}
-          className="flex-shrink-0 ml-1 p-0.5 rounded-full hover:bg-black/10 transition-colors duration-200"
+          className="flex-shrink-0 ml-1 p-1 rounded-xl hover:bg-black/20 transition-all duration-300 group"
           aria-label="Remove badge"
         >
-          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3 h-3 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>

@@ -11,7 +11,7 @@ export const getAllProducts = async () => {
 // 🧠 Get single product by ID
 export const getProductById = async (id) => {
   const res = await axios.get(`${API}/products/${id}`)
-  return res
+  return res.data
 }
 
 // ✍️ Admin: Create new product

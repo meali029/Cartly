@@ -48,9 +48,9 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   return (
     <div className="flex flex-col items-center space-y-4 mt-8">
       {/* Page Info */}
-      <div className="text-sm text-gray-600">
-        Showing page <span className="font-semibold text-gray-900">{currentPage}</span> of{' '}
-        <span className="font-semibold text-gray-900">{totalPages}</span>
+      <div className="text-sm text-slate-600">
+        Showing page <span className="font-semibold text-slate-900">{currentPage}</span> of{' '}
+        <span className="font-semibold text-slate-900">{totalPages}</span>
       </div>
 
       {/* Pagination Controls */}
@@ -59,7 +59,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="hidden sm:flex items-center justify-center w-9 h-9 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors duration-200"
+          className="hidden sm:flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 hover:text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md"
           title="First page"
         >
           <ChevronDoubleLeftIcon className="w-4 h-4" />
@@ -69,7 +69,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="flex items-center justify-center w-9 h-9 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors duration-200"
+          className="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 hover:text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md"
           title="Previous page"
         >
           <ChevronLeftIcon className="w-4 h-4" />
@@ -79,16 +79,16 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         {pages.map((page, index) => (
           <div key={index}>
             {page === '...' ? (
-              <span className="flex items-center justify-center w-9 h-9 text-sm font-medium text-gray-400 bg-white">
+              <span className="flex items-center justify-center w-9 h-9 text-sm font-medium text-slate-400 bg-white">
                 ...
               </span>
             ) : (
               <button
                 onClick={() => onPageChange(page)}
-                className={`flex items-center justify-center w-9 h-9 text-sm font-medium rounded-lg transition-all duration-200 ${
+                className={`flex items-center justify-center w-9 h-9 text-sm font-medium rounded-xl transition-all duration-300 transform hover:scale-105 ${
                   page === currentPage
-                    ? 'text-white bg-indigo-600 shadow-sm'
-                    : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'text-white bg-slate-900 shadow-lg'
+                    : 'text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 hover:text-slate-900 shadow-sm hover:shadow-md'
                 }`}
                 title={`Go to page ${page}`}
               >
@@ -102,7 +102,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="flex items-center justify-center w-9 h-9 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors duration-200"
+          className="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 hover:text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md"
           title="Next page"
         >
           <ChevronRightIcon className="w-4 h-4" />
@@ -112,7 +112,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="hidden sm:flex items-center justify-center w-9 h-9 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors duration-200"
+          className="hidden sm:flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 hover:text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md"
           title="Last page"
         >
           <ChevronDoubleRightIcon className="w-4 h-4" />
@@ -122,13 +122,13 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       {/* Quick Jump (for large datasets) */}
       {totalPages > 10 && (
         <div className="flex items-center space-x-2 text-sm">
-          <span className="text-gray-600">Jump to page:</span>
+          <span className="text-slate-600">Jump to page:</span>
           <input
             type="number"
             min="1"
             max={totalPages}
             placeholder={currentPage}
-            className="w-20 px-3 py-1 text-center text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+            className="w-20 px-3 py-1 text-center text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-300 shadow-sm"
             onKeyPress={(e) => {
               if (e.key === 'Enter') {
                 const page = parseInt(e.target.value)

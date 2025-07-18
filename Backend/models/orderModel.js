@@ -13,11 +13,29 @@ const orderSchema = mongoose.Schema({
         ref: 'Product',
         required: true
       },
+      name: {
+        type: String,
+        required: true
+      },
+      title: {
+        type: String,
+        required: true
+      },
+      price: {
+        type: Number,
+        required: true
+      },
       quantity: {
         type: Number,
         required: true
       },
       size: {
+        type: String
+      },
+      color: {
+        type: String
+      },
+      image: {
         type: String
       }
     }

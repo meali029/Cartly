@@ -158,32 +158,32 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center px-4 py-8">
       <div className="max-w-md w-full">
         {/* Main Login Card */}
         {!showForgotPassword && (
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform hover:shadow-3xl transition-all duration-500">
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
-              <div className="flex items-center justify-center mb-4">
-                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-2xl">
-                  <UserCircleIcon className="w-8 h-8 text-white" />
+            <div className="text-center px-8 py-8">
+              <div className="flex items-center justify-center mb-6">
+                <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
+                  <UserCircleIcon className="w-10 h-10 text-white" />
                 </div>
               </div>
-              <h2 className="text-2xl font-bold text-white text-center">Welcome Back</h2>
-              <p className="text-blue-100 text-center mt-2">Sign in to your Cartly account</p>
+              <h2 className="text-4xl font-bold text-slate-900 mb-2">Welcome Back</h2>
+              <p className="text-slate-600 text-lg">Sign in to your Cartly account</p>
             </div>
 
             {/* Form */}
-            <div className="p-8">
+            <div className="px-8 pb-8">
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 animate-pulse">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <ShieldCheckIcon className="w-5 h-5 text-red-400" />
                     </div>
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-red-800">{error}</p>
+                      <p className="text-sm font-medium text-red-700">{error}</p>
                     </div>
                   </div>
                 </div>
@@ -191,17 +191,17 @@ const Login = () => {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Email Field */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <div className="group">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
                     Email Address
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <EnvelopeIcon className="w-5 h-5 text-gray-400" />
+                      <EnvelopeIcon className="w-5 h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                     </div>
                     <input
                       type="email"
-                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400 text-gray-900"
+                      className="block w-full pl-10 pr-3 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300"
                       placeholder="Enter your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -211,17 +211,17 @@ const Login = () => {
                 </div>
 
                 {/* Password Field */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <div className="group">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
                     Password
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <LockClosedIcon className="w-5 h-5 text-gray-400" />
+                      <LockClosedIcon className="w-5 h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                     </div>
                     <input
                       type={showPassword ? 'text' : 'password'}
-                      className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400 text-gray-900"
+                      className="block w-full pl-10 pr-12 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300"
                       placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -229,13 +229,13 @@ const Login = () => {
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-slate-50 rounded-r-xl transition-colors"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeSlashIcon className="w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                        <EyeSlashIcon className="w-5 h-5 text-slate-400 hover:text-slate-600 transition-colors" />
                       ) : (
-                        <EyeIcon className="w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                        <EyeIcon className="w-5 h-5 text-slate-400 hover:text-slate-600 transition-colors" />
                       )}
                     </button>
                   </div>
@@ -246,7 +246,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setShowForgotPassword(true)}
-                    className="text-sm text-blue-600 hover:text-blue-800 font-medium hover:underline transition-colors"
+                    className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors"
                   >
                     Forgot your password?
                   </button>
@@ -256,7 +256,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+                  className="w-full bg-slate-900 text-white font-semibold py-4 px-6 rounded-xl hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 >
                   {loading ? (
                     <>
@@ -266,7 +266,7 @@ const Login = () => {
                   ) : (
                     <>
                       Sign In
-                      <ArrowRightIcon className="w-5 h-5" />
+                      <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </button>
@@ -274,11 +274,11 @@ const Login = () => {
 
               {/* Register Link */}
               <div className="mt-8 text-center">
-                <p className="text-gray-600">
+                <p className="text-slate-600">
                   Don't have an account?{' '}
                   <Link 
                     to="/register" 
-                    className="font-semibold text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                    className="font-semibold text-slate-900 hover:text-slate-700 transition-colors"
                   >
                     Create one now
                   </Link>
@@ -290,20 +290,20 @@ const Login = () => {
 
         {/* Forgot Password Modal */}
         {showForgotPassword && (
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform hover:shadow-3xl transition-all duration-500">
             {/* Header */}
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-8 py-6">
-              <div className="flex items-center justify-center mb-4">
-                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-2xl">
-                  <LockClosedIcon className="w-8 h-8 text-white" />
+            <div className="text-center px-8 py-8">
+              <div className="flex items-center justify-center mb-6">
+                <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
+                  <LockClosedIcon className="w-10 h-10 text-white" />
                 </div>
               </div>
-              <h2 className="text-2xl font-bold text-white text-center">
+              <h2 className="text-4xl font-bold text-slate-900 mb-2">
                 {forgotPasswordStep === 1 && 'Reset Password'}
                 {forgotPasswordStep === 2 && 'Verify OTP'}
                 {forgotPasswordStep === 3 && 'New Password'}
               </h2>
-              <p className="text-purple-100 text-center mt-2">
+              <p className="text-slate-600 text-lg">
                 {forgotPasswordStep === 1 && 'Enter your email to receive a reset code'}
                 {forgotPasswordStep === 2 && 'Enter the 6-digit code sent to your email'}
                 {forgotPasswordStep === 3 && 'Create a new password for your account'}
@@ -311,15 +311,15 @@ const Login = () => {
             </div>
 
             {/* Form */}
-            <div className="p-8">
+            <div className="px-8 pb-8">
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 animate-pulse">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <ShieldCheckIcon className="w-5 h-5 text-red-400" />
                     </div>
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-red-800">{error}</p>
+                      <p className="text-sm font-medium text-red-700">{error}</p>
                     </div>
                   </div>
                 </div>
@@ -328,17 +328,17 @@ const Login = () => {
               {/* Step 1: Email */}
               {forgotPasswordStep === 1 && (
                 <form onSubmit={handleForgotPasswordSubmit} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <div className="group">
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
                       Email Address
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <EnvelopeIcon className="w-5 h-5 text-gray-400" />
+                        <EnvelopeIcon className="w-5 h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                       </div>
                       <input
                         type="email"
-                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors placeholder-gray-400 text-gray-900"
+                        className="block w-full pl-10 pr-3 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300"
                         placeholder="Enter your email address"
                         value={forgotEmail}
                         onChange={(e) => setForgotEmail(e.target.value)}
@@ -351,14 +351,14 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={resetForgotPassword}
-                      className="flex-1 bg-gray-100 text-gray-700 font-semibold py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors"
+                      className="flex-1 bg-slate-100 text-slate-700 font-semibold py-3 px-4 rounded-xl hover:bg-slate-200 transition-all duration-300 transform hover:scale-105"
                     >
                       Back to Login
                     </button>
                     <button
                       type="submit"
                       disabled={forgotPasswordLoading}
-                      className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+                      className="flex-1 bg-slate-900 text-white font-semibold py-3 px-4 rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl"
                     >
                       {forgotPasswordLoading ? (
                         <>
@@ -377,19 +377,19 @@ const Login = () => {
               {forgotPasswordStep === 2 && (
                 <form onSubmit={handleOTPVerification} className="space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
                       Verification Code
                     </label>
                     <input
                       type="text"
                       maxLength="6"
-                      className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors placeholder-gray-400 text-gray-900 text-center text-lg font-mono tracking-widest"
+                      className="block w-full px-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 text-center text-lg font-mono tracking-widest hover:border-slate-300"
                       placeholder="000000"
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
                       required
                     />
-                    <p className="text-xs text-gray-500 mt-2 text-center">
+                    <p className="text-xs text-slate-500 mt-2 text-center">
                       Code sent to {forgotEmail}
                     </p>
                   </div>
@@ -398,14 +398,14 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={() => setForgotPasswordStep(1)}
-                      className="flex-1 bg-gray-100 text-gray-700 font-semibold py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors"
+                      className="flex-1 bg-slate-100 text-slate-700 font-semibold py-3 px-4 rounded-xl hover:bg-slate-200 transition-all duration-300 transform hover:scale-105"
                     >
                       Back
                     </button>
                     <button
                       type="submit"
                       disabled={forgotPasswordLoading}
-                      className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+                      className="flex-1 bg-slate-900 text-white font-semibold py-3 px-4 rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl"
                     >
                       {forgotPasswordLoading ? (
                         <>
@@ -423,17 +423,17 @@ const Login = () => {
               {/* Step 3: New Password */}
               {forgotPasswordStep === 3 && (
                 <form onSubmit={handlePasswordReset} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <div className="group">
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
                       New Password
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <LockClosedIcon className="w-5 h-5 text-gray-400" />
+                        <LockClosedIcon className="w-5 h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                       </div>
                       <input
                         type="password"
-                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors placeholder-gray-400 text-gray-900"
+                        className="block w-full pl-10 pr-3 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300"
                         placeholder="Enter new password"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
@@ -442,17 +442,17 @@ const Login = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <div className="group">
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
                       Confirm Password
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <LockClosedIcon className="w-5 h-5 text-gray-400" />
+                        <LockClosedIcon className="w-5 h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                       </div>
                       <input
                         type="password"
-                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors placeholder-gray-400 text-gray-900"
+                        className="block w-full pl-10 pr-3 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300"
                         placeholder="Confirm new password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -465,14 +465,14 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={() => setForgotPasswordStep(2)}
-                      className="flex-1 bg-gray-100 text-gray-700 font-semibold py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors"
+                      className="flex-1 bg-slate-100 text-slate-700 font-semibold py-3 px-4 rounded-xl hover:bg-slate-200 transition-all duration-300 transform hover:scale-105"
                     >
                       Back
                     </button>
                     <button
                       type="submit"
                       disabled={forgotPasswordLoading}
-                      className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+                      className="flex-1 bg-slate-900 text-white font-semibold py-3 px-4 rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl"
                     >
                       {forgotPasswordLoading ? (
                         <>

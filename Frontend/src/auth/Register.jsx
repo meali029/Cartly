@@ -174,30 +174,30 @@ const Register = () => {
   // Email verification step
   if (verificationStep) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center px-4 py-8">
         <div className="max-w-md w-full">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform hover:shadow-3xl transition-all duration-500">
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
-              <div className="flex items-center justify-center mb-4">
-                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-2xl">
-                  <EnvelopeIcon className="w-8 h-8 text-white" />
+            <div className="text-center px-8 py-8">
+              <div className="flex items-center justify-center mb-6">
+                <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
+                  <EnvelopeIcon className="w-10 h-10 text-white" />
                 </div>
               </div>
-              <h2 className="text-2xl font-bold text-white text-center">Verify Your Email</h2>
-              <p className="text-blue-100 text-center mt-2">Enter the code sent to {formData.email}</p>
+              <h2 className="text-4xl font-bold text-slate-900 mb-2">Verify Your Email</h2>
+              <p className="text-slate-600 text-lg">Enter the code sent to {formData.email}</p>
             </div>
 
             {/* Verification Form */}
-            <div className="p-8">
+            <div className="px-8 pb-8">
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 animate-pulse">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <ShieldCheckIcon className="w-5 h-5 text-red-400" />
                     </div>
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-red-800">{error}</p>
+                      <p className="text-sm font-medium text-red-700">{error}</p>
                     </div>
                   </div>
                 </div>
@@ -206,19 +206,19 @@ const Register = () => {
               <form onSubmit={handleVerifyOTP} className="space-y-6">
                 {/* OTP Input */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
                     Verification Code
                   </label>
                   <input
                     type="text"
-                    className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors placeholder-gray-400 text-gray-900 text-center text-xl font-mono tracking-widest"
+                    className="block w-full px-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 text-center text-xl font-mono tracking-widest hover:border-slate-300"
                     placeholder="000000"
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value)}
                     maxLength="6"
                     required
                   />
-                  <p className="text-xs text-gray-500 mt-2 text-center">
+                  <p className="text-xs text-slate-500 mt-2 text-center">
                     Enter the 6-digit code from your email
                   </p>
                 </div>
@@ -227,7 +227,7 @@ const Register = () => {
                 <button
                   type="submit"
                   disabled={loading || otpCode.length !== 6}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-slate-900 text-white py-4 px-6 rounded-xl font-semibold hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 >
                   {loading ? (
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -241,11 +241,11 @@ const Register = () => {
 
                 {/* Resend OTP */}
                 <div className="text-center">
-                  <p className="text-sm text-gray-600 mb-2">
+                  <p className="text-sm text-slate-600 mb-2">
                     Didn't receive the code?
                   </p>
                   {countdown > 0 ? (
-                    <p className="text-sm text-gray-500 flex items-center justify-center gap-1">
+                    <p className="text-sm text-slate-500 flex items-center justify-center gap-1">
                       <ClockIcon className="w-4 h-4" />
                       Resend in {countdown}s
                     </p>
@@ -254,7 +254,7 @@ const Register = () => {
                       type="button"
                       onClick={handleResendOTP}
                       disabled={resendingOtp}
-                      className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                      className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors"
                     >
                       {resendingOtp ? 'Sending...' : 'Resend Code'}
                     </button>
@@ -269,30 +269,30 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center px-4 py-8">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform hover:shadow-3xl transition-all duration-500">
           {/* Header */}
-          <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-8 py-6">
-            <div className="flex items-center justify-center mb-4">
-              <div className="bg-white/20 backdrop-blur-sm p-3 rounded-2xl">
-                <UserPlusIcon className="w-8 h-8 text-white" />
+          <div className="text-center px-8 py-8">
+            <div className="flex items-center justify-center mb-6">
+              <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
+                <UserPlusIcon className="w-10 h-10 text-white" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-white text-center">Join Cartly</h2>
-            <p className="text-green-100 text-center mt-2">Create your account to get started</p>
+            <h2 className="text-4xl font-bold text-slate-900 mb-2">Join Cartly</h2>
+            <p className="text-slate-600 text-lg">Create your account to get started</p>
           </div>
 
           {/* Form */}
-          <div className="p-8">
+          <div className="px-8 pb-8">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 animate-pulse">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <ShieldCheckIcon className="w-5 h-5 text-red-400" />
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-red-800">{error}</p>
+                    <p className="text-sm font-medium text-red-700">{error}</p>
                   </div>
                 </div>
               </div>
@@ -300,18 +300,18 @@ const Register = () => {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Field */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <div className="group">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
                   Full Name
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <UserIcon className="w-5 h-5 text-gray-400" />
+                    <UserIcon className="w-5 h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                   </div>
                   <input
                     name="name"
                     type="text"
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors placeholder-gray-400 text-gray-900"
+                    className="block w-full pl-10 pr-3 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300"
                     placeholder="Enter your full name"
                     value={formData.name}
                     onChange={handleChange}
@@ -325,18 +325,18 @@ const Register = () => {
               </div>
 
               {/* Email Field */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <div className="group">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
                   Email Address
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <EnvelopeIcon className="w-5 h-5 text-gray-400" />
+                    <EnvelopeIcon className="w-5 h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                   </div>
                   <input
                     name="email"
                     type="email"
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors placeholder-gray-400 text-gray-900"
+                    className="block w-full pl-10 pr-3 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300"
                     placeholder="Enter your email address"
                     value={formData.email}
                     onChange={handleChange}
@@ -350,18 +350,18 @@ const Register = () => {
               </div>
 
               {/* Password Field */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <div className="group">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
                   Password
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <LockClosedIcon className="w-5 h-5 text-gray-400" />
+                    <LockClosedIcon className="w-5 h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                   </div>
                   <input
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors placeholder-gray-400 text-gray-900"
+                    className="block w-full pl-10 pr-12 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300"
                     placeholder="Create a password"
                     value={formData.password}
                     onChange={handleChange}
@@ -370,20 +370,20 @@ const Register = () => {
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-slate-50 rounded-r-xl transition-colors"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeSlashIcon className="w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                      <EyeSlashIcon className="w-5 h-5 text-slate-400 hover:text-slate-600 transition-colors" />
                     ) : (
-                      <EyeIcon className="w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                      <EyeIcon className="w-5 h-5 text-slate-400 hover:text-slate-600 transition-colors" />
                     )}
                   </button>
                 </div>
                 {formData.password && (
                   <div className="mt-2">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs text-gray-500">Password strength:</span>
+                      <span className="text-xs text-slate-500">Password strength:</span>
                       <span className={`text-xs font-medium ${
                         passwordStrength.strength <= 2 ? 'text-red-500' : 
                         passwordStrength.strength <= 4 ? 'text-yellow-500' : 
@@ -403,31 +403,31 @@ const Register = () => {
                                 : passwordStrength.strength <= 4
                                 ? 'bg-yellow-500'
                                 : 'bg-green-500'
-                              : 'bg-gray-200'
+                              : 'bg-slate-200'
                           }`}
                         />
                       ))}
                     </div>
                   </div>
                 )}
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-xs text-slate-500 mt-2">
                   Password must be at least 6 characters long
                 </p>
               </div>
 
               {/* Confirm Password Field */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <div className="group">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
                   Confirm Password
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <LockClosedIcon className="w-5 h-5 text-gray-400" />
+                    <LockClosedIcon className="w-5 h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                   </div>
                   <input
                     name="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
-                    className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors placeholder-gray-400 text-gray-900"
+                    className="block w-full pl-10 pr-12 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300"
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
@@ -436,13 +436,13 @@ const Register = () => {
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-slate-50 rounded-r-xl transition-colors"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
-                      <EyeSlashIcon className="w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                      <EyeSlashIcon className="w-5 h-5 text-slate-400 hover:text-slate-600 transition-colors" />
                     ) : (
-                      <EyeIcon className="w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                      <EyeIcon className="w-5 h-5 text-slate-400 hover:text-slate-600 transition-colors" />
                     )}
                   </button>
                 </div>
@@ -455,7 +455,7 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full bg-slate-900 text-white py-4 px-6 rounded-xl font-semibold hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 {loading ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -470,9 +470,9 @@ const Register = () => {
 
             {/* Login Link */}
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-slate-600">
                 Already have an account?{' '}
-                <Link to="/login" className="text-green-600 hover:text-green-700 font-medium transition-colors">
+                <Link to="/login" className="text-slate-900 hover:text-slate-700 font-medium transition-colors">
                   Sign in here
                 </Link>
               </p>

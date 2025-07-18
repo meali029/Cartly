@@ -109,24 +109,24 @@ const AddressMap = ({ onLocationSelect, selectedCity }) => {
       <button
         onClick={getCurrentLocation}
         disabled={isLoading}
-        className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${
+        className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform ${
           isLoading
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-green-600 text-white hover:bg-green-700'
+            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            : 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2'
         }`}
       >
         {isLoading ? (
-          <div className="flex items-center justify-center gap-2">
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            <span>Getting Location...</span>
+          <div className="flex items-center justify-center gap-3">
+            <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+            <span>Getting Your Location...</span>
           </div>
         ) : (
-          <div className="flex items-center justify-center gap-2">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex items-center justify-center gap-3">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span>Use Current Location</span>
+            <span>📍 Use My Current Location</span>
           </div>
         )}
       </button>
@@ -156,9 +156,19 @@ const AddressMap = ({ onLocationSelect, selectedCity }) => {
       )}
 
       {/* Info */}
-      <div className="mt-4 text-xs text-gray-500">
-        <p>🛡️ We only deliver within Pakistan for security and quality assurance.</p>
-        <p>📍 Location verification helps ensure accurate delivery.</p>
+      <div className="mt-4 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+        <div className="flex items-start space-x-2">
+          <div className="flex-shrink-0">
+            <svg className="w-5 h-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-blue-800">🛡️ Secure Pakistan-Only Delivery</p>
+            <p className="text-xs text-blue-700">We only deliver within Pakistan for security and quality assurance.</p>
+            <p className="text-xs text-blue-700">📍 Location verification helps ensure accurate delivery to your doorstep.</p>
+          </div>
+        </div>
       </div>
     </div>
   )

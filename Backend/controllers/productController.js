@@ -2,29 +2,45 @@ const Product = require('../models/productModel');
 
 // @desc    Get all products
 const getAllProducts = async (req, res) => {
-  const { category, minPrice, maxPrice } = req.query
-const { size } = req.query
-
-if (size) {
-  filter.size = size // Assumes product.size is an array like ['M', 'L']
-}
-
-const filter = {}
-
-if (category) filter.category = category
-if (minPrice && maxPrice) {
-  filter.price = { $gte: minPrice, $lte: maxPrice }
-}
-let sortBy = {}
-
-if (req.query.sort === 'priceAsc') sortBy.price = 1
-if (req.query.sort === 'priceDesc') sortBy.price = -1
-if (req.query.sort === 'newest') sortBy.createdAt = -1
-if (req.query.sort === 'az') sortBy.title = 1
-
-const products = await Product.find(filter).sort(sortBy)
-
-  res.json(products);
+  try {
+    const { category, minPrice, maxPrice, size, sort, page = 1, limit = 12 } = req.query
+    
+    const filter = {}
+    
+    if (category) filter.category = category
+    if (minPrice && maxPrice) {
+      filter.price = { $gte: Number(minPrice), $lte: Number(maxPrice) }
+    }
+    if (size) {
+      filter.size = { $in: [size] } // Check if size is in the array
+    }
+    
+    let sortBy = {}
+    
+    if (sort === 'priceAsc') sortBy.price = 1
+    if (sort === 'priceDesc') sortBy.price = -1
+    if (sort === 'newest') sortBy.createdAt = -1
+    if (sort === 'az') sortBy.title = 1
+    
+    const skip = (Number(page) - 1) * Number(limit)
+    
+    const products = await Product.find(filter)
+      .sort(sortBy)
+      .skip(skip)
+      .limit(Number(limit))
+    
+    const totalProducts = await Product.countDocuments(filter)
+    const totalPages = Math.ceil(totalProducts / Number(limit))
+    
+    res.json({
+      products,
+      totalPages,
+      currentPage: Number(page),
+      totalProducts
+    })
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch products', error: err.message })
+  }
 };
 
 

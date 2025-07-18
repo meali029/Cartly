@@ -25,17 +25,17 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center">
         <div className="max-w-md w-full mx-4">
-          <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-            <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-              <UserCircleIcon className="w-8 h-8 text-gray-400" />
+          <div className="bg-white rounded-3xl shadow-2xl p-8 text-center transform hover:shadow-3xl transition-all duration-500">
+            <div className="bg-slate-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+              <UserCircleIcon className="w-8 h-8 text-slate-400" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-3">Access Required</h1>
-            <p className="text-gray-600 mb-6">Please log in to view your profile and manage your account.</p>
+            <h1 className="text-3xl font-bold text-slate-900 mb-3">Access Required</h1>
+            <p className="text-slate-600 mb-6">Please log in to view your profile and manage your account.</p>
             <Link 
               to="/login" 
-              className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+              className="inline-flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-slate-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               Go to Login
               <ArrowRightIcon className="w-4 h-4" />
@@ -305,24 +305,24 @@ const Profile = () => {
 
   // Regular user profile
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Profile Header */}
-        <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 mb-8 overflow-hidden">
+        {/* Professional Profile Header */}
+        <div className="relative bg-gradient-to-r from-slate-600 to-slate-800 rounded-3xl p-8 mb-8 overflow-hidden shadow-2xl">
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full transform translate-x-32 -translate-y-32"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full transform -translate-x-24 translate-y-24"></div>
           
           <div className="relative z-10">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl">
+              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
                 <UserCircleIcon className="w-16 h-16 text-white" />
               </div>
               <div className="flex-1">
-                <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
+                <h1 className="text-4xl lg:text-5xl font-bold text-white mb-2">
                   Welcome back, {user.name}!
                 </h1>
-                <p className="text-blue-100 text-lg">
+                <p className="text-slate-100 text-lg">
                   Manage your account and track your orders
                 </p>
               </div>
@@ -334,48 +334,48 @@ const Profile = () => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Profile Information */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b border-gray-100">
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  <IdentificationIcon className="w-5 h-5 text-blue-600" />
+            <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden transform hover:shadow-2xl transition-all duration-500">
+              <div className="bg-gradient-to-r from-slate-50 to-gray-50 px-6 py-4 border-b border-slate-200">
+                <h2 className="text-xl font-semibold text-slate-900 flex items-center gap-2">
+                  <IdentificationIcon className="w-5 h-5 text-slate-600" />
                   Profile Information
                 </h2>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                    <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
                       <UserCircleIcon className="w-4 h-4" />
                       Full Name
                     </div>
-                    <p className="text-gray-900 font-medium text-lg">{user.name}</p>
+                    <p className="text-slate-900 font-medium text-lg">{user.name}</p>
                   </div>
                   
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                    <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
                       <EnvelopeIcon className="w-4 h-4" />
                       Email Address
                     </div>
-                    <p className="text-gray-900">{user.email}</p>
+                    <p className="text-slate-900">{user.email}</p>
                   </div>
                   
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                    <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
                       <ShieldCheckIcon className="w-4 h-4" />
                       Account Type
                     </div>
-                    <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                    <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-800 px-3 py-1 rounded-full text-sm font-medium">
                       <UserCircleIcon className="w-3 h-3" />
                       Customer
                     </span>
                   </div>
                   
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                    <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
                       <CalendarDaysIcon className="w-4 h-4" />
                       Member Since
                     </div>
-                    <p className="text-gray-900">
+                    <p className="text-slate-900">
                       {new Date().toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -386,11 +386,11 @@ const Profile = () => {
                 </div>
               </div>
               
-              {/* Logout Button */}
-              <div className="border-t border-gray-100 pt-6">
+              {/* Professional Logout Button */}
+              <div className="border-t border-slate-200 px-6 pb-6 pt-6">
                 <button
                   onClick={logout}
-                  className="w-full group flex items-center justify-center gap-3 px-4 py-3 bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100 hover:text-red-700 transition-all duration-300"
+                  className="w-full group flex items-center justify-center gap-3 px-4 py-3 bg-red-50 text-red-600 rounded-xl border border-red-200 hover:bg-red-100 hover:text-red-700 transition-all duration-300 transform hover:scale-105"
                 >
                   <ArrowRightOnRectangleIcon className="h-5 w-5" />
                   <span className="font-medium">Sign Out</span>
@@ -398,11 +398,11 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Order History Section */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b border-gray-100">
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  <DocumentTextIcon className="w-5 h-5 text-blue-600" />
+            {/* Professional Order History Section */}
+            <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden transform hover:shadow-2xl transition-all duration-500">
+              <div className="bg-gradient-to-r from-slate-50 to-gray-50 px-6 py-4 border-b border-slate-200">
+                <h2 className="text-xl font-semibold text-slate-900 flex items-center gap-2">
+                  <DocumentTextIcon className="w-5 h-5 text-slate-600" />
                   Order History
                 </h2>
               </div>
@@ -412,17 +412,17 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Professional Sidebar */}
           <div className="space-y-6">
             {/* Shopping Tips */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
+            <div className="bg-gradient-to-br from-slate-50 to-gray-50 border border-slate-200 rounded-3xl p-6 transform hover:shadow-lg transition-all duration-300">
               <div className="flex items-start gap-3">
-                <div className="bg-blue-500 p-2 rounded-lg">
+                <div className="bg-slate-600 p-2 rounded-xl">
                   <StarIcon className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-blue-800 mb-1">Shopping Tips</h3>
-                  <p className="text-sm text-blue-700">
+                  <h3 className="text-sm font-medium text-slate-800 mb-1">Shopping Tips</h3>
+                  <p className="text-sm text-slate-700">
                     Get free shipping on orders over PKR 5,000. Add more items to your cart to qualify!
                   </p>
                 </div>

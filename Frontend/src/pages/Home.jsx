@@ -2,6 +2,15 @@ import { Link } from 'react-router-dom'
 import ProductGrid from '../components/product/ProductGrid'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { 
+  ArrowRightIcon, 
+  TruckIcon, 
+  ShieldCheckIcon, 
+  CurrencyDollarIcon,
+  UserIcon,
+  HeartIcon,
+  SparklesIcon
+} from '@heroicons/react/24/outline'
 
 
 const Home = () => {
@@ -9,36 +18,38 @@ const Home = () => {
   const [womenProducts, setWomenProducts] = useState([])
   const [kidsProducts, setKidsProducts] = useState([])
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Hero carousel images
+  // Modern hero carousel images with professional themes
   const heroImages = [
     {
       url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      title: 'Premium Fashion Collection',
-      subtitle: 'Discover the latest trends in fashion'
+      title: 'Premium Fashion',
+      subtitle: 'Discover timeless elegance',
+      cta: 'Explore Collection',
+      link: '/men'
     },
     {
       url: 'https://images.unsplash.com/photo-1445205170230-053b83016050?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
-      title: 'Style for Everyone',
-      subtitle: 'Men, Women & Kids Collections'
+      title: 'Style Redefined',
+      subtitle: 'For every member of your family',
+      cta: 'Shop Now',
+      link: '/women'
     },
     {
       url: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
       title: 'Express Delivery',
-      subtitle: 'Fast delivery across Pakistan'
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      title: 'Cash on Delivery',
-      subtitle: 'Shop with confidence - Pay on delivery'
+      subtitle: 'Fast & reliable shipping',
+      cta: 'Learn More',
+      link: '/men'
     }
   ]
 
-  // Auto-slide carousel
+  // Auto-slide carousel with smooth transitions
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroImages.length)
-    }, 4000) // Change slide every 4 seconds
+    }, 5000) // Change slide every 5 seconds
 
     return () => clearInterval(slideInterval)
   }, [heroImages.length])
@@ -46,9 +57,10 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const resMen = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/products?category=men&limit=3`)
-        const resWomen = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/products?category=women&limit=3`)
-        const resKids = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/products?category=kids&limit=3`)
+        // Fetch 4 products for each category
+        const resMen = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/products?category=men&limit=4`)
+        const resWomen = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/products?category=women&limit=4`)
+        const resKids = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/products?category=kids&limit=4`)
 
         setMenProducts(resMen.data.products || resMen.data)
         setWomenProducts(resWomen.data.products || resWomen.data)
@@ -62,210 +74,193 @@ const Home = () => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Carousel */}
-      <div className="relative h-96 md:h-[500px] overflow-hidden rounded-b-3xl">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
+      {/* Modern Hero Carousel */}
+      <div className="relative h-[70vh] md:h-[80vh] overflow-hidden">
         <div 
-          className="flex transition-transform duration-1000 ease-in-out h-full"
+          className="flex transition-all duration-1000 ease-out h-full"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
           {heroImages.map((image, index) => (
             <div
               key={index}
-              className="min-w-full h-full relative"
-              style={{
-                backgroundImage: `url(${image.url})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center'
-              }}
+              className="min-w-full h-full relative group"
             >
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+              {/* Background Image with Parallax Effect */}
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-3000 group-hover:scale-105"
+                style={{ backgroundImage: `url(${image.url})` }}
+              />
               
-              {/* Content */}
-              <div className="absolute inset-0 flex items-center justify-center text-center text-white">
-                <div className="max-w-4xl px-4">
-                  <h1 className="text-4xl md:text-6xl font-bold mb-4 animate-fade-in">
-                    {image.title}
-                  </h1>
-                  <p className="text-lg md:text-xl mb-8 animate-fade-in-delay">
-                    {image.subtitle}
-                  </p>
-                  <Link 
-                    to="/men"
-                    className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105"
-                  >
-                    Shop Now
-                  </Link>
+              {/* Modern Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 via-slate-800/50 to-transparent"></div>
+              
+              {/* Content with Advanced Animations */}
+              <div className="absolute inset-0 flex items-center">
+                <div className="container mx-auto px-6 lg:px-12">
+                  <div className="max-w-2xl">
+                    <div className={`transform transition-all duration-1000 delay-300 ${
+                      index === currentSlide 
+                        ? 'translate-y-0 opacity-100' 
+                        : 'translate-y-8 opacity-0'
+                    }`}>
+                      <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+                        {image.title}
+                      </h1>
+                      <p className="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed ml-9">
+                        {image.subtitle}
+                      </p>
+                      <Link 
+                        to={image.link}
+                        className="group inline-flex items-center gap-3 bg-white text-slate-900 px-8 py-4 rounded-full text-lg font-semibold hover:bg-slate-100 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
+                      >
+                        {image.cta}
+                        <ArrowRightIcon className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Carousel Indicators */}
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        {/* Modern Carousel Indicators */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
           {heroImages.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentSlide ? 'bg-white' : 'bg-white bg-opacity-50'
+              className={`transition-all duration-300 ${
+                index === currentSlide 
+                  ? 'w-12 h-3 bg-white rounded-full' 
+                  : 'w-3 h-3 bg-white/50 rounded-full hover:bg-white/70'
               }`}
             />
           ))}
         </div>
 
-        {/* Navigation Arrows */}
+        {/* Modern Navigation Arrows */}
         <button
           onClick={() => setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length)}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-all duration-300"
+          className="absolute left-6 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-full transition-all duration-300 flex items-center justify-center group"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+          <ArrowRightIcon className="w-6 h-6 rotate-180 transition-transform group-hover:-translate-x-1" />
         </button>
         <button
           onClick={() => setCurrentSlide((prev) => (prev + 1) % heroImages.length)}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-all duration-300"
+          className="absolute right-6 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-full transition-all duration-300 flex items-center justify-center group"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+          <ArrowRightIcon className="w-6 h-6 transition-transform group-hover:translate-x-1" />
         </button>
       </div>
 
-      {/* Features Section */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <div className="text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-              </svg>
+      {/* Modern Features Section */}
+      <div className="container mx-auto px-6 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+          <div className="group text-center p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+            <div className="w-20 h-20 bg-gradient-to-br from-slate-600 to-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+              <CurrencyDollarIcon className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Cash on Delivery</h3>
-            <p className="text-gray-600">Pay when you receive your order. No advance payment required.</p>
+            <h3 className="text-xl font-bold text-slate-900 mb-3">Cash on Delivery</h3>
+            <p className="text-slate-600 leading-relaxed">Pay when you receive your order. Shop with complete confidence and zero risk.</p>
           </div>
           
-          <div className="text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+          <div className="group text-center p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+            <div className="w-20 h-20 bg-gradient-to-br from-slate-600 to-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+              <TruckIcon className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Fast Delivery</h3>
-            <p className="text-gray-600">Quick delivery across Pakistan within 2-5 business days.</p>
+            <h3 className="text-xl font-bold text-slate-900 mb-3">Express Delivery</h3>
+            <p className="text-slate-600 leading-relaxed">Lightning-fast delivery across Pakistan. Get your orders within 2-3 business days.</p>
           </div>
           
-          <div className="text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+          <div className="group text-center p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+            <div className="w-20 h-20 bg-gradient-to-br from-slate-600 to-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+              <ShieldCheckIcon className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Quality Products</h3>
-            <p className="text-gray-600">Curated collection of premium quality fashion items.</p>
+            <h3 className="text-xl font-bold text-slate-900 mb-3">Premium Quality</h3>
+            <p className="text-slate-600 leading-relaxed">Carefully curated collection of authentic, high-quality fashion items.</p>
           </div>
         </div>
 
-        {/* Product Sections */}
-        <div className="space-y-16">
+        {/* Modern Product Sections */}
+        <div className="space-y-20">
           {/* Men's Collection */}
-          <section>
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">👔 Men's Collection</h2>
-                <p className="text-gray-600">Discover the latest trends in men's fashion</p>
+          <section className="group">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+              <div className="flex items-center gap-4 mb-4 md:mb-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-slate-600 to-slate-700 rounded-xl flex items-center justify-center">
+                  <UserIcon className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-1">Men's Collection</h2>
+                  <p className="text-slate-600">Discover sophisticated style for the modern gentleman</p>
+                </div>
               </div>
               <Link 
                 to="/men" 
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full text-sm font-semibold transition-colors duration-300"
+                className="group inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 View All
+                <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
-            <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="bg-white rounded-3xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-500">
               <ProductGrid products={menProducts} />
             </div>
           </section>
 
           {/* Women's Collection */}
-          <section>
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">👗 Women's Collection</h2>
-                <p className="text-gray-600">Elegant styles for the modern woman</p>
+          <section className="group">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+              <div className="flex items-center gap-4 mb-4 md:mb-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-slate-600 to-slate-700 rounded-xl flex items-center justify-center">
+                  <HeartIcon className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-1">Women's Collection</h2>
+                  <p className="text-slate-600">Elegant fashion for the confident woman</p>
+                </div>
               </div>
               <Link 
                 to="/women" 
-                className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-full text-sm font-semibold transition-colors duration-300"
+                className="group inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 View All
+                <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
-            <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="bg-white rounded-3xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-500">
               <ProductGrid products={womenProducts} />
             </div>
           </section>
 
           {/* Kids Collection */}
-          <section>
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">🧒 Kids Collection</h2>
-                <p className="text-gray-600">Comfortable and stylish clothes for little ones</p>
+          <section className="group">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+              <div className="flex items-center gap-4 mb-4 md:mb-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-slate-600 to-slate-700 rounded-xl flex items-center justify-center">
+                  <SparklesIcon className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-1">Kids Collection</h2>
+                  <p className="text-slate-600">Comfortable and playful styles for little ones</p>
+                </div>
               </div>
               <Link 
                 to="/kids" 
-                className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-full text-sm font-semibold transition-colors duration-300"
+                className="group inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 View All
+                <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
-            <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="bg-white rounded-3xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-500">
               <ProductGrid products={kidsProducts} />
             </div>
           </section>
         </div>
-
-        {/* Newsletter Section */}
-        <section className="mt-20 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-8 md:p-12 text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
-          <p className="text-lg mb-8 opacity-90">Get the latest fashion trends and exclusive offers delivered to your inbox</p>
-          <div className="max-w-md mx-auto flex gap-4">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-3 rounded-full text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
-            />
-            <button className="bg-white text-indigo-600 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-300">
-              Subscribe
-            </button>
-          </div>
-        </section>
       </div>
-
-      {/* Custom CSS for animations */}
-      <style jsx>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes fade-in-delay {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fade-in {
-          animation: fade-in 1s ease-out;
-        }
-        
-        .animate-fade-in-delay {
-          animation: fade-in-delay 1s ease-out 0.3s both;
-        }
-      `}</style>
     </div>
   )
 }

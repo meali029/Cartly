@@ -41,7 +41,7 @@ const placeOrder = async (req, res) => {
 // @desc Get orders of a user
 const getUserOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.params.userId }).populate('items.productId', 'title price');
+    const orders = await Order.find({ userId: req.params.userId }).populate('items.productId', 'title name price image description category sizes colors');
     res.json(orders);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching user orders' });
@@ -51,7 +51,7 @@ const getUserOrders = async (req, res) => {
 // @desc Get all orders (admin only)
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate('userId', 'name email');
+    const orders = await Order.find().populate('userId', 'name email').populate('items.productId', 'title name price image description category sizes colors');
     res.json(orders);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching orders' });

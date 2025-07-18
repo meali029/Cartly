@@ -37,37 +37,37 @@ const SizeFilter = ({ selectedSize, onChange }) => {
     }
   ]
 
-  const allSizes = sizeCategories.flatMap(cat => cat.sizes)
+  // const allSizes = sizeCategories.flatMap(cat => cat.sizes)
 
   // Helper: is a size currently selected?
   const isSelected = (val) => selectedSize === val
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden transform hover:shadow-2xl transition-all duration-500">
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
+        className="w-full px-4 py-4 text-left flex items-center justify-between hover:bg-slate-50 transition-all duration-300"
       >
-        <div className="flex items-center space-x-2">
-          <div className="flex items-center justify-center w-7 h-7 bg-gradient-to-r from-pink-500 to-rose-600 rounded-lg text-white">
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-slate-600 to-slate-800 rounded-xl text-white shadow-lg transform hover:scale-110 transition-all duration-300">
             <RectangleStackIcon className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-gray-900">Size</h3>
-            <p className="text-xs text-gray-500">
+            <h3 className="text-lg font-semibold text-slate-900">Size</h3>
+            <p className="text-sm text-slate-600">
               {selectedSize ? `Selected: ${selectedSize}` : 'All sizes'}
             </p>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3">
           {selectedSize && (
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
               1 selected
             </span>
           )}
           <ChevronDownIcon
-            className={`w-5 h-5 text-gray-400 transform transition-transform duration-200 ${
+            className={`w-4 h-4 text-slate-400 transform transition-transform duration-300 ${
               isExpanded ? 'rotate-180' : ''
             }`}
           />
@@ -78,12 +78,12 @@ const SizeFilter = ({ selectedSize, onChange }) => {
       {isExpanded && (
         <div className="px-4 pb-4 max-h-64 overflow-y-auto transition-all duration-300">
           {/* Quick Actions */}
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
-              <span className="text-xs text-gray-600">Quick select:</span>
+              <span className="text-sm text-slate-600">Quick select:</span>
               <button
                 onClick={() => onChange('M')}
-                className={`text-xs px-2 py-1 rounded-md transition-colors focus:outline-none ${isSelected('M') ? 'bg-indigo-100 text-indigo-700 font-bold' : 'bg-gray-100 hover:bg-indigo-100'}`}
+                className={`text-sm px-3 py-1 rounded-xl transition-all duration-300 focus:outline-none transform hover:scale-105 ${isSelected('M') ? 'bg-slate-100 text-slate-700 font-bold' : 'bg-slate-50 hover:bg-slate-100'}`}
                 aria-pressed={isSelected('M')}
               >
                 Most Popular (M)
@@ -92,19 +92,19 @@ const SizeFilter = ({ selectedSize, onChange }) => {
             {selectedSize && (
               <button
                 onClick={() => onChange(null)}
-                className="text-xs text-red-600 hover:text-white hover:bg-red-500 font-medium flex items-center space-x-1 px-2 py-1 rounded transition-colors"
+                className="text-sm text-red-600 hover:text-white hover:bg-red-500 font-medium flex items-center space-x-1 px-3 py-1 rounded-xl transition-all duration-300 transform hover:scale-105"
                 aria-label="Clear size selection"
               >
-                <XMarkIcon className="w-4 h-4" />
+                <XMarkIcon className="w-3 h-3" />
                 <span>Clear</span>
               </button>
             )}
           </div>
 
           {/* Standard Sizes */}
-          <div className="mb-2">
-            <h4 className="text-xs font-semibold text-gray-500 mb-1 flex items-center uppercase tracking-wide">
-              <span className="w-2 h-2 bg-gray-300 rounded-full mr-2"></span>
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-slate-600 mb-3 flex items-center uppercase tracking-wide">
+              <span className="w-2 h-2 bg-slate-300 rounded-full mr-2"></span>
               Standard Sizes
             </h4>
             <div className="grid grid-cols-3 gap-2">
@@ -112,18 +112,18 @@ const SizeFilter = ({ selectedSize, onChange }) => {
                 <button
                   key={size.value}
                   onClick={() => onChange(size.value)}
-                  className={`relative group p-2 rounded-lg border-2 transition-all duration-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 ${
+                  className={`relative group p-3 rounded-xl border-2 transition-all duration-300 text-center focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transform hover:scale-105 ${
                     isSelected(size.value)
-                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700 scale-105 shadow-md'
-                      : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-sm'
+                      ? 'border-slate-600 bg-slate-50 text-slate-700 scale-105 shadow-lg'
+                      : 'border-slate-200 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50 hover:shadow-md'
                   }`}
                   title={size.description}
                   aria-pressed={isSelected(size.value)}
                 >
-                  <div className="font-semibold text-xs">{size.label}</div>
-                  <div className="text-[10px] text-gray-400 mt-1">{size.description}</div>
+                  <div className="font-semibold text-sm">{size.label}</div>
+                  <div className="text-xs text-slate-400 mt-1">{size.description}</div>
                   {isSelected(size.value) && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-indigo-500 rounded-full flex items-center justify-center">
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-slate-600 rounded-full flex items-center justify-center">
                       <CheckIcon className="w-3 h-3 text-white" />
                     </div>
                   )}
@@ -136,15 +136,15 @@ const SizeFilter = ({ selectedSize, onChange }) => {
           <div>
             <button
               onClick={() => setShowNumeric((v) => !v)}
-              className="text-xs text-indigo-600 hover:underline mb-1"
+              className="text-sm text-slate-600 hover:underline mb-3"
               aria-expanded={showNumeric}
             >
               {showNumeric ? 'Hide Numeric Sizes' : 'Show Numeric Sizes'}
             </button>
             {showNumeric && (
               <div>
-                <h4 className="text-xs font-semibold text-gray-500 mb-1 flex items-center uppercase tracking-wide">
-                  <span className="w-2 h-2 bg-gray-300 rounded-full mr-2"></span>
+                <h4 className="text-sm font-semibold text-slate-600 mb-3 flex items-center uppercase tracking-wide">
+                  <span className="w-2 h-2 bg-slate-300 rounded-full mr-2"></span>
                   Numeric Sizes
                 </h4>
                 <div className="grid grid-cols-3 gap-2">
@@ -152,18 +152,18 @@ const SizeFilter = ({ selectedSize, onChange }) => {
                     <button
                       key={size.value}
                       onClick={() => onChange(size.value)}
-                      className={`relative group p-2 rounded-lg border-2 transition-all duration-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 ${
+                      className={`relative group p-3 rounded-xl border-2 transition-all duration-300 text-center focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transform hover:scale-105 ${
                         isSelected(size.value)
-                          ? 'border-indigo-500 bg-indigo-50 text-indigo-700 scale-105 shadow-md'
-                          : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-sm'
+                          ? 'border-slate-600 bg-slate-50 text-slate-700 scale-105 shadow-lg'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50 hover:shadow-md'
                       }`}
                       title={size.description}
                       aria-pressed={isSelected(size.value)}
                     >
-                      <div className="font-semibold text-xs">{size.label}</div>
-                      <div className="text-[10px] text-gray-400 mt-1">{size.description}</div>
+                      <div className="font-semibold text-sm">{size.label}</div>
+                      <div className="text-xs text-slate-400 mt-1">{size.description}</div>
                       {isSelected(size.value) && (
-                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-indigo-500 rounded-full flex items-center justify-center">
+                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-slate-600 rounded-full flex items-center justify-center">
                           <CheckIcon className="w-3 h-3 text-white" />
                         </div>
                       )}

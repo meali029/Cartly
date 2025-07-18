@@ -50,21 +50,21 @@ const SortDropdown = ({ sortOption, onChange }) => {
       {/* Dropdown Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full sm:w-64 px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
+        className="flex items-center justify-between w-full sm:w-40 px-4 py-3 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-3xl hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
         <div className="flex items-center space-x-3">
-          <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg text-white">
-            <BarsArrowDownIcon className="w-4 h-4" />
+          <div className="flex items-center justify-center w-6 h-6 bg-gradient-to-r from-slate-600 to-slate-800 rounded-lg text-white">
+            <BarsArrowDownIcon className="w-3 h-3" />
           </div>
           <div className="flex flex-col items-start">
-            <span className="text-xs text-gray-500 font-normal">Sort by</span>
-            <span className="text-sm font-semibold text-gray-900">{currentOption.label}</span>
+            <span className="text-xs text-slate-500 font-normal">Sort by</span>
+            <span className="text-sm font-semibold text-slate-900">{currentOption.label}</span>
           </div>
         </div>
         <ChevronDownIcon
-          className={`w-5 h-5 text-gray-400 transform transition-transform duration-200 ${
+          className={`w-4 h-4 text-slate-400 transform transition-transform duration-300 ${
             isOpen ? 'rotate-180' : ''
           }`}
         />
@@ -72,11 +72,11 @@ const SortDropdown = ({ sortOption, onChange }) => {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 z-20 w-full sm:w-72 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden animate-fadeIn">
-          <div className="py-2">
+        <div className="absolute right-0 z-20 w-full sm:w-64 mt-2 bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden animate-fadeIn">
+          <div className="py-1">
             {/* Header */}
-            <div className="px-4 py-2 border-b border-gray-100">
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
+              <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
                 Sort Options
               </h3>
             </div>
@@ -87,32 +87,32 @@ const SortDropdown = ({ sortOption, onChange }) => {
                 <button
                   key={option.value}
                   onClick={() => handleSortChange(option.value)}
-                  className={`w-full px-4 py-3 text-left text-sm font-medium transition-all duration-200 flex items-center justify-between group ${
+                  className={`w-full px-4 py-3 text-left text-sm font-medium transition-all duration-300 flex items-center justify-between group ${
                     option.value === sortOption
-                      ? 'bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 border-r-4 border-indigo-500'
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-gradient-to-r from-slate-50 to-slate-100 text-slate-900 border-r-4 border-slate-600'
+                      : 'text-slate-700 hover:bg-slate-50'
                   }`}
                   role="option"
                   aria-selected={option.value === sortOption}
                 >
                   <div className="flex items-center space-x-3">
-                    <option.icon className="w-5 h-5 text-gray-400" />
+                    <option.icon className="w-4 h-4 text-slate-400" />
                     <div>
                       <div className="font-medium">{option.label}</div>
-                      <div className="text-xs text-gray-500">{option.description}</div>
+                      <div className="text-xs text-slate-500">{option.description}</div>
                     </div>
                   </div>
                   
                   {option.value === sortOption && (
-                    <CheckIcon className="w-4 h-4 text-indigo-500" />
+                    <CheckIcon className="w-4 h-4 text-slate-600" />
                   )}
                 </button>
               ))}
             </div>
 
             {/* Footer */}
-            <div className="px-4 py-2 border-t border-gray-100 bg-gray-50">
-              <p className="text-xs text-gray-500">
+            <div className="px-4 py-2 border-t border-slate-100 bg-slate-50">
+              <p className="text-xs text-slate-500">
                 {sortOptions.length} sort options available
               </p>
             </div>
