@@ -4,6 +4,7 @@ const User = require('../models/userModel');
 // 🔐 Middleware: Protect routes by verifying JWT
 const protect = async (req, res, next) => {
   let token;
+  
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
@@ -14,7 +15,12 @@ const protect = async (req, res, next) => {
 
       // Allow hardcoded admin
       if (decoded.id === 'admin_fake_id_123') {
-        req.user = { _id: 'admin_fake_id_123', isAdmin: true };
+        req.user = { 
+          _id: 'admin_fake_id_123', 
+          isAdmin: true,
+          email: 'a@c.com',
+          name: 'Admin'
+        };
         return next();
       }
 
@@ -24,11 +30,11 @@ const protect = async (req, res, next) => {
       }
       next();
     } catch (error) {
-      res.status(401).json({ message: 'Not authorized, token failed' });
+      console.error('Auth middleware error:', error);
+      return res.status(401).json({ message: 'Not authorized, token failed' });
     }
-  }
-  if (!token) {
-    res.status(401).json({ message: 'Not authorized, no token' });
+  } else {
+    return res.status(401).json({ message: 'Not authorized, no token' });
   }
 };
 

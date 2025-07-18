@@ -2,21 +2,33 @@ import axios from 'axios'
 
 const API = import.meta.env.VITE_API_BASE_URL
 
+// Helper function to get auth headers
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('cratlyToken')
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
 // 🛒 Place a new order
 export const placeOrder = async (orderData) => {
-  const res = await axios.post(`${API}/orders`, orderData)
+  const res = await axios.post(`${API}/orders`, orderData, {
+    headers: getAuthHeaders()
+  })
   return res.data
 }
 
 // 👤 Get orders of a specific user
 export const getUserOrders = async (userId) => {
-  const res = await axios.get(`${API}/orders/user/${userId}`)
+  const res = await axios.get(`${API}/orders/user/${userId}`, {
+    headers: getAuthHeaders()
+  })
   return res.data
 }
 
 // 👑 Admin: Get all orders
 export const getAllOrders = async () => {
-  const res = await axios.get(`${API}/orders`)
+  const res = await axios.get(`${API}/orders`, {
+    headers: getAuthHeaders()
+  })
   return res.data
 }
 
@@ -24,7 +36,8 @@ export const getAllOrders = async () => {
 export const updateOrderStatus = async (orderId, status) => {
   const res = await axios.put(
     `${API}/orders/${orderId}`,
-    { status }
+    { status },
+    { headers: getAuthHeaders() }
   )
   return res.data
 }
@@ -33,7 +46,8 @@ export const updateOrderStatus = async (orderId, status) => {
 export const cancelOrder = async (orderId, cancelReason) => {
   const res = await axios.put(
     `${API}/orders/${orderId}`,
-    { status: 'cancelled', cancelReason }
+    { status: 'cancelled', cancelReason },
+    { headers: getAuthHeaders() }
   )
   return res.data
 }

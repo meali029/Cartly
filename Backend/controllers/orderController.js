@@ -10,8 +10,11 @@ const placeOrder = async (req, res) => {
       return res.status(400).json({ message: 'No items in order' });
     }
 
+    // Use authenticated user's ID if not provided
+    const orderUserId = userId || req.user._id;
+
     const order = await Order.create({
-      userId,
+      userId: orderUserId,
       items,
       shippingInfo,
       paymentStatus,
@@ -24,7 +27,7 @@ const placeOrder = async (req, res) => {
     if (io) io.emit('order:new', order);
 
     // Send confirmation email (don't block response)
-    const userEmail = req.user.email;  // make sure req.user exists (protect middleware)
+    const userEmail = req.user?.email;  // make sure req.user exists (protect middleware)
     if(userEmail) {
       sendOrderConfirmationEmail(userEmail, order).catch(err => {
         console.error('Email sending failed:', err);
@@ -33,6 +36,7 @@ const placeOrder = async (req, res) => {
 
     res.status(201).json(order);
   } catch (err) {
+    console.error('Order placement error:', err);
     res.status(500).json({ message: 'Failed to place order', error: err.message });
   }
 };
@@ -41,7 +45,7 @@ const placeOrder = async (req, res) => {
 // @desc Get orders of a user
 const getUserOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.params.userId }).populate('items.productId', 'title name price image description category sizes colors');
+    const orders = await Order.find({ userId: req.params.userId }).populate('items.productId', 'title price image description category sizes colors');
     res.json(orders);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching user orders' });
@@ -51,7 +55,7 @@ const getUserOrders = async (req, res) => {
 // @desc Get all orders (admin only)
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate('userId', 'name email').populate('items.productId', 'title name price image description category sizes colors');
+    const orders = await Order.find().populate('userId', 'name email').populate('items.productId', 'title price image description category sizes colors');
     res.json(orders);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching orders' });

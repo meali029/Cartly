@@ -109,7 +109,6 @@ const Checkout = () => {
       userId: user._id,
       items: checkoutItems.map(({ product, quantity, size, color }) => ({
         productId: product._id,
-        name: product.name,
         title: product.title,
         price: product.price,
         quantity,
@@ -158,7 +157,16 @@ const Checkout = () => {
     } catch (err) {
       console.error('❌ Order error:', err)
       setOrderStatus('error')
-      showToast('Failed to place order. Please try again.', 'error')
+      
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to place order'
+      
+      if (err?.response?.status === 401) {
+        showToast('Please login to place an order', 'error')
+        // Redirect to login if not authenticated
+        setTimeout(() => navigate('/login'), 2000)
+      } else {
+        showToast('❌ ' + errorMessage, 'error')
+      }
     } finally {
       setTimeout(() => {
         setLoading(false)

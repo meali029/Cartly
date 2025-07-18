@@ -124,7 +124,9 @@ const Register = () => {
       }
     } catch (err) {
       console.error('Register error:', err)
-      setError(err?.response?.data?.message || 'Registration failed')
+      const errorMessage = err?.response?.data?.message || err?.message || 'Registration failed'
+      setError(errorMessage)
+      showToast('❌ ' + errorMessage, 'error')
     } finally {
       setLoading(false)
     }

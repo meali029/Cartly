@@ -34,23 +34,29 @@ const Login = () => {
   const [forgotPasswordStep, setForgotPasswordStep] = useState(1) // 1: email, 2: OTP, 3: new password
   const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false)
 
- const handleSubmit = async (e) => {
-  e.preventDefault()
-  setLoading(true)
-  setError('')
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
 
-  try {
-    await login(email, password)
-    showToast('✅ Logged in successfully')
-  } catch (err) {
-    console.error('Login error:', err)
-    setError(err)
-  } finally {
-    setLoading(false)
-  }
-}
-
-  // Handle forgot password - send OTP
+    try {
+      await login(email, password)
+      showToast('✅ Logged in successfully')
+    } catch (err) {
+      console.error('Login error:', err)
+      const errorMessage = err.message || 'Login failed'
+      setError(errorMessage)
+      
+      // Show specific toast for email verification
+      if (errorMessage.includes('verify your email')) {
+        showToast(errorMessage, 'error', 6000)
+      } else {
+        showToast('❌ ' + errorMessage, 'error')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }  // Handle forgot password - send OTP
   const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault()
     setForgotPasswordLoading(true)

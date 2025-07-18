@@ -2,6 +2,12 @@ import axios from 'axios'
 
 const API = import.meta.env.VITE_API_BASE_URL
 
+// Helper function to get auth headers
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('cratlyToken')
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
 // 📝 Register a new user
 export const registerUser = async (userData) => {
   const res = await axios.post(`${API}/users/register`, userData)

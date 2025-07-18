@@ -218,7 +218,7 @@ const Orders = () => {
                     {order.items && order.items.length > 0 ? (
                       order.items.map((item, index) => {
                         // Handle different data structures
-                        const productName = item.name || item.title || item.productId?.name || item.productId?.title || 'Product Name Not Available'
+                        const productName = item.title || item.productId?.title || 'Product Name Not Available'
                         const productPrice = item.price || item.productId?.price || 0
                         const productImage = item.image || item.productId?.image
                         const itemQuantity = item.quantity || 1

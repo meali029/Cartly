@@ -78,7 +78,13 @@ export const AuthProvider = ({ children }) => {
         navigate('/')
       }
     } catch (err) {
-      throw err.response?.data?.message || 'Login failed'
+      // Handle email verification requirement
+      if (err.response?.data?.requiresEmailVerification) {
+        throw new Error('Please verify your email before logging in. Check your inbox for the verification code.')
+      }
+      
+      const errorMessage = err.response?.data?.message || 'Login failed'
+      throw new Error(errorMessage)
     }
   }
 
