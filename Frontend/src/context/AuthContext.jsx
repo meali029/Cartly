@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }) => {
     // Remove axios default authorization header
     delete axios.defaults.headers.common['Authorization']
     
-    navigate('/login')
+    navigate('/')
   }
 
   // Check if token is valid (optional - for enhanced security)

@@ -2,6 +2,7 @@ import { useEffect, useState, useContext, useCallback } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { getAllProducts, deleteProduct } from '../services/productService'
+import { useSocket } from '../hooks/useSocket'
 import { Link } from 'react-router-dom'
 import { 
   ShoppingBagIcon,
@@ -30,14 +31,16 @@ const ManageProducts = () => {
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true)
-      const data = await getAllProducts()
+      const productsArray = await getAllProducts()
+      
       // Sort products by creation date (newest first)
-      const sortedProducts = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      const sortedProducts = productsArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       setProducts(sortedProducts)
       setLastUpdated(new Date())
     } catch (err) {
       console.error('❌ Failed to fetch products:', err)
       showToast('Could not load products', 'error')
+      setProducts([]) // Set empty array on error
     } finally {
       setLoading(false)
     }
@@ -46,6 +49,24 @@ const ManageProducts = () => {
   useEffect(() => {
     if (user?.isAdmin) fetchProducts()
   }, [user, fetchProducts])
+
+  // Socket listener for real-time stock updates
+  useSocket({
+    'stock:update': (data) => {
+      console.log('🔄 Real-time stock update received:', data)
+      setProducts(prevProducts => 
+        prevProducts.map(product => 
+          product._id === data.productId 
+            ? { ...product, stock: data.newStock }
+            : product
+        )
+      )
+      showToast(
+        `Stock updated for product (${data.itemsSold || data.itemsRestored} ${data.itemsSold ? 'sold' : 'restored'})`, 
+        'info'
+      )
+    }
+  })
 
   const handleDelete = async (id, productTitle) => {
     if (!confirm(`Are you sure you want to delete "${productTitle}"? This action cannot be undone.`)) return
@@ -183,7 +204,7 @@ const ManageProducts = () => {
           </p>
           {!searchTerm && !categoryFilter && (
             <Link
-              to="/admin/products/new"
+              to="/admin/products/add-product"
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
             >
               <PlusIcon className="h-4 w-4 mr-2" />

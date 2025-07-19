@@ -3,6 +3,7 @@ import AppRoutes from './routes/AppRoutes'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ToastProvider } from './context/ToastContext'
+import { ChatNotificationProvider } from './context/ChatNotificationContext'
 import "./index.css";
 
 
@@ -12,7 +13,9 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
-          <AppRoutes />
+          <ChatNotificationProvider>
+            <AppRoutes />
+          </ChatNotificationProvider>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>

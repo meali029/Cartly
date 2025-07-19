@@ -75,13 +75,12 @@ const ProductDetails = () => {
       return
     }
 
-    if (product.stock && product.stock < quantity) {
-      showToast('Not enough stock available', 'error')
-      return
+    const result = addToCart(product, selectedSize, quantity)
+    if (result.success) {
+      showToast(`Added ${quantity} item(s) to cart 🛒`, 'success')
+    } else {
+      showToast(result.message, 'error')
     }
-
-    addToCart(product, selectedSize, quantity)
-    showToast(`Added ${quantity} item(s) to cart 🛒`, 'success')
   }
 
   const handleBuyNow = () => {

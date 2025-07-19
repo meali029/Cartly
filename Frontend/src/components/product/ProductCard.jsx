@@ -23,8 +23,13 @@ const ProductCard = ({ product }) => {
   const handleAddToCart = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    addToCart(product)
-    showToast('Product added to cart!', 'success')
+    
+    const result = addToCart(product)
+    if (result.success) {
+      showToast(result.message, 'success')
+    } else {
+      showToast(result.message, 'error')
+    }
   }
 
   const handleWishlist = (e) => {

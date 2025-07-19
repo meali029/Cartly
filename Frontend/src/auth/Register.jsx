@@ -1,8 +1,8 @@
 import { useState, useContext, useEffect } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import AuthModal from '../components/ui/AuthModal'
 import { registerUser, verifyEmailOTP, resendEmailVerification } from '../services/authService'
-import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { 
   EyeIcon, 
@@ -10,17 +10,15 @@ import {
   EnvelopeIcon, 
   LockClosedIcon,
   UserIcon,
-  ArrowRightIcon,
   UserPlusIcon,
   ShieldCheckIcon,
   CheckCircleIcon,
   ClockIcon
 } from '@heroicons/react/24/outline'
 
-const Register = () => {
+const Register = ({ isOpen, onClose, onSwitchToLogin }) => {
   const { setUser } = useContext(AuthContext)
   const { showToast } = useToast()
-  const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
     name: '',
@@ -120,7 +118,7 @@ const Register = () => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
         
         showToast('🎉 Account created successfully!')
-        navigate('/')
+        if (onClose) onClose() // Close modal on successful registration
       }
     } catch (err) {
       console.error('Register error:', err)
@@ -148,7 +146,7 @@ const Register = () => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
       
       showToast('✅ Email verified successfully! Welcome to Cartly!')
-      navigate('/')
+      if (onClose) onClose() // Close modal on successful verification
     } catch (err) {
       console.error('Verification error:', err)
       setError(err?.response?.data?.message || 'Invalid verification code')
@@ -176,116 +174,20 @@ const Register = () => {
   // Email verification step
   if (verificationStep) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center px-4 py-8">
-        <div className="max-w-md w-full">
-          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform hover:shadow-3xl transition-all duration-500">
-            {/* Header */}
-            <div className="text-center px-8 py-8">
-              <div className="flex items-center justify-center mb-6">
-                <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
-                  <EnvelopeIcon className="w-10 h-10 text-white" />
-                </div>
-              </div>
-              <h2 className="text-4xl font-bold text-slate-900 mb-2">Verify Your Email</h2>
-              <p className="text-slate-600 text-lg">Enter the code sent to {formData.email}</p>
-            </div>
-
-            {/* Verification Form */}
-            <div className="px-8 pb-8">
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 animate-pulse">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <ShieldCheckIcon className="w-5 h-5 text-red-400" />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-red-700">{error}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <form onSubmit={handleVerifyOTP} className="space-y-6">
-                {/* OTP Input */}
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Verification Code
-                  </label>
-                  <input
-                    type="text"
-                    className="block w-full px-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 text-center text-xl font-mono tracking-widest hover:border-slate-300"
-                    placeholder="000000"
-                    value={otpCode}
-                    onChange={(e) => setOtpCode(e.target.value)}
-                    maxLength="6"
-                    required
-                  />
-                  <p className="text-xs text-slate-500 mt-2 text-center">
-                    Enter the 6-digit code from your email
-                  </p>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={loading || otpCode.length !== 6}
-                  className="w-full bg-slate-900 text-white py-4 px-6 rounded-xl font-semibold hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                >
-                  {loading ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  ) : (
-                    <>
-                      <CheckCircleIcon className="w-5 h-5" />
-                      Verify Email
-                    </>
-                  )}
-                </button>
-
-                {/* Resend OTP */}
-                <div className="text-center">
-                  <p className="text-sm text-slate-600 mb-2">
-                    Didn't receive the code?
-                  </p>
-                  {countdown > 0 ? (
-                    <p className="text-sm text-slate-500 flex items-center justify-center gap-1">
-                      <ClockIcon className="w-4 h-4" />
-                      Resend in {countdown}s
-                    </p>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={handleResendOTP}
-                      disabled={resendingOtp}
-                      className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors"
-                    >
-                      {resendingOtp ? 'Sending...' : 'Resend Code'}
-                    </button>
-                  )}
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center px-4 py-8">
-      <div className="max-w-md w-full">
-        <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform hover:shadow-3xl transition-all duration-500">
-          {/* Header */}
-          <div className="text-center px-8 py-8">
-            <div className="flex items-center justify-center mb-6">
-              <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
-                <UserPlusIcon className="w-10 h-10 text-white" />
+      <AuthModal isOpen={isOpen} onClose={onClose}>
+        <div className="max-h-[90vh] overflow-y-auto">
+          {/* Header - Responsive */}
+          <div className="text-center px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8">
+            <div className="flex items-center justify-center mb-4 sm:mb-6">
+              <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-3 sm:p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
+                <EnvelopeIcon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
               </div>
             </div>
-            <h2 className="text-4xl font-bold text-slate-900 mb-2">Join Cartly</h2>
-            <p className="text-slate-600 text-lg">Create your account to get started</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-1 sm:mb-2">Verify Your Email</h2>
+            <p className="text-slate-600 text-sm sm:text-base md:text-lg">Enter the code sent to {formData.email}</p>
           </div>
 
-          {/* Form */}
+          {/* Verification Form - Responsive */}
           <div className="px-8 pb-8">
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 animate-pulse">
@@ -299,6 +201,99 @@ const Register = () => {
                 </div>
               </div>
             )}
+
+            <form onSubmit={handleVerifyOTP} className="space-y-6">
+              {/* OTP Input */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Verification Code
+                </label>
+                <input
+                  type="text"
+                  className="block w-full px-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 text-center text-xl font-mono tracking-widest hover:border-slate-300"
+                  placeholder="000000"
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value)}
+                  maxLength="6"
+                  required
+                />
+                <p className="text-xs text-slate-500 mt-2 text-center">
+                  Enter the 6-digit code from your email
+                </p>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading || otpCode.length !== 6}
+                className="w-full bg-slate-900 text-white py-4 px-6 rounded-xl font-semibold hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                {loading ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                ) : (
+                  <>
+                    <CheckCircleIcon className="w-5 h-5" />
+                    Verify Email
+                  </>
+                )}
+              </button>
+
+              {/* Resend OTP */}
+              <div className="text-center">
+                <p className="text-sm text-slate-600 mb-2">
+                  Didn't receive the code?
+                </p>
+                {countdown > 0 ? (
+                  <p className="text-sm text-slate-500 flex items-center justify-center gap-1">
+                    <ClockIcon className="w-4 h-4" />
+                    Resend in {countdown}s
+                  </p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleResendOTP}
+                    disabled={resendingOtp}
+                    className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors"
+                  >
+                    {resendingOtp ? 'Sending...' : 'Resend Code'}
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+      </AuthModal>
+    )
+  }
+
+  return (
+    <AuthModal isOpen={isOpen} onClose={onClose}>
+      <div className="max-h-[90vh] overflow-y-auto">
+        {/* Header - Responsive */}
+        <div className="text-center px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8">
+          <div className="flex items-center justify-center mb-4 sm:mb-6">
+            <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-3 sm:p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
+              <UserPlusIcon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+            </div>
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-1 sm:mb-2">Join Cartly</h2>
+          <p className="text-slate-600 text-sm sm:text-base md:text-lg">Create your account to get started</p>
+        </div>
+
+        {/* Form - Responsive */}
+        <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8">
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 animate-pulse">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <ShieldCheckIcon className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-red-700">{error}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Field */}
@@ -474,16 +469,18 @@ const Register = () => {
             <div className="mt-6 text-center">
               <p className="text-sm text-slate-600">
                 Already have an account?{' '}
-                <Link to="/login" className="text-slate-900 hover:text-slate-700 font-medium transition-colors">
+                <button 
+                  onClick={onSwitchToLogin}
+                  className="text-slate-900 hover:text-slate-700 font-medium transition-colors"
+                >
                   Sign in here
-                </Link>
+                </button>
               </p>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  )
+      </AuthModal>
+    )
 }
 
 export default Register

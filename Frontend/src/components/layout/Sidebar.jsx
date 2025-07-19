@@ -1,6 +1,8 @@
 import { NavLink } from 'react-router-dom'
+import { useChatNotifications } from '../../context/ChatNotificationContext'
 
 const Sidebar = () => {
+  const { adminUnreadCount } = useChatNotifications()
   return (
     <aside className="w-full md:w-72 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-700 shadow-2xl h-full">
       {/* Header Section */}
@@ -103,26 +105,56 @@ const Sidebar = () => {
             User Management
           </h3>
           
-          <NavLink 
-            to="/admin/users" 
-            className={({ isActive }) => 
-              `group flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 ${
-                isActive 
-                  ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-500/25' 
-                  : 'text-gray-300 hover:text-white hover:bg-slate-700/50'
-              }`
-            }
-          >
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 ${
-              'bg-rose-500/20 group-hover:bg-rose-500/30'
-            }`}>
-              <span className="text-lg">�</span>
-            </div>
-            <div className="flex-1">
-              <span className="font-medium">Users</span>
-              <p className="text-xs opacity-75">Customer Management</p>
-            </div>
-          </NavLink>
+          <div className="space-y-2">
+            <NavLink 
+              to="/admin/users" 
+              className={({ isActive }) => 
+                `group flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 ${
+                  isActive 
+                    ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-500/25' 
+                    : 'text-gray-300 hover:text-white hover:bg-slate-700/50'
+                }`
+              }
+            >
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                'bg-rose-500/20 group-hover:bg-rose-500/30'
+              }`}>
+                <span className="text-lg">👥</span>
+              </div>
+              <div className="flex-1">
+                <span className="font-medium">Users</span>
+                <p className="text-xs opacity-75">Customer Management</p>
+              </div>
+            </NavLink>
+
+            <NavLink 
+              to="/admin/chats" 
+              className={({ isActive }) => 
+                `group flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 relative ${
+                  isActive 
+                    ? 'bg-gradient-to-r from-purple-500 to-violet-600 text-white shadow-lg shadow-purple-500/25' 
+                    : 'text-gray-300 hover:text-white hover:bg-slate-700/50'
+                }`
+              }
+            >
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                'bg-purple-500/20 group-hover:bg-purple-500/30'
+              }`}>
+                <span className="text-lg">💬</span>
+              </div>
+              <div className="flex-1">
+                <span className="font-medium">Live Chats</span>
+                <p className="text-xs opacity-75">Customer Support</p>
+              </div>
+              {adminUnreadCount > 0 && (
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                  <span className="text-white text-xs font-bold">
+                    {adminUnreadCount > 99 ? '99+' : adminUnreadCount}
+                  </span>
+                </div>
+              )}
+            </NavLink>
+          </div>
         </div>
 
         {/* Quick Stats */}

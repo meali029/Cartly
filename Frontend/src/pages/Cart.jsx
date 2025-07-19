@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { CartContext } from '../context/CartContext'
+import { useToast } from '../context/ToastContext'
 import { Link, useNavigate } from 'react-router-dom'
 import { TrashIcon, ShoppingBagIcon, MinusIcon, PlusIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 import Button from '../components/ui/Button'
@@ -7,6 +8,7 @@ import Badge from '../components/ui/Badge'
 
 const Cart = () => {
   const { cartItems, removeFromCart, clearCart, updateQuantity } = useContext(CartContext)
+  const { showToast } = useToast()
   const navigate = useNavigate()
 
   const getTotal = () => {
@@ -34,10 +36,9 @@ const Cart = () => {
   }
 
   const handleQuantityChange = (productId, size, newQuantity) => {
-    if (newQuantity < 1) {
-      removeFromCart(productId, size)
-    } else if (updateQuantity) {
-      updateQuantity(productId, size, newQuantity)
+    const result = updateQuantity(productId, size, newQuantity)
+    if (!result.success) {
+      showToast(result.message, 'error')
     }
   }
 
@@ -111,6 +112,20 @@ const Cart = () => {
                             Size: {size}
                           </Badge>
                         )}
+                        {/* Stock Information */}
+                        <div className="mt-2 text-xs text-slate-500">
+                          {product.stock <= 10 && product.stock > 0 ? (
+                            <span className="text-orange-600 font-medium">
+                              Only {product.stock} left in stock
+                            </span>
+                          ) : product.stock === 0 ? (
+                            <span className="text-red-600 font-medium">Out of stock</span>
+                          ) : (
+                            <span className="text-green-600">
+                              {product.stock} available
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       {/* Quantity Controls */}
@@ -118,7 +133,8 @@ const Cart = () => {
                         <div className="flex items-center border border-slate-300 rounded-xl">
                           <button
                             onClick={() => handleQuantityChange(product._id, size, quantity - 1)}
-                            className="p-2 hover:bg-slate-100 rounded-l-xl transition-colors"
+                            className="p-2 hover:bg-slate-100 rounded-l-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={quantity <= 1}
                           >
                             <MinusIcon className="h-4 w-4 text-slate-600" />
                           </button>
@@ -127,11 +143,20 @@ const Cart = () => {
                           </span>
                           <button
                             onClick={() => handleQuantityChange(product._id, size, quantity + 1)}
-                            className="p-2 hover:bg-slate-100 rounded-r-xl transition-colors"
+                            className="p-2 hover:bg-slate-100 rounded-r-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={quantity >= product.stock}
+                            title={quantity >= product.stock ? `Maximum ${product.stock} items available` : 'Increase quantity'}
                           >
                             <PlusIcon className="h-4 w-4 text-slate-600" />
                           </button>
                         </div>
+                        
+                        {/* Stock Indicator for quantity */}
+                        {quantity >= product.stock && (
+                          <div className="text-xs text-orange-600 font-medium">
+                            Max reached
+                          </div>
+                        )}
 
                         {/* Item Total */}
                         <div className="text-right min-w-[4rem]">

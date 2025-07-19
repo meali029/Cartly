@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { fetchAdminStats } from '../services/adminService'
+import { getRecentOrders, getDashboardTopProducts } from '../services/analyticsService'
 import { 
   UserGroupIcon, 
   ShoppingBagIcon, 
@@ -24,22 +25,35 @@ const AdminDashboard = () => {
     products: 0,
     revenue: 0,
   })
+  const [recentOrders, setRecentOrders] = useState([])
+  const [topProducts, setTopProducts] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadStats = async () => {
       try {
         setLoading(true)
-        const data = await fetchAdminStats()
+        
+        // Fetch all data in parallel
+        const [statsData, ordersData, productsData] = await Promise.all([
+          fetchAdminStats(),
+          getRecentOrders(3),
+          getDashboardTopProducts(3)
+        ])
+        
         setStats({
-          users: data.totalUsers,
-          orders: data.totalOrders,
-          products: data.totalProducts,
-          revenue: data.totalSales,
+          users: statsData.totalUsers,
+          orders: statsData.totalOrders,
+          products: statsData.totalProducts,
+          revenue: statsData.totalSales,
         })
+        
+        setRecentOrders(ordersData)
+        setTopProducts(productsData)
+        
       } catch (err) {
-        console.error('❌ Failed to load admin stats:', err)
-        showToast('Admin stats failed to load', 'error')
+        console.error('❌ Failed to load dashboard data:', err)
+        showToast('Dashboard data failed to load', 'error')
       } finally {
         setLoading(false)
       }
@@ -155,23 +169,35 @@ const AdminDashboard = () => {
           </div>
           <div className="p-6">
             <div className="space-y-4">
-              {[...Array(3)].map((_, index) => (
-                <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+              {recentOrders.length > 0 ? recentOrders.map((order) => (
+                <div key={order._id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
                       <ClipboardDocumentListIcon className="h-5 w-5 text-gray-500" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">Order #100{index + 1}</p>
-                      <p className="text-xs text-gray-500">2 hours ago</p>
+                      <p className="text-sm font-medium text-gray-900">{order.orderNumber}</p>
+                      <p className="text-xs text-gray-500">{order.timeAgo}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">PKR 2,500</p>
-                    <p className="text-xs text-green-600">Completed</p>
+                    <p className="text-sm font-medium text-gray-900">PKR {order.totalPrice.toLocaleString()}</p>
+                    <p className={`text-xs capitalize ${
+                      order.status === 'delivered' ? 'text-green-600' : 
+                      order.status === 'shipped' ? 'text-blue-600' : 
+                      order.status === 'cancelled' ? 'text-red-600' : 
+                      'text-yellow-600'
+                    }`}>
+                      {order.status}
+                    </p>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div className="text-center py-8 text-gray-500">
+                  <ClipboardDocumentListIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-sm">No recent orders found</p>
+                </div>
+              )}
             </div>
             <div className="mt-4">
               <Link
@@ -190,21 +216,42 @@ const AdminDashboard = () => {
           </div>
           <div className="p-6">
             <div className="space-y-4">
-              {[...Array(3)].map((_, index) => (
-                <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+              {topProducts.length > 0 ? topProducts.map((product) => (
+                <div key={product._id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg"></div>
+                    <div className="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden">
+                      {product.image ? (
+                        <img 
+                          src={product.image} 
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <ShoppingBagIcon className="h-5 w-5 text-gray-400" />
+                        </div>
+                      )}
+                    </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">Product {index + 1}</p>
-                      <p className="text-xs text-gray-500">45 sales</p>
+                      <p className="text-sm font-medium text-gray-900 truncate max-w-32">{product.name}</p>
+                      <p className="text-xs text-gray-500">{product.sales} sales</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">PKR 1,200</p>
-                    <p className="text-xs text-gray-500">In stock</p>
+                    <p className="text-sm font-medium text-gray-900">PKR {product.revenue.toLocaleString()}</p>
+                    <p className={`text-xs ${
+                      product.status === 'Hot' ? 'text-red-600' : 'text-green-600'
+                    }`}>
+                      {product.status}
+                    </p>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div className="text-center py-8 text-gray-500">
+                  <ShoppingBagIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-sm">No top products found</p>
+                </div>
+              )}
             </div>
             <div className="mt-4">
               <Link

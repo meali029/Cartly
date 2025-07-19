@@ -34,7 +34,7 @@ const Profile = () => {
             <h1 className="text-3xl font-bold text-slate-900 mb-3">Access Required</h1>
             <p className="text-slate-600 mb-6">Please log in to view your profile and manage your account.</p>
             <Link 
-              to="/login" 
+              to="#" 
               className="inline-flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-slate-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               Go to Login

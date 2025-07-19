@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useSocket } from '../hooks/useSocket'
 import axios from 'axios'
 import { UserIcon, SparklesIcon, HeartIcon } from '@heroicons/react/24/outline'
 
@@ -103,6 +104,20 @@ const Categories = () => {
     setSort('')
     setPage(1)
   }, [category])
+
+  // Socket listener for real-time stock updates
+  useSocket({
+    'stock:update': (data) => {
+      console.log('🔄 Real-time stock update received on Categories:', data)
+      setProducts(prevProducts => 
+        prevProducts.map(product => 
+          product._id === data.productId 
+            ? { ...product, stock: data.newStock }
+            : product
+        )
+      )
+    }
+  })
 
   const IconComponent = config.icon
 

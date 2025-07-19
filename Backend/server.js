@@ -13,6 +13,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
@@ -44,6 +45,7 @@ connectDB().then(() => {
   app.use('/api/cart', cartRoutes);
   app.use('/api/payment', paymentRoutes);
   app.use('/api/analytics', analyticsRoutes);
+  app.use('/api/chat', chatRoutes);
 
   app.get('/', (req, res) => {
     res.send('🛍️ Welcome to Cratly');
@@ -64,6 +66,20 @@ connectDB().then(() => {
   // Socket.io connection
   io.on('connection', (socket) => {
     console.log('🔌 New client connected:', socket.id);
+    
+    // Join user to their personal room
+    socket.on('join-user-room', (userId) => {
+      const roomId = `user_${userId}`;
+      socket.join(roomId);
+      console.log(`👤 User ${userId} joined room: ${roomId}`);
+    });
+    
+    // Join admin to admin room
+    socket.on('join-admin-room', () => {
+      socket.join('admin_room');
+      console.log('👨‍💼 Admin joined admin room');
+    });
+    
     socket.on('disconnect', () => {
       console.log('❌ Client disconnected:', socket.id);
     });

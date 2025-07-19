@@ -38,25 +38,43 @@ const EditProduct = () => {
       try {
         setFetchLoading(true)
         const res = await getProductById(id)
-        const p = res.data
+        
+        // Debug logging to understand the response structure
+        console.log('🔍 Product API Response:', res)
+        
+        // Handle the response - the product should be directly in res.data or res
+        const product = res.data || res
+        
+        if (!product) {
+          throw new Error('Product not found in response')
+        }
+        
+        console.log('📦 Product data:', product)
+        
         setForm({
-          title: p.title,
-          description: p.description,
-          price: p.price,
-          category: p.category,
-          size: p.size ? p.size.join(',') : '',
-          image: p.image,
-          stock: p.stock
+          title: product.title || '',
+          description: product.description || '',
+          price: product.price || '',
+          category: product.category || 'men',
+          size: product.size ? (Array.isArray(product.size) ? product.size.join(',') : product.size) : '',
+          image: product.image || '',
+          stock: product.stock || 0
         })
       } catch (error) {
-        console.error('Failed to load product:', error)
-        showToast('Failed to load product', 'error')
+        console.error('❌ Failed to load product:', error)
+        showToast(`Failed to load product: ${error.message}`, 'error')
         navigate('/admin/products')
       } finally {
         setFetchLoading(false)
       }
     }
-    fetchProduct()
+    
+    if (id) {
+      fetchProduct()
+    } else {
+      console.error('❌ No product ID provided')
+      navigate('/admin/products')
+    }
   }, [id, showToast, navigate])
 
   const handleChange = (e) => {

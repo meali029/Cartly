@@ -7,6 +7,7 @@ import {
   ShoppingBagIcon, 
   UserGroupIcon, 
   ClipboardDocumentListIcon,
+  ChatBubbleLeftRightIcon,
   PlusIcon,
   ChartBarIcon,
   CogIcon,
@@ -40,6 +41,7 @@ const AdminLayout = () => {
     { name: 'Products', href: '/admin/products', icon: ShoppingBagIcon, color: 'purple' },
     { name: 'Add Product', href: '/admin/add-product', icon: PlusIcon, color: 'indigo' },
     { name: 'Users', href: '/admin/users', icon: UserGroupIcon, color: 'pink' },
+    { name: 'Chats', href: '/admin/chats', icon: ChatBubbleLeftRightIcon, color: 'teal' },
     { name: 'Analytics', href: '/admin/analytics', icon: ChartBarIcon, color: 'orange' },
     { name: 'Settings', href: '/admin/settings', icon: CogIcon, color: 'gray' },
   ]
@@ -51,6 +53,7 @@ const AdminLayout = () => {
       purple: isActive ? 'bg-purple-100 text-purple-700 border-purple-500' : 'text-gray-600 hover:bg-purple-50 hover:text-purple-700',
       indigo: isActive ? 'bg-indigo-100 text-indigo-700 border-indigo-500' : 'text-gray-600 hover:bg-indigo-50 hover:text-indigo-700',
       pink: isActive ? 'bg-pink-100 text-pink-700 border-pink-500' : 'text-gray-600 hover:bg-pink-50 hover:text-pink-700',
+      teal: isActive ? 'bg-teal-100 text-teal-700 border-teal-500' : 'text-gray-600 hover:bg-teal-50 hover:text-teal-700',
       orange: isActive ? 'bg-orange-100 text-orange-700 border-orange-500' : 'text-gray-600 hover:bg-orange-50 hover:text-orange-700',
       gray: isActive ? 'bg-gray-100 text-gray-700 border-gray-500' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-700',
     }

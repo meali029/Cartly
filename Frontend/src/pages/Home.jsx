@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import ProductGrid from '../components/product/ProductGrid'
 import { useEffect, useState } from 'react'
+import { useSocket } from '../hooks/useSocket'
 import axios from 'axios'
 import { 
   ArrowRightIcon, 
@@ -18,7 +19,6 @@ const Home = () => {
   const [womenProducts, setWomenProducts] = useState([])
   const [kidsProducts, setKidsProducts] = useState([])
   const [currentSlide, setCurrentSlide] = useState(0)
-  const [isLoading, setIsLoading] = useState(true)
 
   // Modern hero carousel images with professional themes
   const heroImages = [
@@ -72,6 +72,25 @@ const Home = () => {
 
     fetchProducts()
   }, [])
+
+  // Socket listener for real-time stock updates
+  useSocket({
+    'stock:update': (data) => {
+      console.log('🔄 Real-time stock update received on Home:', data)
+      
+      // Update stock in all product categories
+      const updateProductStock = (products) => 
+        products.map(product => 
+          product._id === data.productId 
+            ? { ...product, stock: data.newStock }
+            : product
+        )
+      
+      setMenProducts(prevProducts => updateProductStock(prevProducts))
+      setWomenProducts(prevProducts => updateProductStock(prevProducts))
+      setKidsProducts(prevProducts => updateProductStock(prevProducts))
+    }
+  })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">

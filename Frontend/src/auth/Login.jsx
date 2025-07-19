@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import AuthModal from '../components/ui/AuthModal'
 import { 
   sendPasswordResetOTP, 
   verifyPasswordResetOTP, 
@@ -17,7 +18,7 @@ import {
   ShieldCheckIcon
 } from '@heroicons/react/24/outline'
 
-const Login = () => {
+const Login = ({ isOpen, onClose, onSwitchToRegister }) => {
   const { login } = useContext(AuthContext)
   const { showToast } = useToast()
 
@@ -42,6 +43,7 @@ const Login = () => {
     try {
       await login(email, password)
       showToast('✅ Logged in successfully')
+      if (onClose) onClose() // Close modal on successful login
     } catch (err) {
       console.error('Login error:', err)
       const errorMessage = err.message || 'Login failed'
@@ -164,26 +166,26 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center px-4 py-8">
-      <div className="max-w-md w-full">
+    <AuthModal isOpen={isOpen} onClose={onClose}>
+      <div className="max-h-[90vh] overflow-y-auto">
         {/* Main Login Card */}
         {!showForgotPassword && (
-          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform hover:shadow-3xl transition-all duration-500">
-            {/* Header */}
-            <div className="text-center px-8 py-8">
-              <div className="flex items-center justify-center mb-6">
-                <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
-                  <UserCircleIcon className="w-10 h-10 text-white" />
+          <>
+            {/* Header - Responsive */}
+            <div className="text-center px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8">
+              <div className="flex items-center justify-center mb-4 sm:mb-6">
+                <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-3 sm:p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
+                  <UserCircleIcon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                 </div>
               </div>
-              <h2 className="text-4xl font-bold text-slate-900 mb-2">Welcome Back</h2>
-              <p className="text-slate-600 text-lg">Sign in to your Cartly account</p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-1 sm:mb-2">Welcome Back</h2>
+              <p className="text-slate-600 text-sm sm:text-base md:text-lg">Sign in to your Cartly account</p>
             </div>
 
-            {/* Form */}
-            <div className="px-8 pb-8">
+            {/* Form - Responsive */}
+            <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8">
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 animate-pulse">
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 animate-pulse">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <ShieldCheckIcon className="w-5 h-5 text-red-400" />
@@ -195,19 +197,19 @@ const Login = () => {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Email Field */}
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                {/* Email Field - Responsive */}
                 <div className="group">
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
                     Email Address
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <EnvelopeIcon className="w-5 h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
+                    <div className="absolute inset-y-0 left-0 pl-2 sm:pl-3 flex items-center pointer-events-none">
+                      <EnvelopeIcon className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                     </div>
                     <input
                       type="email"
-                      className="block w-full pl-10 pr-3 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300"
+                      className="block w-full pl-8 sm:pl-10 pr-3 py-3 sm:py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300 text-sm sm:text-base"
                       placeholder="Enter your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -216,18 +218,18 @@ const Login = () => {
                   </div>
                 </div>
 
-                {/* Password Field */}
+                {/* Password Field - Responsive */}
                 <div className="group">
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">
                     Password
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <LockClosedIcon className="w-5 h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
+                    <div className="absolute inset-y-0 left-0 pl-2 sm:pl-3 flex items-center pointer-events-none">
+                      <LockClosedIcon className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                     </div>
                     <input
                       type={showPassword ? 'text' : 'password'}
-                      className="block w-full pl-10 pr-12 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300"
+                      className="block w-full pl-8 sm:pl-10 pr-10 sm:pr-12 py-3 sm:py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-300 placeholder-slate-400 text-slate-900 hover:border-slate-300 text-sm sm:text-base"
                       placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -235,81 +237,81 @@ const Login = () => {
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-slate-50 rounded-r-xl transition-colors"
+                      className="absolute inset-y-0 right-0 pr-2 sm:pr-3 flex items-center hover:bg-slate-50 rounded-r-xl transition-colors"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeSlashIcon className="w-5 h-5 text-slate-400 hover:text-slate-600 transition-colors" />
+                        <EyeSlashIcon className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 hover:text-slate-600 transition-colors" />
                       ) : (
-                        <EyeIcon className="w-5 h-5 text-slate-400 hover:text-slate-600 transition-colors" />
+                        <EyeIcon className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 hover:text-slate-600 transition-colors" />
                       )}
                     </button>
                   </div>
                 </div>
 
-                {/* Forgot Password Link */}
+                {/* Forgot Password Link - Responsive */}
                 <div className="text-right">
                   <button
                     type="button"
                     onClick={() => setShowForgotPassword(true)}
-                    className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors"
+                    className="text-xs sm:text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors"
                   >
                     Forgot your password?
                   </button>
                 </div>
 
-                {/* Login Button */}
+                {/* Login Button - Responsive */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-slate-900 text-white font-semibold py-4 px-6 rounded-xl hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  className="w-full bg-slate-900 text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
                 >
                   {loading ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Signing in...
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-sm sm:text-base">Signing in...</span>
                     </>
                   ) : (
                     <>
-                      Sign In
-                      <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      <span className="text-sm sm:text-base">Sign In</span>
+                      <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </button>
               </form>
 
-              {/* Register Link */}
-              <div className="mt-8 text-center">
-                <p className="text-slate-600">
+              {/* Register Link - Responsive */}
+              <div className="mt-6 sm:mt-8 text-center">
+                <p className="text-slate-600 text-sm sm:text-base">
                   Don't have an account?{' '}
-                  <Link 
-                    to="/register" 
-                    className="font-semibold text-slate-900 hover:text-slate-700 transition-colors"
+                  <button 
+                    onClick={onSwitchToRegister}
+                    className="font-semibold text-slate-900 hover:text-slate-700 transition-colors text-sm sm:text-base"
                   >
                     Create one now
-                  </Link>
+                  </button>
                 </p>
               </div>
             </div>
-          </div>
+          </>
         )}
 
-        {/* Forgot Password Modal */}
+        {/* Forgot Password Modal - Responsive */}
         {showForgotPassword && (
-          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform hover:shadow-3xl transition-all duration-500">
-            {/* Header */}
-            <div className="text-center px-8 py-8">
-              <div className="flex items-center justify-center mb-6">
-                <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
-                  <LockClosedIcon className="w-10 h-10 text-white" />
+          <>
+            {/* Header - Responsive */}
+            <div className="text-center px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8">
+              <div className="flex items-center justify-center mb-4 sm:mb-6">
+                <div className="bg-gradient-to-br from-slate-600 to-slate-700 p-3 sm:p-4 rounded-2xl transform hover:scale-105 transition-transform duration-300">
+                  <LockClosedIcon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                 </div>
               </div>
-              <h2 className="text-4xl font-bold text-slate-900 mb-2">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-1 sm:mb-2">
                 {forgotPasswordStep === 1 && 'Reset Password'}
                 {forgotPasswordStep === 2 && 'Verify OTP'}
                 {forgotPasswordStep === 3 && 'New Password'}
               </h2>
-              <p className="text-slate-600 text-lg">
+              <p className="text-slate-600 text-sm sm:text-base md:text-lg">
                 {forgotPasswordStep === 1 && 'Enter your email to receive a reset code'}
                 {forgotPasswordStep === 2 && 'Enter the 6-digit code sent to your email'}
                 {forgotPasswordStep === 3 && 'Create a new password for your account'}
@@ -493,10 +495,10 @@ const Login = () => {
                 </form>
               )}
             </div>
-          </div>
+          </>
         )}
       </div>
-    </div>
+    </AuthModal>
   )
 }
 

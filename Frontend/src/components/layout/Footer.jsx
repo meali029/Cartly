@@ -87,13 +87,13 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <a href="/sale-items" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-amber-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Sale Items
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <a href="/new-arrivals" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-300 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   New Arrivals
                 </a>
@@ -109,31 +109,31 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <a href="/help-center" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Help Center
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <a href="/size-guide" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-emerald-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Size Guide
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <a href="/shipping-info" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-amber-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Shipping Info
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <a href="/returns-exchanges" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-red-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Returns & Exchanges
                 </a>
               </li>
               <li>
-                <a href="mailto:support@cartly.com" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <a href="/contact-support" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-400 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Contact Support
                 </a>
@@ -149,25 +149,25 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3 mb-6">
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <a href="/about-us" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   About Us
                 </a>
               </li>
-              <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+              {/* <li>
+                <a href="/careers" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-400 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Careers
                 </a>
-              </li>
+              </li> */}
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <a href="/privacy-policy" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-600 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <a href="/terms-of-service" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-amber-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Terms of Service
                 </a>

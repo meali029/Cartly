@@ -1,7 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '../context/ToastContext'
-import { getMockAnalytics, getDashboardSummary, getTopProducts, getSalesAnalytics } from '../services/analyticsService'
+import { 
+  getComprehensiveAnalytics, 
+  refreshAnalytics, 
+  checkServiceHealth,
+  validateAnalyticsData,
+  formatCurrency,
+  formatNumber,
+  formatPercentage
+} from '../services/analyticsService'
+import SalesChart from '../components/charts/SalesChart'
+import CategoryChart from '../components/charts/CategoryChart'
 import {
   ChartBarIcon,
   CurrencyDollarIcon,
@@ -27,52 +37,162 @@ const Analytics = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPeriod, setSelectedPeriod] = useState('7days')
   const [lastUpdated, setLastUpdated] = useState(new Date())
+  const [serviceHealth, setServiceHealth] = useState(null)
+  const [dataErrors, setDataErrors] = useState([])
 
   useEffect(() => {
     fetchAnalytics()
+    checkHealth()
   }, [selectedPeriod]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const checkHealth = async () => {
+    try {
+      const health = await checkServiceHealth()
+      setServiceHealth(health)
+    } catch (error) {
+      console.error('Health check failed:', error)
+      setServiceHealth({ status: 'unhealthy', error: error.message })
+    }
+  }
 
   const fetchAnalytics = async () => {
     try {
       setLoading(true)
-      // Try to fetch real data first, fallback to mock data
-      try {
-        const [summaryData, topProductsData, salesData] = await Promise.all([
-          getDashboardSummary(),
-          getTopProducts(5),
-          getSalesAnalytics(selectedPeriod)
-        ])
-        
-        // Combine real API data with mock structure
-        const data = {
-          revenue: {
-            total: summaryData.revenue.total,
-            growth: summaryData.revenue.growth
-          },
-          orders: summaryData.orders,
-          users: summaryData.users,
-          products: summaryData.products,
-          topProducts: topProductsData,
-          sales: salesData,
-          categories: [
-            { name: 'Men', percentage: 45, sales: 6939 },
-            { name: 'Women', percentage: 38, sales: 5860 },
-            { name: 'Kids', percentage: 17, sales: 2621 }
-          ]
-        }
-        
-        setAnalytics(data)
-      } catch (apiError) {
-        console.warn('API not available, using mock data:', apiError)
-        // Fallback to mock data
-        const data = getMockAnalytics()
-        setAnalytics(data)
+      setDataErrors([])
+      console.log('🔄 Fetching comprehensive analytics from database...')
+      
+      // Use the new comprehensive analytics function
+      const result = await getComprehensiveAnalytics(selectedPeriod)
+      
+      // Validate the data structure
+      const validation = validateAnalyticsData(result)
+      if (!validation.isValid) {
+        console.warn('⚠️ Data validation failed:', validation.checks)
+        showToast('Some analytics data may be incomplete', 'warning')
       }
       
+      // Set errors if any occurred
+      if (result.errors && result.errors.length > 0) {
+        setDataErrors(result.errors)
+        console.warn('⚠️ Some data requests failed:', result.errors)
+      }
+      
+      // Structure the data for the UI
+      const analyticsData = {
+        revenue: {
+          total: result.summary?.revenue?.total || 0,
+          growth: parseFloat(result.summary?.revenue?.growth) || 0
+        },
+        orders: {
+          total: result.summary?.orders?.total || 0,
+          pending: result.summary?.orders?.pending || 0,
+          completed: result.summary?.orders?.completed || 0,
+          cancelled: result.summary?.orders?.cancelled || 0,
+          growth: parseFloat(result.summary?.orders?.growth) || 0
+        },
+        users: {
+          total: result.summary?.users?.total || 0,
+          active: result.summary?.users?.active || 0,
+          new: result.summary?.users?.new || 0,
+          growth: parseFloat(result.summary?.users?.growth) || 0
+        },
+        products: {
+          total: result.summary?.products?.total || 0,
+          inStock: result.summary?.products?.inStock || 0,
+          outOfStock: result.summary?.products?.outOfStock || 0,
+          lowStock: result.summary?.products?.lowStock || 0
+        },
+        topProducts: result.topProducts || [],
+        sales: result.sales || { data: [], total: 0 },
+        categories: result.categories || [],
+        timestamp: result.timestamp,
+        period: result.period
+      }
+      
+      console.log('✅ Analytics data processed:', {
+        revenue: analyticsData.revenue.total,
+        orders: analyticsData.orders.total,
+        users: analyticsData.users.total,
+        products: analyticsData.products.total,
+        topProducts: analyticsData.topProducts.length,
+        salesData: analyticsData.sales.data.length,
+        categories: analyticsData.categories.length
+      })
+      
+      setAnalytics(analyticsData)
       setLastUpdated(new Date())
+      
+      if (dataErrors.length === 0) {
+        showToast('Analytics data loaded successfully', 'success')
+      }
+      
     } catch (error) {
-      console.error('Failed to fetch analytics:', error)
-      showToast('Failed to load analytics data', 'error')
+      console.error('❌ Failed to fetch analytics:', error)
+      showToast('Failed to load analytics data: ' + error.message, 'error')
+      
+      // Set empty data structure on complete failure
+      setAnalytics({
+        revenue: { total: 0, growth: 0 },
+        orders: { total: 0, pending: 0, completed: 0, cancelled: 0, growth: 0 },
+        users: { total: 0, active: 0, new: 0, growth: 0 },
+        products: { total: 0, inStock: 0, outOfStock: 0, lowStock: 0 },
+        topProducts: [],
+        sales: { data: [], total: 0 },
+        categories: [],
+        timestamp: new Date().toISOString(),
+        period: selectedPeriod
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleRefresh = async () => {
+    try {
+      setLoading(true)
+      console.log('🔄 Manually refreshing analytics data...')
+      
+      const result = await refreshAnalytics(selectedPeriod)
+      
+      // Process the refreshed data same as fetchAnalytics
+      const analyticsData = {
+        revenue: {
+          total: result.summary?.revenue?.total || 0,
+          growth: parseFloat(result.summary?.revenue?.growth) || 0
+        },
+        orders: {
+          total: result.summary?.orders?.total || 0,
+          pending: result.summary?.orders?.pending || 0,
+          completed: result.summary?.orders?.completed || 0,
+          cancelled: result.summary?.orders?.cancelled || 0,
+          growth: parseFloat(result.summary?.orders?.growth) || 0
+        },
+        users: {
+          total: result.summary?.users?.total || 0,
+          active: result.summary?.users?.active || 0,
+          new: result.summary?.users?.new || 0,
+          growth: parseFloat(result.summary?.users?.growth) || 0
+        },
+        products: {
+          total: result.summary?.products?.total || 0,
+          inStock: result.summary?.products?.inStock || 0,
+          outOfStock: result.summary?.products?.outOfStock || 0,
+          lowStock: result.summary?.products?.lowStock || 0
+        },
+        topProducts: result.topProducts || [],
+        sales: result.sales || { data: [], total: 0 },
+        categories: result.categories || [],
+        timestamp: result.timestamp,
+        period: result.period
+      }
+      
+      setAnalytics(analyticsData)
+      setLastUpdated(new Date())
+      showToast('Analytics data refreshed successfully', 'success')
+      
+    } catch (error) {
+      console.error('❌ Manual refresh failed:', error)
+      showToast('Failed to refresh analytics data: ' + error.message, 'error')
     } finally {
       setLoading(false)
     }
@@ -105,18 +225,15 @@ const Analytics = () => {
     </div>
   )
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount)
+  const formatCurrencyLocal = (amount) => {
+    return formatCurrency(amount)
   }
 
-  const formatNumber = (num) => {
-    return new Intl.NumberFormat('en-US').format(num)
+  const formatNumberLocal = (num) => {
+    return formatNumber(num)
   }
 
-  if (loading) {
+  if (loading || !analytics) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -138,7 +255,7 @@ const Analytics = () => {
             <span>Last updated: {lastUpdated.toLocaleTimeString()}</span>
           </div>
           <button
-            onClick={fetchAnalytics}
+            onClick={handleRefresh}
             disabled={loading}
             className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
           >
@@ -147,6 +264,35 @@ const Analytics = () => {
           </button>
         </div>
       </div>
+
+      {/* Service Health & Data Status */}
+      {(serviceHealth?.status === 'unhealthy' || dataErrors.length > 0) && (
+        <div className="mb-8">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div className="flex items-center">
+              <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400 mr-3" />
+              <div>
+                <h3 className="text-sm font-medium text-yellow-800">Service Status</h3>
+                <div className="mt-2 text-sm text-yellow-700">
+                  {serviceHealth?.status === 'unhealthy' && (
+                    <p>Analytics service is experiencing issues. Some data may be unavailable.</p>
+                  )}
+                  {dataErrors.length > 0 && (
+                    <div>
+                      <p>Some data requests failed:</p>
+                      <ul className="list-disc list-inside mt-1">
+                        {dataErrors.map((error, index) => (
+                          <li key={index} className="text-xs">{error}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Period Selector */}
       <div className="mb-8">
@@ -199,28 +345,28 @@ const Analytics = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
           title="Total Revenue"
-          value={formatCurrency(analytics.revenue.total)}
+          value={formatCurrencyLocal(analytics.revenue.total)}
           icon={CurrencyDollarIcon}
           growth={analytics.revenue.growth}
           color="green"
         />
         <StatCard
           title="Total Orders"
-          value={formatNumber(analytics.orders.total)}
+          value={formatNumberLocal(analytics.orders.total)}
           icon={ShoppingBagIcon}
           growth={analytics.orders.growth}
           color="blue"
         />
         <StatCard
           title="Total Users"
-          value={formatNumber(analytics.users.total)}
+          value={formatNumberLocal(analytics.users.total)}
           icon={UsersIcon}
           growth={analytics.users.growth}
           color="purple"
         />
         <StatCard
           title="Total Products"
-          value={formatNumber(analytics.products.total)}
+          value={formatNumberLocal(analytics.products.total)}
           icon={ArchiveBoxIcon}
           color="orange"
         />
@@ -233,7 +379,7 @@ const Analytics = () => {
             <div>
               <p className="text-sm text-gray-600 mb-1">Avg Order Value</p>
               <p className="text-2xl font-semibold text-gray-900">
-                {analytics.orders.total > 0 ? formatCurrency(analytics.revenue.total / analytics.orders.total) : '$0.00'}
+                {analytics.orders.total > 0 ? formatCurrencyLocal(analytics.revenue.total / analytics.orders.total) : 'Rs 0'}
               </p>
             </div>
             <div className="p-3 rounded-full bg-indigo-100">
@@ -260,7 +406,7 @@ const Analytics = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Active Users</p>
-              <p className="text-2xl font-semibold text-gray-900">{formatNumber(analytics.users.active)}</p>
+              <p className="text-2xl font-semibold text-gray-900">{formatNumberLocal(analytics.users.active)}</p>
               <p className="text-sm text-gray-500">
                 {analytics.users.total > 0 ? ((analytics.users.active / analytics.users.total) * 100).toFixed(1) : '0'}% of total
               </p>
@@ -275,7 +421,7 @@ const Analytics = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">New Users</p>
-              <p className="text-2xl font-semibold text-gray-900">{formatNumber(analytics.users.new)}</p>
+              <p className="text-2xl font-semibold text-gray-900">{formatNumberLocal(analytics.users.new)}</p>
               <div className="flex items-center mt-2">
                 <ArrowTrendingUpIcon className="h-4 w-4 text-green-500 mr-1" />
                 <span className="text-sm text-green-600">{analytics.users.growth}%</span>
@@ -331,15 +477,15 @@ const Analytics = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-700">Total Users</span>
-              <span className="text-sm font-medium text-gray-900">{formatNumber(analytics.users.total)}</span>
+              <span className="text-sm font-medium text-gray-900">{formatNumberLocal(analytics.users.total)}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-700">Active Users</span>
-              <span className="text-sm font-medium text-gray-900">{formatNumber(analytics.users.active)}</span>
+              <span className="text-sm font-medium text-gray-900">{formatNumberLocal(analytics.users.active)}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-700">New Users</span>
-              <span className="text-sm font-medium text-gray-900">{formatNumber(analytics.users.new)}</span>
+              <span className="text-sm font-medium text-gray-900">{formatNumberLocal(analytics.users.new)}</span>
             </div>
           </div>
         </div>
@@ -440,82 +586,87 @@ const Analytics = () => {
             <ChartBarIcon className="h-5 w-5 mr-2" />
             Category Performance
           </h3>
-          <div className="space-y-4">
-            {analytics.categories.map((category, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700">{category.name}</span>
-                  <span className="text-sm font-medium text-gray-900">
-                    {formatCurrency(category.sales)}
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-indigo-600 h-2 rounded-full"
-                    style={{ width: `${category.percentage}%` }}
-                  ></div>
-                </div>
-                <div className="text-xs text-gray-500 text-right">
-                  {category.percentage}%
-                </div>
+          {analytics.categories && analytics.categories.length > 0 ? (
+            <CategoryChart categories={analytics.categories} />
+          ) : (
+            <div className="h-64 flex items-center justify-center">
+              <div className="text-center">
+                <ChartBarIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 text-sm">No category data available</p>
+                <p className="text-gray-400 text-xs mt-1">Data will appear when orders are processed</p>
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Sales Chart Placeholder */}
+      {/* Sales Chart */}
       <div className="mb-8">
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <ArrowTrendingUpIcon className="h-5 w-5 mr-2" />
             Sales Trend ({selectedPeriod})
           </h3>
-          <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-            <div className="text-center">
-              <ChartBarIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500 text-sm">Chart visualization would go here</p>
-              <p className="text-gray-400 text-xs mt-1">Integration with Chart.js or similar library</p>
+          {analytics.sales && analytics.sales.data && analytics.sales.data.length > 0 ? (
+            <SalesChart 
+              salesData={analytics.sales.data} 
+              period={selectedPeriod} 
+            />
+          ) : (
+            <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+              <div className="text-center">
+                <ChartBarIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 text-sm">No sales data available for the selected period</p>
+                <p className="text-gray-400 text-xs mt-1">Chart will appear when sales data is available</p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
       {/* Top Products */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <ArrowTrendingUpIcon className="h-5 w-5 mr-2" />
           Top Performing Products
         </h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-200">
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Product</th>
-                <th className="text-right py-3 px-4 text-sm font-medium text-gray-700">Sales</th>
-                <th className="text-right py-3 px-4 text-sm font-medium text-gray-700">Revenue</th>
-              </tr>
-            </thead>
-            <tbody>
-              {analytics.topProducts.map((product, index) => (
-                <tr key={product.id} className="border-b border-gray-100">
-                  <td className="py-3 px-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium">
-                        {index + 1}
-                      </div>
-                      <span className="text-sm text-gray-900">{product.name}</span>
-                    </div>
-                  </td>
-                  <td className="text-right py-3 px-4 text-sm text-gray-900">{product.sales}</td>
-                  <td className="text-right py-3 px-4 text-sm text-gray-900">
-                    {formatCurrency(product.revenue)}
-                  </td>
+        {analytics.topProducts && analytics.topProducts.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Product</th>
+                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-700">Sales</th>
+                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-700">Revenue</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {analytics.topProducts.map((product, index) => (
+                  <tr key={product._id || product.id || index} className="border-b border-gray-100">
+                    <td className="py-3 px-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium">
+                          {index + 1}
+                        </div>
+                        <span className="text-sm text-gray-900">{product.name}</span>
+                      </div>
+                    </td>
+                    <td className="text-right py-3 px-4 text-sm text-gray-900">{formatNumberLocal(product.sales)}</td>
+                    <td className="text-right py-3 px-4 text-sm text-gray-900">
+                      {formatCurrencyLocal(product.revenue)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <ArchiveBoxIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-500 text-sm">No product performance data available</p>
+            <p className="text-gray-400 text-xs mt-1">Data will appear when orders are processed</p>
+          </div>
+        )}
       </div>
 
       {/* Export and Actions */}
