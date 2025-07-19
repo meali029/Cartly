@@ -12,6 +12,7 @@ import {
   HeartIcon,
   SparklesIcon
 } from '@heroicons/react/24/outline'
+import Toast from '../components/ui/Toast'
 
 
 const Home = () => {
@@ -66,7 +67,7 @@ const Home = () => {
         setWomenProducts(resWomen.data.products || resWomen.data)
         setKidsProducts(resKids.data.products || resKids.data)
       } catch (err) {
-        console.error('Home product fetch failed:', err)
+        Toast('Failed to load products', err)  
       }
     }
 
@@ -76,7 +77,7 @@ const Home = () => {
   // Socket listener for real-time stock updates
   useSocket({
     'stock:update': (data) => {
-      console.log('🔄 Real-time stock update received on Home:', data)
+    
       
       // Update stock in all product categories
       const updateProductStock = (products) => 

@@ -52,8 +52,8 @@ const AdminDashboard = () => {
         setTopProducts(productsData)
         
       } catch (err) {
-        console.error('❌ Failed to load dashboard data:', err)
-        showToast('Dashboard data failed to load', 'error')
+       
+        showToast('Dashboard data failed to load', err)
       } finally {
         setLoading(false)
       }

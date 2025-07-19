@@ -48,8 +48,7 @@ const LiveChat = () => {
         setMessages(chatData.messages || [])
         setConnected(true)
       } catch (err) {
-        console.error('Failed to load chat:', err)
-        showToast('Failed to load chat', 'error')
+        showToast('Failed to load chat', err)
       } finally {
         setLoading(false)
       }
@@ -63,7 +62,6 @@ const LiveChat = () => {
   // Real-time chat updates with user context
   useSocket({
     'chat:message': (data) => {
-      console.log('📨 Received real-time message:', data);
       if (data.userId === user?._id) {
         setMessages(prev => {
           // Skip if this is a user message and we already have an optimistic version
@@ -75,7 +73,7 @@ const LiveChat = () => {
             );
             
             if (hasOptimistic) {
-              console.log('🔄 Replacing optimistic user message with real one in LiveChat');
+              
               return prev.map(msg => 
                 msg.isOptimistic && msg.message === data.message.message
                   ? { ...data.message, isOptimistic: false }
@@ -93,10 +91,10 @@ const LiveChat = () => {
           );
           
           if (!messageExists) {
-            console.log('➕ Adding new message to LiveChat');
+            
             return [...prev, data.message];
           } else {
-            console.log('⚠️ Message already exists in LiveChat, skipping duplicate');
+        
             return prev;
           }
         });
@@ -110,22 +108,19 @@ const LiveChat = () => {
         // Show notification only if chat is closed and it's from admin (reduced notification spam)
         if (!isOpen && data.message.sender === 'admin') {
           // Only show toast if widget is closed to avoid spam
-          console.log('📢 Admin message received while chat closed');
+         
         }
       }
     },
     'chat:update': (data) => {
-      console.log('📝 Received chat update:', data);
       if (data.userId === user?._id) {
         setChat(prev => prev ? { ...prev, ...data } : null);
       }
     },
     'connect': () => {
-      console.log('🔌 Socket connected in LiveChat');
       setConnected(true);
     },
     'disconnect': () => {
-      console.log('❌ Socket disconnected in LiveChat');
       setConnected(false);
     }
   }, user)
@@ -171,8 +166,7 @@ const LiveChat = () => {
       setChat(response.chat)
       // Removed any success toast notifications
     } catch (err) {
-      console.error('Failed to send message:', err)
-      showToast('Failed to send message', 'error')
+      showToast('Failed to send message', err)
       
       // Remove optimistic message on error and restore text
       setMessages(prev => prev.filter(msg => msg.messageId !== tempMessageId))
@@ -210,17 +204,17 @@ const LiveChat = () => {
   }
 
   return (
-    <div className="fixed bottom-20 right-5 z-50">
+    <div className="fixed bottom-20 right-2 sm:right-5 z-50">
       {/* Chat Widget */}
       {isOpen && (
-        <div className="mb-4 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+        <div className="mb-4 w-80 sm:w-72 max-w-[calc(100vw-1rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <ChatBubbleLeftRightIcon className="h-6 w-6" />
+          <div className="bg-gradient-to-r from-slate-600 to-gray-600 text-white p-3 sm:p-4 flex items-center justify-between">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <ChatBubbleLeftRightIcon className="h-5 w-5 sm:h-6 sm:w-6" />
               <div>
-                <h3 className="font-semibold">Live Support</h3>
-                <p className="text-sm text-blue-100">
+                <h3 className="font-semibold text-sm sm:text-base">Live Support</h3>
+                <p className="text-xs sm:text-sm text-blue-100">
                   {connected ? (
                     <span className="flex items-center">
                       <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
@@ -244,18 +238,18 @@ const LiveChat = () => {
           </div>
 
           {/* Messages Area */}
-          <div className="h-96 overflow-y-auto bg-gray-50">
+          <div className="h-56 sm:h-72 overflow-y-auto bg-gray-50">
             {loading ? (
               <div className="flex items-center justify-center h-full">
                 <ArrowPathIcon className="h-6 w-6 animate-spin text-blue-600" />
                 <span className="ml-2 text-gray-600">Loading chat...</span>
               </div>
             ) : (
-              <div className="p-4 space-y-4">
+              <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
                 {messages.length === 0 ? (
-                  <div className="text-center py-8">
-                    <ChatBubbleLeftRightIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">Start a conversation with our support team!</p>
+                  <div className="text-center py-6 sm:py-8">
+                    <ChatBubbleLeftRightIcon className="h-10 w-10 sm:h-12 sm:w-12 text-gray-300 mx-auto mb-3 sm:mb-4" />
+                    <p className="text-gray-500 text-sm sm:text-base px-4">Start a conversation with our support team!</p>
                   </div>
                 ) : (
                   messages.map((message, index) => (
@@ -263,7 +257,7 @@ const LiveChat = () => {
                       key={message.messageId || index}
                       className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                      <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
+                      <div className={`max-w-[250px] sm:max-w-xs lg:max-w-md px-3 sm:px-4 py-2 rounded-2xl ${
                         message.sender === 'user'
                           ? 'bg-blue-600 text-white rounded-br-sm'
                           : 'bg-white text-gray-900 rounded-bl-sm shadow-sm border'
@@ -276,7 +270,7 @@ const LiveChat = () => {
                             </span>
                           </div>
                         )}
-                        <p className="text-sm leading-relaxed">{message.message}</p>
+                        <p className="text-xs sm:text-sm leading-relaxed">{message.message}</p>
                         <div className={`flex items-center justify-end mt-1 text-xs ${
                           message.sender === 'user' ? 'text-blue-200' : 'text-gray-500'
                         }`}>
@@ -298,7 +292,7 @@ const LiveChat = () => {
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-gray-200 bg-white p-4">
+          <div className="border-t border-gray-200 bg-white p-3 sm:p-4">
             <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
               <input
                 ref={inputRef}
@@ -306,18 +300,18 @@ const LiveChat = () => {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type your message..."
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-full text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 disabled={sending || !connected}
               />
               <button
                 type="submit"
                 disabled={sending || !newMessage.trim() || !connected}
-                className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex-shrink-0"
               >
                 {sending ? (
-                  <ArrowPathIcon className="h-5 w-5 animate-spin" />
+                  <ArrowPathIcon className="h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
                 ) : (
-                  <PaperAirplaneIcon className="h-5 w-5" />
+                  <PaperAirplaneIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                 )}
               </button>
             </form>

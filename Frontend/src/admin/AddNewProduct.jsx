@@ -89,8 +89,8 @@ const AddNewProduct = () => {
       showToast('Product added successfully!', 'success')
       navigate('/admin/products')
     } catch (error) {
-      console.error('Failed to add product:', error)
-      showToast('Failed to add product. Please try again.', 'error')
+     
+      showToast('Failed to add product. Please try again.', error)
     } finally {
       setLoading(false)
     }

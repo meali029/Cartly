@@ -35,20 +35,16 @@ const ProductDetails = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true)
-        console.log('🔍 Fetching product with ID:', id) // Debug log
         const data = await getProductById(id)
-        console.log('📦 Product data received:', data) // Debug log
         
         if (data && data._id) {
           setProduct(data)
         } else {
-          console.error('❌ Invalid product data:', data)
           showToast('Product not found', 'error')
           navigate('/') // Redirect to home if product not found
         }
       } catch (err) {
-        console.error('❌ Failed to load product:', err)
-        showToast('Failed to load product. Please try again.', 'error')
+        showToast('Failed to load product. Please try again.', err)
         navigate('/') // Redirect to home on error
       } finally {
         setLoading(false)

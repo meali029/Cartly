@@ -155,8 +155,7 @@ const Checkout = () => {
       }, 1500)
       
     } catch (err) {
-      console.error('❌ Order error:', err)
-      setOrderStatus('error')
+      setOrderStatus(err)
       
       const errorMessage = err?.response?.data?.message || err?.message || 'Failed to place order'
       

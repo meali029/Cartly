@@ -54,8 +54,7 @@ const Chat = () => {
         
         setTimeout(() => inputRef.current?.focus(), 100)
       } catch (err) {
-        console.error('Failed to load chat:', err)
-        showToast('Failed to load chat', 'error')
+        showToast('Failed to load chat', err)
       } finally {
         setLoading(false)
       }
@@ -67,7 +66,6 @@ const Chat = () => {
   // Real-time chat updates with user context
   useSocket({
     'chat:message': (data) => {
-      console.log('📨 Received real-time message:', data);
       if (data.userId === user?._id) {
         setMessages(prev => {
           // Skip if this is a user message and we already have an optimistic version
@@ -79,7 +77,7 @@ const Chat = () => {
             );
             
             if (hasOptimistic) {
-              console.log('🔄 Replacing optimistic user message with real one');
+              
               return prev.map(msg => 
                 msg.isOptimistic && msg.message === data.message.message
                   ? { ...data.message, isOptimistic: false }
@@ -97,10 +95,10 @@ const Chat = () => {
           );
           
           if (!messageExists) {
-            console.log('➕ Adding new message to user chat');
+            
             return [...prev, data.message];
           } else {
-            console.log('⚠️ Message already exists, skipping duplicate');
+          
             return prev;
           }
         });
@@ -113,23 +111,23 @@ const Chat = () => {
         
         // Only show notification for admin messages (removed toast spam)
         if (data.message.sender === 'admin') {
-          console.log('📢 Admin message received');
+         
           // Removed toast notification to reduce spam
         }
       }
     },
     'chat:update': (data) => {
-      console.log('📝 Received chat update:', data);
+      
       if (data.userId === user?._id) {
         setChat(prev => prev ? { ...prev, ...data } : null);
       }
     },
     'connect': () => {
-      console.log('🔌 Socket connected in Chat page');
+     
       setConnected(true);
     },
     'disconnect': () => {
-      console.log('❌ Socket disconnected in Chat page');
+     
       setConnected(false);
     }
   }, user)
@@ -175,8 +173,8 @@ const Chat = () => {
       setChat(response.chat)
       // Removed success toast notification
     } catch (err) {
-      console.error('Failed to send message:', err)
-      showToast('Failed to send message', 'error')
+      
+      showToast('Failed to send message', err )
       
       // Remove optimistic message on error and restore text
       setMessages(prev => prev.filter(msg => msg.messageId !== tempMessageId))
@@ -223,7 +221,7 @@ const Chat = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+      <div className="bg-gradient-to-r from-slate-600 to-gray-600 text-white">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">

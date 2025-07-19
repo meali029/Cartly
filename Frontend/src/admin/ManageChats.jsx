@@ -73,8 +73,7 @@ const ManageChats = () => {
         setChats(chatsData.chats)
         setStats(statsData)
       } catch (err) {
-        console.error('Failed to load chats:', err)
-        showToast('Failed to load chats', 'error')
+        showToast('Failed to load chats', err)
       } finally {
         setLoading(false)
       }

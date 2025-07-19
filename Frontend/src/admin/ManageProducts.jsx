@@ -38,8 +38,7 @@ const ManageProducts = () => {
       setProducts(sortedProducts)
       setLastUpdated(new Date())
     } catch (err) {
-      console.error('❌ Failed to fetch products:', err)
-      showToast('Could not load products', 'error')
+      showToast('Could not load products', err)
       setProducts([]) // Set empty array on error
     } finally {
       setLoading(false)
@@ -53,7 +52,6 @@ const ManageProducts = () => {
   // Socket listener for real-time stock updates
   useSocket({
     'stock:update': (data) => {
-      console.log('🔄 Real-time stock update received:', data)
       setProducts(prevProducts => 
         prevProducts.map(product => 
           product._id === data.productId 
@@ -76,8 +74,7 @@ const ManageProducts = () => {
       showToast('Product deleted successfully', 'success')
       fetchProducts()
     } catch (err) {
-      console.error('❌ Delete failed:', err)
-      showToast('Failed to delete product', 'error')
+      showToast('Failed to delete product', err)
     }
   }
 

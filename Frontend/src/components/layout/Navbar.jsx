@@ -62,7 +62,7 @@ const Navbar = ({ onOpenAuth }) => {
   const brand = {
     name: 'Cartly',
     tagline: 'Premium Shopping',
-    logo: 'C'
+    logo: 'https://www.logoground.com/uploads/2018191292018-07-284631561C-Cart-logo.jpg'
   }
 
   // Don't render navbar for admin users since they have their own layout
@@ -80,8 +80,12 @@ const Navbar = ({ onOpenAuth }) => {
             className="group flex items-center space-x-3"
           >
             <div className="relative">
-              <div className="w-10 h-10 bg-gradient-to-br from-slate-600 to-slate-800 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-300 group-hover:scale-105">
-                <span className="text-white font-bold text-lg">{brand.logo}</span>
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-300 group-hover:scale-105 overflow-hidden">
+                <img 
+                  src={brand.logo} 
+                  alt={brand.name}
+                  className="w-10 h-10 object-contain"
+                />
               </div>
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
             </div>

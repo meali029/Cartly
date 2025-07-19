@@ -50,7 +50,7 @@ const Analytics = () => {
       const health = await checkServiceHealth()
       setServiceHealth(health)
     } catch (error) {
-      console.error('Health check failed:', error)
+      
       setServiceHealth({ status: 'unhealthy', error: error.message })
     }
   }
@@ -59,7 +59,7 @@ const Analytics = () => {
     try {
       setLoading(true)
       setDataErrors([])
-      console.log('🔄 Fetching comprehensive analytics from database...')
+    
       
       // Use the new comprehensive analytics function
       const result = await getComprehensiveAnalytics(selectedPeriod)
@@ -67,14 +67,13 @@ const Analytics = () => {
       // Validate the data structure
       const validation = validateAnalyticsData(result)
       if (!validation.isValid) {
-        console.warn('⚠️ Data validation failed:', validation.checks)
+       
         showToast('Some analytics data may be incomplete', 'warning')
       }
       
       // Set errors if any occurred
       if (result.errors && result.errors.length > 0) {
         setDataErrors(result.errors)
-        console.warn('⚠️ Some data requests failed:', result.errors)
       }
       
       // Structure the data for the UI
@@ -109,16 +108,7 @@ const Analytics = () => {
         period: result.period
       }
       
-      console.log('✅ Analytics data processed:', {
-        revenue: analyticsData.revenue.total,
-        orders: analyticsData.orders.total,
-        users: analyticsData.users.total,
-        products: analyticsData.products.total,
-        topProducts: analyticsData.topProducts.length,
-        salesData: analyticsData.sales.data.length,
-        categories: analyticsData.categories.length
-      })
-      
+    
       setAnalytics(analyticsData)
       setLastUpdated(new Date())
       
@@ -127,7 +117,6 @@ const Analytics = () => {
       }
       
     } catch (error) {
-      console.error('❌ Failed to fetch analytics:', error)
       showToast('Failed to load analytics data: ' + error.message, 'error')
       
       // Set empty data structure on complete failure
@@ -150,7 +139,6 @@ const Analytics = () => {
   const handleRefresh = async () => {
     try {
       setLoading(true)
-      console.log('🔄 Manually refreshing analytics data...')
       
       const result = await refreshAnalytics(selectedPeriod)
       
@@ -191,7 +179,6 @@ const Analytics = () => {
       showToast('Analytics data refreshed successfully', 'success')
       
     } catch (error) {
-      console.error('❌ Manual refresh failed:', error)
       showToast('Failed to refresh analytics data: ' + error.message, 'error')
     } finally {
       setLoading(false)

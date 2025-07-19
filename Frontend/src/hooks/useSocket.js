@@ -26,12 +26,12 @@ export const useSocket = (onEvents = {}, user = null) => {
     
     // Clean up existing socket if user changed
     if (socketRef.current && currentUserIdRef.current !== user._id) {
-      console.log('🧹 User changed, cleaning up old socket connection')
+      
       socketRef.current.disconnect()
       socketRef.current = null
     }
     
-    console.log('🔌 Creating new Socket.IO connection for user:', user._id)
+    
     
     const socket = io(SOCKET_URL, {
       transports: ['websocket'],
@@ -47,7 +47,7 @@ export const useSocket = (onEvents = {}, user = null) => {
     
     // Handle connection events
     socket.on('connect', () => {
-      console.log('✅ Socket connected:', socket.id)
+     
       
       // Join user's personal room for targeted messages
       socket.emit('join-user-room', user._id)
@@ -55,7 +55,7 @@ export const useSocket = (onEvents = {}, user = null) => {
       // If user is admin, also join admin room
       if (user.isAdmin) {
         socket.emit('join-admin-room')
-        console.log('👨‍💼 Admin joined admin room')
+       
       }
       
       // Call connect handler if provided
@@ -65,7 +65,7 @@ export const useSocket = (onEvents = {}, user = null) => {
     })
     
     socket.on('disconnect', (reason) => {
-      console.log('❌ Socket disconnected:', reason)
+     
       
       // Call disconnect handler if provided
       if (eventHandlersRef.current.disconnect) {
@@ -74,7 +74,7 @@ export const useSocket = (onEvents = {}, user = null) => {
     })
     
     socket.on('connect_error', (error) => {
-      console.error('🔥 Socket connection error:', error)
+   
       
       // Call error handler if provided
       if (eventHandlersRef.current.connect_error) {
@@ -96,13 +96,13 @@ export const useSocket = (onEvents = {}, user = null) => {
           currentHandler(data)
         }
       })
-      console.log('📡 Registered event listener:', eventName)
+     
     })
     
     // Cleanup function
     return () => {
       if (socket && socket.connected) {
-        console.log('🧹 Cleaning up socket connection')
+       
         socket.disconnect()
       }
     }
@@ -112,7 +112,7 @@ export const useSocket = (onEvents = {}, user = null) => {
   useEffect(() => {
     return () => {
       if (socketRef.current) {
-        console.log('🧹 Component unmounting, cleaning up socket')
+       
         socketRef.current.disconnect()
         socketRef.current = null
         currentUserIdRef.current = null

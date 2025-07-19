@@ -7,6 +7,7 @@ import {
   UserIcon
 } from '@heroicons/react/24/outline'
 import { useState } from 'react'
+import Toast from '../components/ui/Toast'
 
 const ContactSupport = () => {
   const [formData, setFormData] = useState({
@@ -20,8 +21,7 @@ const ContactSupport = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     // Handle form submission
-    console.log('Contact form submitted:', formData)
-    alert('Thank you for your message! We\'ll get back to you within 24 hours.')
+    Toast('Thank you for your message! We\'ll get back to you within 24 hours.')
     setFormData({
       name: '',
       email: '',

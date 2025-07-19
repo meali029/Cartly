@@ -6,8 +6,6 @@ const getUserChat = async (req, res) => {
   try {
     const userId = req.user._id;
     
-    console.log('🔍 Getting chat for user:', userId);
-    
     let chat = await Chat.findOne({ userId })
       .populate('userId', 'name email');
     
@@ -15,12 +13,10 @@ const getUserChat = async (req, res) => {
     if (chat?.assignedAdmin && chat.assignedAdmin !== 'admin_fake_id_123') {
       await chat.populate('assignedAdmin', 'name email');
     }
-    
-    console.log('Found existing chat:', !!chat);
-    
+      
     if (!chat) {
       // Create new chat for user
-      console.log('Creating new chat for user');
+   
       chat = await Chat.create({
         userId,
         subject: 'Support Chat',
@@ -36,7 +32,6 @@ const getUserChat = async (req, res) => {
         await chat.populate('assignedAdmin', 'name email');
       }
         
-      console.log('✅ Created new chat:', chat._id);
     }
     
     // Mark admin messages as read
@@ -53,11 +48,10 @@ const getUserChat = async (req, res) => {
       await chat.save();
     }
     
-    console.log('✅ Returning chat with', chat.messages.length, 'messages');
+    
     res.json(chat);
   } catch (err) {
-    console.error('❌ Get user chat error:', err);
-    console.error('Error stack:', err.stack);
+    
     res.status(500).json({ message: 'Failed to fetch chat', error: err.message });
   }
 };
@@ -69,12 +63,7 @@ const sendMessage = async (req, res) => {
     const userId = req.user._id;
     const isAdmin = req.user.isAdmin;
     
-    console.log('📤 Send message request:', { 
-      userId, 
-      isAdmin, 
-      message: message?.substring(0, 50) + '...',
-      targetUserId: req.body.userId 
-    });
+   
     
     if (!message || message.trim() === '') {
       return res.status(400).json({ message: 'Message content is required' });
@@ -83,12 +72,12 @@ const sendMessage = async (req, res) => {
     // Find or create chat
     let chat = await Chat.findOne({ userId: isAdmin ? req.body.userId : userId });
     
-    console.log('🔍 Found existing chat:', !!chat);
+  
     
     if (!chat) {
       if (isAdmin && req.body.userId) {
         // Admin creating chat for specific user
-        console.log('👨‍💼 Admin creating chat for user:', req.body.userId);
+        
         chat = await Chat.create({
           userId: req.body.userId,
           subject: 'Admin Support Chat',
@@ -97,7 +86,7 @@ const sendMessage = async (req, res) => {
         });
       } else {
         // User creating their first chat
-        console.log('👤 User creating first chat');
+        
         chat = await Chat.create({
           userId,
           subject: 'Support Chat',
@@ -105,7 +94,7 @@ const sendMessage = async (req, res) => {
           unreadCount: { user: 0, admin: 0 }
         });
       }
-      console.log('✅ Created new chat:', chat._id);
+     
     }
     
     // Create new message
@@ -138,9 +127,8 @@ const sendMessage = async (req, res) => {
       chat.status = 'active';
     }
     
-    console.log('💾 Saving chat with new message...');
+    
     await chat.save();
-    console.log('✅ Chat saved successfully');
     
     // Populate for response
     await chat.populate('userId', 'name email');
@@ -149,7 +137,7 @@ const sendMessage = async (req, res) => {
       await chat.populate('assignedAdmin', 'name email');
     }
     
-    console.log('📡 Emitting real-time update...');
+   
     // Emit real-time update to specific rooms
     const io = req.app.get('io');
     if (io) {
@@ -168,7 +156,7 @@ const sendMessage = async (req, res) => {
       // Send to admin room for real-time admin updates
       io.to(adminRoom).emit('chat:message', messageData);
       
-      console.log(`✅ Real-time update sent to rooms: ${userRoomId} and ${adminRoom}`);
+      
     }
     
     res.status(201).json({
@@ -177,8 +165,7 @@ const sendMessage = async (req, res) => {
       newMessage
     });
   } catch (err) {
-    console.error('❌ Send message error:', err);
-    console.error('Error stack:', err.stack);
+   
     res.status(500).json({ message: 'Failed to send message', error: err.message });
   }
 };
@@ -230,8 +217,7 @@ const getAllChats = async (req, res) => {
       stats
     });
   } catch (err) {
-    console.error('Get all chats error:', err);
-    res.status(500).json({ message: 'Failed to fetch chats', error: err.message });
+   res.status(500).json({ message: 'Failed to fetch chats', error: err.message });
   }
 };
 
@@ -266,7 +252,7 @@ const getChatById = async (req, res) => {
     
     res.json(chat);
   } catch (err) {
-    console.error('Get chat by ID error:', err);
+   
     res.status(500).json({ message: 'Failed to fetch chat', error: err.message });
   }
 };
@@ -317,7 +303,7 @@ const updateChatStatus = async (req, res) => {
     
     res.json({ message: 'Chat updated successfully', chat });
   } catch (err) {
-    console.error('Update chat status error:', err);
+   
     res.status(500).json({ message: 'Failed to update chat', error: err.message });
   }
 };
@@ -350,7 +336,7 @@ const deleteChat = async (req, res) => {
     
     res.json({ message: 'Chat deleted successfully' });
   } catch (err) {
-    console.error('Delete chat error:', err);
+   
     res.status(500).json({ message: 'Failed to delete chat', error: err.message });
   }
 };
@@ -389,7 +375,7 @@ const getChatStats = async (req, res) => {
       recentChats
     });
   } catch (err) {
-    console.error('Get chat stats error:', err);
+    
     res.status(500).json({ message: 'Failed to fetch chat statistics', error: err.message });
   }
 };

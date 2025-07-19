@@ -31,13 +31,12 @@ const placeOrder = async (req, res) => {
     const userEmail = req.user?.email;  // make sure req.user exists (protect middleware)
     if(userEmail) {
       sendOrderConfirmationEmail(userEmail, order).catch(err => {
-        console.error('Email sending failed:', err);
+       
       });
     }
 
     res.status(201).json(order);
   } catch (err) {
-    console.error('Order placement error:', err);
     res.status(500).json({ message: 'Failed to place order', error: err.message });
   }
 };
@@ -76,7 +75,7 @@ const updateOrderStatus = async (req, res) => {
     }
     
     const previousStatus = currentOrder.status;
-    console.log(`📦 Order ${orderId} status change: ${previousStatus} → ${status}`);
+  
     
     // Update the order status
     const order = await Order.findByIdAndUpdate(
@@ -89,22 +88,17 @@ const updateOrderStatus = async (req, res) => {
 
     // Handle stock updates when status changes to 'shipped'
     if (status === 'shipped' && previousStatus !== 'shipped') {
-      console.log('🚚 Order shipped - updating product stock...');
       
       // Update stock for each item in the order
       const stockUpdatePromises = order.items.map(async (item) => {
         try {
           const product = await Product.findById(item.productId);
           if (!product) {
-            console.warn(`⚠️ Product ${item.productId} not found for stock update`);
+           
             return { success: false, productId: item.productId, reason: 'Product not found' };
           }
           
-          // Check if there's enough stock
-          if (product.stock < item.quantity) {
-            console.warn(`⚠️ Insufficient stock for product "${item.title}": ${product.stock} available, ${item.quantity} required`);
-            // Still update but log the warning
-          }
+       
           
           const newStock = Math.max(0, product.stock - item.quantity);
           
@@ -114,7 +108,6 @@ const updateOrderStatus = async (req, res) => {
             { new: true }
           );
           
-          console.log(`📦 Product "${item.title}" stock updated: ${product.stock} → ${newStock} (${item.quantity} sold)`);
           
           // Emit real-time stock update
           const io = req.app.get('io');
@@ -131,7 +124,7 @@ const updateOrderStatus = async (req, res) => {
           return { success: true, productId: item.productId, newStock, oldStock: product.stock };
           
         } catch (error) {
-          console.error(`❌ Failed to update stock for product ${item.productId}:`, error);
+         
           return { success: false, productId: item.productId, error: error.message };
         }
       });
@@ -141,23 +134,19 @@ const updateOrderStatus = async (req, res) => {
       const successfulUpdates = stockUpdateResults.filter(result => result.success);
       const failedUpdates = stockUpdateResults.filter(result => !result.success);
       
-      console.log(`✅ Stock updates completed: ${successfulUpdates.length} successful, ${failedUpdates.length} failed`);
-      
-      if (failedUpdates.length > 0) {
-        console.warn('⚠️ Some stock updates failed:', failedUpdates);
-      }
+    
     }
     
     // Handle stock restoration when order is cancelled (if it was previously shipped)
     if (status === 'cancelled' && previousStatus === 'shipped') {
-      console.log('❌ Order cancelled - restoring product stock...');
+     
       
       // Restore stock for each item in the order
       const stockRestorePromises = order.items.map(async (item) => {
         try {
           const product = await Product.findById(item.productId);
           if (!product) {
-            console.warn(`⚠️ Product ${item.productId} not found for stock restoration`);
+          
             return;
           }
           
@@ -169,7 +158,7 @@ const updateOrderStatus = async (req, res) => {
             { new: true }
           );
           
-          console.log(`📦 Product "${item.title}" stock restored: ${product.stock} → ${newStock} (+${item.quantity})`);
+          
           
           // Emit real-time stock update
           const io = req.app.get('io');
@@ -183,13 +172,13 @@ const updateOrderStatus = async (req, res) => {
           }
           
         } catch (error) {
-          console.error(`❌ Failed to restore stock for product ${item.productId}:`, error);
+         
         }
       });
       
       // Wait for all stock restorations to complete
       await Promise.all(stockRestorePromises);
-      console.log('✅ All product stocks restored successfully');
+     
     }
 
     // Real-time: Notify all clients about order update
@@ -201,7 +190,7 @@ const updateOrderStatus = async (req, res) => {
       message: `Order status updated to ${status}${status === 'shipped' ? ' and product stocks updated' : ''}${status === 'cancelled' && previousStatus === 'shipped' ? ' and product stocks restored' : ''}`
     });
   } catch (err) {
-    console.error('❌ Error updating order status:', err);
+   
     res.status(500).json({ message: 'Error updating order', error: err.message });
   }
 };

@@ -199,28 +199,19 @@ router.get('/categories', protect, admin, async (req, res) => {
 // Get detailed revenue analytics with debugging
 router.get('/revenue', protect, admin, async (req, res) => {
   try {
-    console.log('🔄 Fetching revenue analytics...')
     
     // Get all orders first to debug
     const allOrders = await Order.find({})
-    console.log(`📊 Total orders found: ${allOrders.length}`)
     
     // Debug first few orders
     if (allOrders.length > 0) {
-      console.log('📝 Sample orders:')
       allOrders.slice(0, 3).forEach((order, index) => {
-        console.log(`Order ${index + 1}:`, {
-          id: order._id,
-          totalPrice: order.totalPrice,
-          status: order.status,
-          date: order.createdAt
-        })
+       
       })
     }
     
     // Get non-cancelled orders only
     const validOrders = await Order.find({ status: { $ne: 'cancelled' } })
-    console.log(`📊 Non-cancelled orders: ${validOrders.length}`)
     
     // Calculate total revenue with debugging
     let totalRevenue = 0
@@ -231,14 +222,12 @@ router.get('/revenue', protect, admin, async (req, res) => {
       totalRevenue += orderAmount
       if (orderAmount > 0) {
         orderCount++
-        console.log(`✅ Order ${order._id}: PKR ${orderAmount}`)
       } else {
-        console.log(`⚠️ Order ${order._id}: No amount (${orderAmount})`)
+       
       }
     })
     
-    console.log(`💰 Final Total Revenue: PKR ${totalRevenue}`)
-    console.log(`📊 Orders with revenue: ${orderCount}/${validOrders.length}`)
+   
     
     // Get recent orders for growth calculation
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
@@ -279,12 +268,11 @@ router.get('/revenue', protect, admin, async (req, res) => {
 // Debug endpoint to check order structure
 router.get('/debug', protect, admin, async (req, res) => {
   try {
-    console.log('🔍 Debug: Checking order structure...')
+    
     
     // Get first few orders to check structure
     const sampleOrders = await Order.find({}).limit(3)
     
-    console.log(`📊 Found ${sampleOrders.length} sample orders`)
     
     const debugInfo = {
       totalOrders: await Order.countDocuments(),
@@ -311,12 +299,10 @@ router.get('/debug', protect, admin, async (req, res) => {
     debugInfo.revenueCalculation.allOrders = allOrders.reduce((sum, order) => sum + (order.totalPrice || 0), 0)
     debugInfo.revenueCalculation.nonCancelled = validOrders.reduce((sum, order) => sum + (order.totalPrice || 0), 0)
     
-    console.log('🔍 Debug Info:', debugInfo)
     
     res.json(debugInfo)
     
   } catch (error) {
-    console.error('❌ Debug endpoint error:', error)
     res.status(500).json({ message: 'Debug error', error: error.message })
   }
 })
@@ -346,7 +332,6 @@ router.get('/recent-orders', protect, admin, async (req, res) => {
     
     res.json(formattedOrders)
   } catch (error) {
-    console.error('❌ Recent orders error:', error)
     res.status(500).json({ message: 'Server error', error: error.message })
   }
 })

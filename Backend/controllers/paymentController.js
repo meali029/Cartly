@@ -1,4 +1,3 @@
-console.log('Stripe Key:', process.env.STRIPE_SECRET_KEY);
 const Stripe = require('stripe');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -35,7 +34,6 @@ const createCheckoutSession = async (req, res) => {
 
     res.status(200).json({ id: session.id, url: session.url });
   } catch (error) {
-    console.error('❌ Stripe Checkout error:', error.message);
     res.status(500).json({ message: 'Failed to create Stripe session' });
   }
 };

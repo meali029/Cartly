@@ -24,15 +24,12 @@ export const getAllProducts = async () => {
 // 🧠 Get single product by ID
 export const getProductById = async (id) => {
   try {
-    console.log(`🌐 Fetching product with ID: ${id}`)
     const res = await axios.get(`${API}/products/${id}`)
-    console.log(`✅ Product fetch success:`, res.data)
     return res.data
   } catch (error) {
-    console.error(`❌ Product fetch failed for ID ${id}:`, error)
     if (error.response) {
-      console.error('Response data:', error.response.data)
-      console.error('Response status:', error.response.status)
+      console.error(`❌ Product fetch failed for ID ${id}:`, error)
+      
     }
     throw error
   }
@@ -47,15 +44,11 @@ export const createProduct = async (productData) => {
 // 🛠 Admin: Update product
 export const updateProduct = async (id, updates) => {
   try {
-    console.log(`🔄 Updating product ${id}:`, updates)
     const res = await axios.put(`${API}/products/${id}`, updates, getAuthHeaders())
-    console.log(`✅ Product update success:`, res.data)
     return res.data
   } catch (error) {
-    console.error(`❌ Product update failed for ID ${id}:`, error)
     if (error.response) {
       console.error('Response data:', error.response.data)
-      console.error('Response status:', error.response.status)
     }
     throw error
   }

@@ -28,11 +28,9 @@ const Orders = () => {
     try {
       setLoading(true)
       const data = await getUserOrders(user._id)
-      console.log('📦 Orders data received:', data) // Debug log
       setOrders(data)
     } catch (err) {
-      console.error('❌ Failed to fetch orders:', err)
-      showToast('Failed to load your orders', 'error')
+      showToast('Failed to load your orders', err)
     } finally {
       setLoading(false)
     }

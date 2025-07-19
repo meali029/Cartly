@@ -85,7 +85,8 @@ const Categories = () => {
         setProducts(res.data.products || res.data)
         setTotalPages(res.data.totalPages || 1)
       } catch (err) {
-        console.error(`Error fetching ${category} products:`, err)
+        console.error('Error fetching products:', err)
+             
       } finally {
         setLoading(false)
       }
@@ -108,7 +109,7 @@ const Categories = () => {
   // Socket listener for real-time stock updates
   useSocket({
     'stock:update': (data) => {
-      console.log('🔄 Real-time stock update received on Categories:', data)
+    
       setProducts(prevProducts => 
         prevProducts.map(product => 
           product._id === data.productId 

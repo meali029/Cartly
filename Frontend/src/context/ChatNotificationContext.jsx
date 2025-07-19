@@ -42,7 +42,6 @@ export const ChatNotificationProvider = ({ children }) => {
           setUnreadCount(chatData?.unreadCount?.user || 0)
         }
       } catch (error) {
-        console.error('Failed to load chat unread count:', error)
         setUnreadCount(0)
         setAdminUnreadCount(0)
       } finally {

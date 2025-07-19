@@ -41,8 +41,7 @@ const ManageOrders = () => {
       setOrders(sortedOrders)
       setLastUpdated(new Date())
     } catch (err) {
-      console.error('❌ Failed to fetch orders:', err)
-      showToast('Failed to fetch orders', 'error')
+      showToast('Failed to fetch orders', err)
     } finally {
       setLoading(false)
     }
@@ -70,8 +69,7 @@ const ManageOrders = () => {
       showToast('✅ Status updated')
       fetchOrders()
     } catch (err) {
-      console.error('❌ Failed to update order:', err)
-      showToast('Update failed', 'error')
+      showToast('Update failed', err)
     }
   }
 
@@ -87,8 +85,7 @@ const ManageOrders = () => {
       setCancelId(null)
       fetchOrders()
     } catch (err) {
-      console.error('❌ Failed to cancel order:', err)
-      showToast('Cancel failed', 'error')
+      showToast('Cancel failed', err)
     }
   }
 

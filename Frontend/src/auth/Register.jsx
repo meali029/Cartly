@@ -121,7 +121,6 @@ const Register = ({ isOpen, onClose, onSwitchToLogin }) => {
         if (onClose) onClose() // Close modal on successful registration
       }
     } catch (err) {
-      console.error('Register error:', err)
       const errorMessage = err?.response?.data?.message || err?.message || 'Registration failed'
       setError(errorMessage)
       showToast('❌ ' + errorMessage, 'error')
@@ -148,7 +147,6 @@ const Register = ({ isOpen, onClose, onSwitchToLogin }) => {
       showToast('✅ Email verified successfully! Welcome to Cartly!')
       if (onClose) onClose() // Close modal on successful verification
     } catch (err) {
-      console.error('Verification error:', err)
       setError(err?.response?.data?.message || 'Invalid verification code')
     } finally {
       setLoading(false)
@@ -164,7 +162,7 @@ const Register = ({ isOpen, onClose, onSwitchToLogin }) => {
       setCountdown(60) // Reset countdown
       showToast('📧 Verification email sent again!')
     } catch (err) {
-      console.error('Resend error:', err)
+    
       setError(err?.response?.data?.message || 'Failed to resend verification email')
     } finally {
       setResendingOtp(false)

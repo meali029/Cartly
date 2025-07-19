@@ -35,8 +35,7 @@ const ManageUsers = () => {
       setUsers(sortedUsers)
       setLastUpdated(new Date())
     } catch (err) {
-      console.error('❌ Failed to load users:', err)
-      showToast('Could not load users', 'error')
+      showToast('Could not load users', err)
     } finally {
       setLoading(false)
     }
@@ -61,8 +60,7 @@ const ManageUsers = () => {
       showToast(`User role updated successfully`, 'success')
       loadUsers()
     } catch (err) {
-      console.error('❌ Failed to update role:', err)
-      showToast('Failed to update role', 'error')
+      showToast('Failed to update role', err)
     }
   }
 

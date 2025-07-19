@@ -51,18 +51,15 @@ const registerUser = async (req, res) => {
         requiresVerification: true
       });
     } catch (emailError) {
-      console.error('Email sending error:', emailError);
       
       // Check if this is an authentication error
       if (emailError.code === 'EAUTH' || emailError.responseCode === 535) {
-        console.error('❌ Gmail authentication failed!');
         otpStore.delete(email); // Clean up the stored OTP
         res.status(500).json({ 
           message: 'Email service authentication failed. Please contact support.',
           error: 'Invalid email credentials'
         });
       } else if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.warn('Email credentials not configured');
         // In development, create user without verification
         const user = await User.create({
           name,
@@ -71,7 +68,7 @@ const registerUser = async (req, res) => {
           isEmailVerified: false
         });
         
-        console.log(`🔐 Development mode: OTP for ${email} is: ${otpCode}`);
+       
         res.status(201).json({
           message: 'User created in development mode. Email verification skipped.',
           _id: user._id,
@@ -84,7 +81,6 @@ const registerUser = async (req, res) => {
           otp: process.env.NODE_ENV === 'development' ? otpCode : undefined
         });
       } else {
-        console.error('Email sending failed:', emailError.message);
         otpStore.delete(email); // Clean up the stored OTP
         res.status(500).json({ 
           message: 'Failed to send verification email. Please try again.',
@@ -93,7 +89,6 @@ const registerUser = async (req, res) => {
       }
     }
   } catch (err) {
-    console.error('Register Error:', err);
     res.status(500).json({ message: 'Server error while registering user' });
   }
 };
@@ -159,7 +154,6 @@ const updateUserRole = async (req, res) => {
 
     res.json({ message: 'User role updated' });
   } catch (err) {
-    console.error('Role update error:', err);
     res.status(500).json({ message: 'Error updating user role' });
   }
 };
@@ -181,7 +175,6 @@ const getAdminStats = async (req, res) => {
       totalSales: totalSales[0]?.total || 0
     });
   } catch (err) {
-    console.error('Admin stats error:', err);
     res.status(500).json({ message: 'Error fetching admin stats' });
   }
 };
@@ -215,19 +208,10 @@ const forgotPassword = async (req, res) => {
       await sendPasswordResetEmail(email, otpCode);
       res.json({ message: 'OTP sent to your email successfully' });
     } catch (emailError) {
-      console.error('Email sending error:', emailError);
       
       // Check if this is an authentication error (invalid credentials)
       if (emailError.code === 'EAUTH' || emailError.responseCode === 535) {
-        console.error('❌ Gmail authentication failed!');
-        console.error('📧 Email:', email);
-        console.error('🔑 Please follow these steps to fix:');
-        console.error('1. Enable 2-Factor Authentication on Gmail');
-        console.error('2. Generate App Password from Google Account Settings');
-        console.error('3. Use App Password (16 chars) in EMAIL_PASS, not regular password');
-        console.error('4. Restart the server after updating .env');
-        
-        // Don't fall back to development mode - return error to force proper setup
+       
         otpStore.delete(email); // Clean up the stored OTP
         res.status(500).json({ 
           message: 'Gmail authentication failed. Please set up App Password properly.',
@@ -241,8 +225,7 @@ const forgotPassword = async (req, res) => {
           ]
         });
       } else if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.warn('Email credentials not configured');
-        console.log(`🔐 Development mode: OTP for ${email} is: ${otpCode}`);
+      
         res.json({ 
           message: 'Email service not configured. OTP logged to console (development mode)',
           development: true,
@@ -250,7 +233,7 @@ const forgotPassword = async (req, res) => {
         });
       } else {
         // Other email errors
-        console.error('Email sending failed:', emailError.message);
+      
         otpStore.delete(email); // Clean up the stored OTP
         res.status(500).json({ 
           message: 'Failed to send email. Please check your email configuration.',
@@ -259,7 +242,7 @@ const forgotPassword = async (req, res) => {
       }
     }
   } catch (err) {
-    console.error('Forgot password error:', err);
+  
     res.status(500).json({ message: 'Error processing forgot password request' });
   }
 };
@@ -288,7 +271,6 @@ const verifyOTP = async (req, res) => {
 
     res.json({ message: 'OTP verified successfully' });
   } catch (err) {
-    console.error('OTP verification error:', err);
     res.status(500).json({ message: 'Error verifying OTP' });
   }
 };
@@ -331,7 +313,6 @@ const resetPassword = async (req, res) => {
 
     res.json({ message: 'Password reset successfully' });
   } catch (err) {
-    console.error('Password reset error:', err);
     res.status(500).json({ message: 'Error resetting password' });
   }
 };
@@ -385,7 +366,6 @@ const verifyEmailOTP = async (req, res) => {
       token: generateToken(user._id),
     });
   } catch (err) {
-    console.error('Email verification error:', err);
     res.status(500).json({ message: 'Error verifying email' });
   }
 };
@@ -426,14 +406,12 @@ const resendEmailVerification = async (req, res) => {
       await sendEmailVerificationOTP(email, otpCode, existingOTP.userData.name);
       res.json({ message: 'Verification email sent successfully' });
     } catch (emailError) {
-      console.error('Email sending error:', emailError);
       res.status(500).json({ 
         message: 'Failed to send verification email. Please try again.',
         error: emailError.message
       });
     }
   } catch (err) {
-    console.error('Resend verification error:', err);
     res.status(500).json({ message: 'Error resending verification email' });
   }
 };

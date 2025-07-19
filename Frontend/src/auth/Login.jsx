@@ -45,7 +45,6 @@ const Login = ({ isOpen, onClose, onSwitchToRegister }) => {
       showToast('✅ Logged in successfully')
       if (onClose) onClose() // Close modal on successful login
     } catch (err) {
-      console.error('Login error:', err)
       const errorMessage = err.message || 'Login failed'
       setError(errorMessage)
       
@@ -72,7 +71,7 @@ const Login = ({ isOpen, onClose, onSwitchToRegister }) => {
         if (response.otp) {
           showToast(`🔐 Development Mode: Your OTP is ${response.otp}`)
         } else {
-          showToast('🔐 OTP generated - check server console')
+          showToast('🔐 OTP generated')
         }
         
         if (response.info) {
@@ -84,7 +83,6 @@ const Login = ({ isOpen, onClose, onSwitchToRegister }) => {
       
       setForgotPasswordStep(2)
     } catch (err) {
-      console.error('Forgot password error:', err)
       setError(err.response?.data?.message || 'Failed to send OTP. Please try again.')
     } finally {
       setForgotPasswordLoading(false)
@@ -108,7 +106,6 @@ const Login = ({ isOpen, onClose, onSwitchToRegister }) => {
       showToast('✅ OTP verified successfully')
       setForgotPasswordStep(3)
     } catch (err) {
-      console.error('OTP verification error:', err)
       setError(err.response?.data?.message || 'Invalid OTP. Please check and try again.')
     } finally {
       setForgotPasswordLoading(false)
@@ -148,7 +145,6 @@ const Login = ({ isOpen, onClose, onSwitchToRegister }) => {
       // Auto-fill email field
       setEmail(forgotEmail)
     } catch (err) {
-      console.error('Password reset error:', err)
       setError(err.response?.data?.message || 'Failed to reset password. Please try again.')
     } finally {
       setForgotPasswordLoading(false)

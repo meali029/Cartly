@@ -40,7 +40,6 @@ const EditProduct = () => {
         const res = await getProductById(id)
         
         // Debug logging to understand the response structure
-        console.log('🔍 Product API Response:', res)
         
         // Handle the response - the product should be directly in res.data or res
         const product = res.data || res
@@ -49,7 +48,6 @@ const EditProduct = () => {
           throw new Error('Product not found in response')
         }
         
-        console.log('📦 Product data:', product)
         
         setForm({
           title: product.title || '',
@@ -61,7 +59,6 @@ const EditProduct = () => {
           stock: product.stock || 0
         })
       } catch (error) {
-        console.error('❌ Failed to load product:', error)
         showToast(`Failed to load product: ${error.message}`, 'error')
         navigate('/admin/products')
       } finally {
@@ -72,7 +69,6 @@ const EditProduct = () => {
     if (id) {
       fetchProduct()
     } else {
-      console.error('❌ No product ID provided')
       navigate('/admin/products')
     }
   }, [id, showToast, navigate])
@@ -135,8 +131,7 @@ const EditProduct = () => {
       showToast('Product updated successfully!', 'success')
       navigate('/admin/products')
     } catch (error) {
-      console.error('Failed to update product:', error)
-      showToast('Failed to update product. Please try again.', 'error')
+      showToast('Failed to update product. Please try again.', error)
     } finally {
       setLoading(false)
     }
