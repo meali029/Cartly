@@ -29,7 +29,10 @@ connectDB().then(() => {
 
   // CORS configuration
   const corsOptions = {
-    origin: 'http://localhost:5173', // your React app URL
+    origin: [
+      'http://localhost:5173', // Local development
+      'https://cartly-shop.vercel.app' // Production frontend
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true, // if you use cookies/auth headers
