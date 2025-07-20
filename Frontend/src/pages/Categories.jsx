@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useSocket } from '../hooks/useSocket'
+import { AuthContext } from '../context/AuthContext'
 import axios from 'axios'
 import { UserIcon, SparklesIcon, HeartIcon } from '@heroicons/react/24/outline'
 
@@ -12,6 +13,7 @@ import Pagination from '../components/product/Pagination'
 
 const Categories = () => {
   const location = useLocation()
+  const { user } = useContext(AuthContext)
   const category = location.pathname.substring(1) // Get category from URL path (remove leading slash)
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -86,7 +88,8 @@ const Categories = () => {
         setTotalPages(res.data.totalPages || 1)
       } catch (err) {
         console.error('Error fetching products:', err)
-             
+        setProducts([]) // Set empty array on error
+        setTotalPages(1)
       } finally {
         setLoading(false)
       }
@@ -109,7 +112,6 @@ const Categories = () => {
   // Socket listener for real-time stock updates
   useSocket({
     'stock:update': (data) => {
-    
       setProducts(prevProducts => 
         prevProducts.map(product => 
           product._id === data.productId 
@@ -118,7 +120,7 @@ const Categories = () => {
         )
       )
     }
-  })
+  }, user)
 
   const IconComponent = config.icon
 
