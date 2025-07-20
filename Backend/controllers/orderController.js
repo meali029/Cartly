@@ -7,6 +7,8 @@ const placeOrder = async (req, res) => {
   try {
     const { userId, items, totalPrice, shippingInfo, paymentStatus, paymentMethod } = req.body;
 
+    console.log('📦 Placing order:', { userId, items: items?.length, totalPrice });
+
     if (!items || items.length === 0) {
       return res.status(400).json({ message: 'No items in order' });
     }
@@ -31,12 +33,13 @@ const placeOrder = async (req, res) => {
     const userEmail = req.user?.email;  // make sure req.user exists (protect middleware)
     if(userEmail) {
       sendOrderConfirmationEmail(userEmail, order).catch(err => {
-       
+        console.error('📧 Email sending failed:', err.message);
       });
     }
 
     res.status(201).json(order);
   } catch (err) {
+    console.error('❌ Order placement error:', err);
     res.status(500).json({ message: 'Failed to place order', error: err.message });
   }
 };

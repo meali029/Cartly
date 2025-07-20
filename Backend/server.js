@@ -60,7 +60,10 @@ connectDB().then(() => {
   const server = http.createServer(app);
   const io = new Server(server, {
     cors: {
-      origin: 'http://localhost:5173',
+      origin: [
+        'http://localhost:5173', // Local development
+        'https://cartly-shop.vercel.app' // Production frontend
+      ],
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       credentials: true,
     },
