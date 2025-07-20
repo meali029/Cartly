@@ -40,7 +40,7 @@ import Analytics from '../admin/Analytics'
 import SystemSettings from '../admin/SystemSettings'
 
 // Auth utils
-import PrivateRoute from '../auth/privateRoute'
+import PrivateRoute from '../auth/PrivateRoute'
 
 const AppRoutes = () => {
   return (

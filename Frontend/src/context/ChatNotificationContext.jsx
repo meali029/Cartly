@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { AuthContext } from './AuthContext'
-import { getUserChat } from '../services/chatService'
+import { getUserChat, getChatStats } from '../services/chatService'
 import { useSocket } from '../hooks/useSocket'
 
 const ChatNotificationContext = createContext()
@@ -33,7 +33,6 @@ export const ChatNotificationProvider = ({ children }) => {
         
         if (user.isAdmin) {
           // For admin users, get total unread messages from all chats
-          const { getChatStats } = await import('../services/chatService')
           const statsData = await getChatStats()
           setAdminUnreadCount(statsData?.unreadCount?.totalUnreadAdmin || 0)
         } else {
