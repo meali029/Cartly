@@ -5,25 +5,36 @@ const { sendOrderConfirmationEmail } = require('../utils/emailSender');
 
 const placeOrder = async (req, res) => {
   try {
+    console.log('📦 Order request received');
+    console.log('📦 Request body:', JSON.stringify(req.body, null, 2));
+    console.log('📦 Authenticated user:', req.user ? { id: req.user._id, email: req.user.email } : 'No user');
+
     const { userId, items, totalPrice, shippingInfo, paymentStatus, paymentMethod } = req.body;
 
     console.log('📦 Placing order:', { userId, items: items?.length, totalPrice });
 
     if (!items || items.length === 0) {
+      console.error('❌ No items in order');
       return res.status(400).json({ message: 'No items in order' });
     }
 
     // Use authenticated user's ID if not provided
     const orderUserId = userId || req.user._id;
+    console.log('📦 Final order user ID:', orderUserId);
 
-    const order = await Order.create({
+    const orderData = {
       userId: orderUserId,
       items,
       shippingInfo,
       paymentStatus,
       paymentMethod,
       totalPrice
-    });
+    };
+
+    console.log('📦 Creating order with data:', JSON.stringify(orderData, null, 2));
+
+    const order = await Order.create(orderData);
+    console.log('✅ Order created successfully:', order._id);
 
     // Real-time: Notify all clients about new order
     const io = req.app.get('io');
@@ -40,6 +51,7 @@ const placeOrder = async (req, res) => {
     res.status(201).json(order);
   } catch (err) {
     console.error('❌ Order placement error:', err);
+    console.error('❌ Error stack:', err.stack);
     res.status(500).json({ message: 'Failed to place order', error: err.message });
   }
 };
