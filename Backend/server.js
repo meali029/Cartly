@@ -54,6 +54,18 @@ connectDB().then(() => {
     res.send('🛍️ Welcome to Cratly');
   });
 
+  // Health check endpoint
+  app.get('/health', (req, res) => {
+    res.json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      mongoConnected: !!process.env.MONGO_URI,
+      jwtSecret: !!process.env.JWT_SECRET,
+      stripeKey: !!process.env.STRIPE_SECRET_KEY
+    });
+  });
+
   app.use(notFound);
   app.use(errorHandler);
 
