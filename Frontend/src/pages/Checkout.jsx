@@ -162,7 +162,7 @@ const Checkout = () => {
       if (err?.response?.status === 401) {
         showToast('Please login to place an order', 'error')
         // Redirect to login if not authenticated
-        setTimeout(() => navigate('/login'), 2000)
+        setTimeout(() => navigate('/'), 2000)
       } else {
         showToast('❌ ' + errorMessage, 'error')
       }
