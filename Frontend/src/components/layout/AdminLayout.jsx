@@ -65,11 +65,11 @@ const AdminLayout = () => {
       {/* Professional Vertical Sidebar */}
       <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-2xl transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 border-r border-gray-200 flex flex-col`}>
         {/* Header */}
-        <div className="h-16 px-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 flex items-center justify-between flex-shrink-0">
+        <div className="h-16 px-6 bg-gradient-to-r from-slate-600 via-slate-600 to-slate-700 flex items-center justify-between flex-shrink-0">
           <Link to="/admin/dashboard" className="flex items-center group">
             <div className="relative">
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                <span className="text-indigo-600 font-bold text-xl">C</span>
+                <span className="text-indigo-600 font-bold text-xl"><img src="/Cartly-logo.png" alt="Cartly Logo" /></span>
               </div>
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white"></div>
             </div>
@@ -112,7 +112,7 @@ const AdminLayout = () => {
             <div className="flex items-center min-w-0 flex-1">
               <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
                 <span className="text-white font-medium text-sm">
-                  {user.name?.charAt(0)?.toUpperCase() || 'A'}
+                  {<img src="/Mehboobali.jpg" alt="Cartly Logo" />}
                 </span>
               </div>
               <div className="ml-3 min-w-0 flex-1">
@@ -153,7 +153,7 @@ const AdminLayout = () => {
             </button>
             <div className="flex items-center">
               <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg mr-3">
-                <span className="text-white font-bold text-sm">C</span>
+                <span className="text-white font-bold text-sm"><img src="/Cartly-logo.png" alt="Cartly Logo" /></span>
               </div>
               <h1 className="text-lg font-bold text-gray-900">Cartly Admin</h1>
             </div>

@@ -320,7 +320,7 @@ const TermsOfService = () => {
                     
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-2">Phone</h4>
-                      <p className="text-gray-600">+92-300-1234567</p>
+                      <p className="text-gray-600">+92-304-4425653</p>
                     </div>
                     
                     <div>

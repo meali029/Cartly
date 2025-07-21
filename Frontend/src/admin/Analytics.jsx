@@ -186,7 +186,7 @@ const Analytics = () => {
   }
 
   const StatCard = ({ title, value, icon: IconComponent, growth, color = 'indigo' }) => ( // eslint-disable-line no-unused-vars
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
+    <div className="bg-white rounded-lg border border-gray-200 p-6 relative overflow-visible">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-gray-600 mb-1">{title}</p>
@@ -205,7 +205,10 @@ const Analytics = () => {
             </div>
           )}
         </div>
-        <div className={`p-3 rounded-full ${color === 'green' ? 'bg-green-100' : color === 'blue' ? 'bg-blue-100' : color === 'purple' ? 'bg-purple-100' : color === 'orange' ? 'bg-orange-100' : 'bg-indigo-100'}`}>
+        <div className={`hidden md:block absolute -top-5 -right-5 p-3 rounded-full shadow-lg z-10 ${color === 'green' ? 'bg-green-100' : color === 'blue' ? 'bg-blue-100' : color === 'purple' ? 'bg-purple-100' : color === 'orange' ? 'bg-orange-100' : 'bg-indigo-100'}`}>
+          <IconComponent className={`h-8 w-8 ${color === 'green' ? 'text-green-600' : color === 'blue' ? 'text-blue-600' : color === 'purple' ? 'text-purple-600' : color === 'orange' ? 'text-orange-600' : 'text-indigo-600'}`} />
+        </div>
+        <div className={`md:hidden p-3 rounded-full ${color === 'green' ? 'bg-green-100' : color === 'blue' ? 'bg-blue-100' : color === 'purple' ? 'bg-purple-100' : color === 'orange' ? 'bg-orange-100' : 'bg-indigo-100'}`}>
           <IconComponent className={`h-6 w-6 ${color === 'green' ? 'text-green-600' : color === 'blue' ? 'text-blue-600' : color === 'purple' ? 'text-purple-600' : color === 'orange' ? 'text-orange-600' : 'text-indigo-600'}`} />
         </div>
       </div>
@@ -229,22 +232,22 @@ const Analytics = () => {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-2 sm:p-4 md:p-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center space-x-3">
-          <ChartBarIcon className="h-8 w-8 text-indigo-600" />
-          <h1 className="text-3xl font-bold text-gray-900">Analytics</h1>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <ChartBarIcon className="h-7 w-7 sm:h-8 sm:w-8 text-indigo-600" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Analytics</h1>
         </div>
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:space-x-4">
+          <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500">
             <CalendarDaysIcon className="h-4 w-4" />
             <span>Last updated: {lastUpdated.toLocaleTimeString()}</span>
           </div>
           <button
             onClick={handleRefresh}
             disabled={loading}
-            className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+            className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 text-xs sm:text-base"
           >
             <ArrowPathIcon className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
@@ -299,27 +302,27 @@ const Analytics = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="mb-8">
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mb-6 sm:mb-8">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Quick Actions</h3>
+          <div className="flex flex-col gap-3 sm:grid sm:grid-cols-3 sm:gap-4">
             <button 
               onClick={() => navigate('/admin/orders')}
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+              className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-xs sm:text-base"
             >
               <ShoppingCartIcon className="h-4 w-4" />
               <span>View All Orders</span>
             </button>
             <button 
               onClick={() => navigate('/admin/products')}
-              className="flex items-center space-x-2 px-4 py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
+              className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-xs sm:text-base"
             >
               <ArchiveBoxIcon className="h-4 w-4" />
               <span>Manage Products</span>
             </button>
             <button 
               onClick={() => navigate('/admin/users')}
-              className="flex items-center space-x-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
+              className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors text-xs sm:text-base"
             >
               <UsersIcon className="h-4 w-4" />
               <span>View Users</span>
@@ -329,7 +332,7 @@ const Analytics = () => {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <StatCard
           title="Total Revenue"
           value={formatCurrencyLocal(analytics.revenue.total)}
@@ -360,8 +363,9 @@ const Analytics = () => {
       </div>
 
       {/* Additional Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        {/* Avg Order Value */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6 relative overflow-visible">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Avg Order Value</p>
@@ -369,13 +373,17 @@ const Analytics = () => {
                 {analytics.orders.total > 0 ? formatCurrencyLocal(analytics.revenue.total / analytics.orders.total) : 'Rs 0'}
               </p>
             </div>
-            <div className="p-3 rounded-full bg-indigo-100">
+            <div className="hidden md:block absolute -top-5 -right-5 p-3 rounded-full shadow-lg z-10 bg-indigo-100">
+              <CurrencyDollarIcon className="h-8 w-8 text-indigo-600" />
+            </div>
+            <div className="md:hidden p-3 rounded-full bg-indigo-100">
               <CurrencyDollarIcon className="h-6 w-6 text-indigo-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        {/* Conversion Rate */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6 relative overflow-visible">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Conversion Rate</p>
@@ -383,13 +391,17 @@ const Analytics = () => {
                 {analytics.users.total > 0 ? ((analytics.orders.total / analytics.users.total) * 100).toFixed(1) : '0'}%
               </p>
             </div>
-            <div className="p-3 rounded-full bg-yellow-100">
+            <div className="hidden md:block absolute -top-5 -right-5 p-3 rounded-full shadow-lg z-10 bg-yellow-100">
+              <ChartBarIcon className="h-8 w-8 text-yellow-600" />
+            </div>
+            <div className="md:hidden p-3 rounded-full bg-yellow-100">
               <ChartBarIcon className="h-6 w-6 text-yellow-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        {/* Active Users */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6 relative overflow-visible">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Active Users</p>
@@ -398,13 +410,17 @@ const Analytics = () => {
                 {analytics.users.total > 0 ? ((analytics.users.active / analytics.users.total) * 100).toFixed(1) : '0'}% of total
               </p>
             </div>
-            <div className="p-3 rounded-full bg-green-100">
+            <div className="hidden md:block absolute -top-5 -right-5 p-3 rounded-full shadow-lg z-10 bg-green-100">
+              <UsersIcon className="h-8 w-8 text-green-600" />
+            </div>
+            <div className="md:hidden p-3 rounded-full bg-green-100">
               <UsersIcon className="h-6 w-6 text-green-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        {/* New Users */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6 relative overflow-visible">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">New Users</p>
@@ -415,7 +431,10 @@ const Analytics = () => {
                 <span className="text-sm text-gray-500 ml-1">this month</span>
               </div>
             </div>
-            <div className="p-3 rounded-full bg-purple-100">
+            <div className="hidden md:block absolute -top-5 -right-5 p-3 rounded-full shadow-lg z-10 bg-purple-100">
+              <UsersIcon className="h-8 w-8 text-purple-600" />
+            </div>
+            <div className="md:hidden p-3 rounded-full bg-purple-100">
               <UsersIcon className="h-6 w-6 text-purple-600" />
             </div>
           </div>
@@ -423,7 +442,7 @@ const Analytics = () => {
       </div>
 
       {/* Detailed Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Order Status */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -535,7 +554,7 @@ const Analytics = () => {
       </div>
 
       {/* Product Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Product Stock Status */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -612,34 +631,34 @@ const Analytics = () => {
       </div>
 
       {/* Top Products */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+      <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 mb-6 sm:mb-8">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
           <ArrowTrendingUpIcon className="h-5 w-5 mr-2" />
           Top Performing Products
         </h3>
         {analytics.topProducts && analytics.topProducts.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[400px]">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Product</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-700">Sales</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-700">Revenue</th>
+                  <th className="text-left py-2 px-2 sm:py-3 sm:px-4 text-xs sm:text-sm font-medium text-gray-700">Product</th>
+                  <th className="text-right py-2 px-2 sm:py-3 sm:px-4 text-xs sm:text-sm font-medium text-gray-700">Sales</th>
+                  <th className="text-right py-2 px-2 sm:py-3 sm:px-4 text-xs sm:text-sm font-medium text-gray-700">Revenue</th>
                 </tr>
               </thead>
               <tbody>
                 {analytics.topProducts.map((product, index) => (
                   <tr key={product._id || product.id || index} className="border-b border-gray-100">
-                    <td className="py-3 px-4">
-                      <div className="flex items-center space-x-3">
+                    <td className="py-2 px-2 sm:py-3 sm:px-4">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
                         <div className="bg-indigo-100 text-indigo-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium">
                           {index + 1}
                         </div>
-                        <span className="text-sm text-gray-900">{product.name}</span>
+                        <span className="text-xs sm:text-sm text-gray-900">{product.name}</span>
                       </div>
                     </td>
-                    <td className="text-right py-3 px-4 text-sm text-gray-900">{formatNumberLocal(product.sales)}</td>
-                    <td className="text-right py-3 px-4 text-sm text-gray-900">
+                    <td className="text-right py-2 px-2 sm:py-3 sm:px-4 text-xs sm:text-sm text-gray-900">{formatNumberLocal(product.sales)}</td>
+                    <td className="text-right py-2 px-2 sm:py-3 sm:px-4 text-xs sm:text-sm text-gray-900">
                       {formatCurrencyLocal(product.revenue)}
                     </td>
                   </tr>

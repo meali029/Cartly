@@ -330,81 +330,39 @@ const ManageChats = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto p-2 sm:p-4 md:p-6">
       {/* Header with Stats */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Chat Management</h1>
-            <p className="text-gray-600 mt-2">Manage customer support conversations</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Chat Management</h1>
+            <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">Manage customer support conversations</p>
           </div>
           <button
             onClick={loadChats}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
           >
             <ArrowPathIcon className="h-5 w-5 mr-2" />
             Refresh
           </button>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid md:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white rounded-xl p-6 shadow-sm border">
-            <div className="flex items-center">
-              <ChatBubbleLeftRightIcon className="h-8 w-8 text-blue-600" />
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">Total Chats</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalChats || 0}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-xl p-6 shadow-sm border">
-            <div className="flex items-center">
-              <UserGroupIcon className="h-8 w-8 text-green-600" />
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">Active Chats</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.activeChats || 0}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-xl p-6 shadow-sm border">
-            <div className="flex items-center">
-              <ClockIcon className="h-8 w-8 text-yellow-600" />
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">Pending</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.pendingChats || 0}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-xl p-6 shadow-sm border">
-            <div className="flex items-center">
-              <CheckBadgeIcon className="h-8 w-8 text-red-600" />
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">Unread Messages</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.unreadCount?.totalUnreadAdmin || 0}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+       
+             </div>
 
       {/* Main Content */}
-      <div className="grid lg:grid-cols-5 gap-6">
-        
+      <div className="flex flex-col gap-4 sm:gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-5">
         {/* Chat List */}
-        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border">
-          <div className="p-4 border-b">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Conversations</h2>
+        <div className="w-full sm:col-span-1 lg:col-span-2 bg-white rounded-xl shadow-sm border mb-4 sm:mb-0">
+          <div className="p-3 sm:p-4 border-b">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2">
+              <h2 className="text-base sm:text-lg font-semibold">Conversations</h2>
               <div className="flex items-center space-x-2">
                 <FunnelIcon className="h-5 w-5 text-gray-400" />
                 <select
                   value={filters.status}
                   onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                  className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 rounded-lg px-2 sm:px-3 py-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">All Status</option>
                   <option value="active">Active</option>
@@ -413,7 +371,6 @@ const ManageChats = () => {
                 </select>
               </div>
             </div>
-            
             <div className="relative">
               <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
@@ -421,37 +378,36 @@ const ManageChats = () => {
                 placeholder="Search conversations..."
                 value={filters.search}
                 onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
-
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-48 sm:max-h-72 md:max-h-[340px] lg:max-h-96 overflow-y-auto">
             {chats.length === 0 ? (
-              <div className="p-8 text-center">
-                <ChatBubbleLeftRightIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">No conversations found</p>
+              <div className="p-6 sm:p-8 text-center">
+                <ChatBubbleLeftRightIcon className="h-10 w-10 sm:h-12 sm:w-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 text-sm">No conversations found</p>
               </div>
             ) : (
               chats.map(chat => (
                 <div
                   key={chat._id}
                   onClick={() => loadChat(chat._id)}
-                  className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
+                  className={`p-3 sm:p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
                     selectedChat?._id === chat._id ? 'bg-blue-50 border-blue-200' : ''
                   }`}
                 >
                   <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-3">
-                      <UserCircleIcon className="h-10 w-10 text-gray-400 mt-1" />
+                    <div className="flex items-start space-x-2 sm:space-x-3">
+                      <UserCircleIcon className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400 mt-1" />
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
-                          <h3 className="font-medium text-gray-900">
+                          <h3 className="font-medium text-gray-900 text-sm sm:text-base">
                             {chat.userId?.name || 'Unknown User'}
                           </h3>
                           <StatusBadge status={chat.status} />
                         </div>
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1">
                           {chat.userId?.email || 'No email'}
                         </p>
                         <p className="text-xs text-gray-500 mt-2">
@@ -459,7 +415,6 @@ const ManageChats = () => {
                         </p>
                       </div>
                     </div>
-                    
                     {chat.unreadCount?.admin > 0 && (
                       <span className="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                         {chat.unreadCount.admin > 9 ? '9+' : chat.unreadCount.admin}
@@ -473,29 +428,28 @@ const ManageChats = () => {
         </div>
 
         {/* Chat View */}
-        <div className="lg:col-span-3">
+        <div className="w-full sm:col-span-1 lg:col-span-3">
           {selectedChat ? (
-            <div className="bg-white rounded-xl shadow-sm border h-[600px] flex flex-col">
+            <div className="bg-white rounded-xl shadow-sm border h-[320px] sm:h-[340px] md:h-[420px] lg:h-[600px] flex flex-col">
               {/* Chat Header */}
-              <div className="p-4 border-b flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <UserCircleIcon className="h-10 w-10 text-gray-400" />
+              <div className="p-3 sm:p-4 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <UserCircleIcon className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400" />
                   <div>
-                    <h3 className="font-semibold text-gray-900">
+                    <h3 className="font-semibold text-gray-900 text-base sm:text-lg">
                       {selectedChat.userId?.name}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-xs sm:text-sm text-gray-600">
                       {selectedChat.userId?.email}
                     </p>
                   </div>
                   <StatusBadge status={selectedChat.status} />
                 </div>
-                
                 <div className="flex items-center space-x-2">
                   {selectedChat.status === 'active' && (
                     <button
                       onClick={() => handleUpdateStatus(selectedChat._id, 'closed')}
-                      className="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-sm hover:bg-red-200 transition-colors"
+                      className="px-2 sm:px-3 py-1 bg-red-100 text-red-700 rounded-lg text-xs sm:text-sm hover:bg-red-200 transition-colors"
                     >
                       Close Chat
                     </button>
@@ -503,7 +457,7 @@ const ManageChats = () => {
                   {selectedChat.status === 'closed' && (
                     <button
                       onClick={() => handleUpdateStatus(selectedChat._id, 'active')}
-                      className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm hover:bg-green-200 transition-colors"
+                      className="px-2 sm:px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs sm:text-sm hover:bg-green-200 transition-colors"
                     >
                       Reopen Chat
                     </button>
@@ -518,16 +472,16 @@ const ManageChats = () => {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-2 sm:space-y-3 md:space-y-4 min-h-[80px] sm:min-h-[120px] md:min-h-[180px]">
                 {chatLoading ? (
                   <div className="flex items-center justify-center h-full">
-                    <ArrowPathIcon className="h-6 w-6 animate-spin text-blue-600" />
-                    <span className="ml-2 text-gray-600">Loading messages...</span>
+                    <ArrowPathIcon className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-blue-600" />
+                    <span className="ml-2 text-gray-600 text-sm">Loading messages...</span>
                   </div>
                 ) : selectedChatMessages.length === 0 ? (
                   <div className="text-center py-8">
-                    <ChatBubbleLeftRightIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">No messages yet</p>
+                    <ChatBubbleLeftRightIcon className="h-10 w-10 sm:h-12 sm:w-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500 text-sm">No messages yet</p>
                   </div>
                 ) : (
                   selectedChatMessages.map((message, index) => (
@@ -535,7 +489,7 @@ const ManageChats = () => {
                       key={message.messageId || index}
                       className={`flex ${message.sender === 'admin' ? 'justify-end' : 'justify-start'}`}
                     >
-                      <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
+                      <div className={`max-w-[80vw] sm:max-w-xs lg:max-w-md px-3 sm:px-4 py-2 rounded-2xl ${
                         message.sender === 'admin'
                           ? 'bg-blue-600 text-white rounded-br-sm'
                           : 'bg-gray-100 text-gray-900 rounded-bl-sm'
@@ -548,7 +502,7 @@ const ManageChats = () => {
                             {message.senderName}
                           </span>
                         </div>
-                        <p className="text-sm leading-relaxed">{message.message}</p>
+                        <p className="text-xs sm:text-sm leading-relaxed">{message.message}</p>
                         <div className={`flex items-center justify-end mt-1 text-xs ${
                           message.sender === 'admin' ? 'text-blue-200' : 'text-gray-500'
                         }`}>
@@ -563,7 +517,7 @@ const ManageChats = () => {
               </div>
 
               {/* Message Input */}
-              <div className="p-4 border-t">
+              <div className="p-2 sm:p-4 border-t">
                 <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
                   <input
                     ref={inputRef}
@@ -571,7 +525,7 @@ const ManageChats = () => {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type your response..."
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-base"
                     disabled={sending || selectedChat.status === 'closed'}
                   />
                   <button
@@ -594,11 +548,11 @@ const ManageChats = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-xl shadow-sm border h-[600px] flex items-center justify-center">
+            <div className="bg-white rounded-xl shadow-sm border h-[180px] sm:h-[220px] md:h-[420px] lg:h-[600px] flex items-center justify-center">
               <div className="text-center">
-                <ChatBubbleLeftRightIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-700 mb-2">Select a conversation</h3>
-                <p className="text-gray-500">Choose a chat from the list to view and respond to messages</p>
+                <ChatBubbleLeftRightIcon className="h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-base sm:text-lg font-medium text-gray-700 mb-2">Select a conversation</h3>
+                <p className="text-gray-500 text-sm">Choose a chat from the list to view and respond to messages</p>
               </div>
             </div>
           )}

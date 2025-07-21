@@ -124,10 +124,10 @@ const Home = () => {
                         ? 'translate-y-0 opacity-100' 
                         : 'translate-y-8 opacity-0'
                     }`}>
-                      <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+                      <h1 className="text-5xl md:text-7xl font-bold text-white mb-10 md:mb-14 sm:mb-16 leading-tight">
                         {image.title}
                       </h1>
-                      <p className="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed ml-9">
+                      <p className="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed ml-9 sm:ml-11 sm:mb-4 md:pt-5 pt-4">
                         {image.subtitle}
                       </p>
                       <Link 

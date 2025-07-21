@@ -17,11 +17,15 @@ const ContactSupport = () => {
     category: 'general',
     message: ''
   })
+  const [showToast, setShowToast] = useState(false)
+  const [toastMsg, setToastMsg] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // Handle form submission
-    Toast('Thank you for your message! We\'ll get back to you within 24 hours.')
+    setToastMsg('Your message has been sent! Our support team will contact you soon.')
+    setShowToast(true)
+    setTimeout(() => setShowToast(false), 3000)
+
     setFormData({
       name: '',
       email: '',
@@ -45,15 +49,15 @@ const ContactSupport = () => {
       description: 'Chat with our support team in real-time',
       availability: 'Available 24/7',
       action: 'Start Chat',
-      color: 'blue'
+      color: 'green'
     },
     {
       icon: PhoneIcon,
       title: 'Phone Support',
-      description: '+92-300-1234567',
+      description: '+92-304-4425653',
       availability: 'Mon-Fri: 9AM-6PM',
       action: 'Call Now',
-      color: 'green'
+      color: 'blue'
     },
     {
       icon: EnvelopeIcon,
@@ -86,8 +90,11 @@ const ContactSupport = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
+      {showToast && (
+        <Toast message={toastMsg} type="success" />
+      )}
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+      <div className="bg-gradient-to-r from-gray-600 to-gray-800 text-white rounded-3xl h-100vh">
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
@@ -260,7 +267,7 @@ const ContactSupport = () => {
                   <PhoneIcon className="h-5 w-5 text-gray-400 mr-3 mt-1" />
                   <div>
                     <h3 className="font-semibold text-gray-900">Phone</h3>
-                    <p className="text-gray-600 text-sm">+92-300-1234567</p>
+                    <p className="text-gray-600 text-sm">+92-304-4425653</p>
                   </div>
                 </div>
 
@@ -313,7 +320,7 @@ const ContactSupport = () => {
         </div>
 
         {/* Response Time Info */}
-        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-8 text-white text-center mt-12">
+        <div className="bg-gradient-to-br  from-slate-400 to-gray-600 rounded-3xl p-8 text-white text-center mt-12">
           <UserIcon className="h-16 w-16 mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-4">We're Here to Help!</h2>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">

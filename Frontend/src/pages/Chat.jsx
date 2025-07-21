@@ -219,65 +219,53 @@ const Chat = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-slate-600 to-gray-600 text-white">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <ChatBubbleLeftRightIcon className="h-12 w-12" />
-              <div>
-                <h1 className="text-3xl font-bold">Live Support Chat</h1>
-                <p className="text-blue-100 mt-1">
-                  {connected ? (
-                    <span className="flex items-center">
-                      <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                      Connected - Our team is here to help
-                    </span>
-                  ) : (
-                    <span className="flex items-center">
-                      <span className="w-2 h-2 bg-red-400 rounded-full mr-2"></span>
-                      Connecting to support...
-                    </span>
-                  )}
-                </p>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-slate-100 flex items-center justify-center py-0 sm:py-0 ">
+      <div className="relative w-full max-w-2xl mx-auto">
+        {/* Floating Chat Header */}
+        <div className="absolute left-0 right-0 -top-8 sm:-top-1 z-10 flex items-center justify-between px-4 py-3 bg-white rounded-2xl shadow-lg border border-slate-200">
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-100 rounded-full p-2">
+              <ChatBubbleLeftRightIcon className="h-8 w-8 text-blue-600" />
             </div>
-            <Link
-              to="/"
-              className="flex items-center px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors"
-            >
-              <HomeIcon className="h-5 w-5 mr-2" />
-              Home
-            </Link>
+            <div>
+              <h1 className="text-lg sm:text-xl font-bold text-slate-900">Live Support</h1>
+              <span className="flex items-center text-xs text-slate-500">
+                <span className={`w-2 h-2 rounded-full mr-2 ${connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                {connected ? 'Online' : 'Connecting...'}
+              </span>
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Chat Container */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <Link
+            to="/"
+            className="flex items-center px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+          >
+            <HomeIcon className="h-5 w-5 " />
             
-            {/* Chat Messages Area */}
-            <div className="h-96 lg:h-[500px] overflow-y-auto bg-gray-50 p-6">
+          </Link>
+        </div>
+
+        {/* Chat Card */}
+        <div className="pt-16 sm:pt-24 pb-20 sm:pb-24">
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col h-[70vh] sm:h-[60vh] overflow-hidden">
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto px-2 sm:px-6 py-4 bg-gradient-to-br from-blue-50 via-white to-slate-100">
               {loading ? (
                 <div className="flex items-center justify-center h-full">
                   <ArrowPathIcon className="h-8 w-8 animate-spin text-blue-600" />
                   <span className="ml-2 text-gray-600 text-lg">Loading your conversation...</span>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {messages.length === 0 ? (
-                    <div className="text-center py-12">
-                      <div className="bg-blue-100 rounded-full p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-                        <ChatBubbleLeftRightIcon className="h-10 w-10 text-blue-600" />
+                    <div className="text-center py-8">
+                      <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                        <ChatBubbleLeftRightIcon className="h-8 w-8 text-blue-600" />
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-800 mb-2">Welcome to Live Support!</h3>
-                      <p className="text-gray-600 mb-4">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Welcome to Live Support!</h3>
+                      <p className="text-gray-600 mb-2">
                         Our support team is ready to help you with any questions or concerns.
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-xs text-gray-500">
                         Type your message below to get started.
                       </p>
                     </div>
@@ -287,34 +275,29 @@ const Chat = () => {
                         key={message.messageId || index}
                         className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                       >
-                        <div className={`max-w-xs lg:max-w-2xl px-6 py-4 rounded-2xl shadow-sm ${
-                          message.sender === 'user'
-                            ? 'bg-blue-600 text-white rounded-br-md'
-                            : 'bg-white text-gray-900 rounded-bl-md border border-gray-200'
-                        }`}>
+                        <div className={`flex items-end gap-2 ${message.sender === 'user' ? 'flex-row-reverse' : ''}`}>
                           {message.sender === 'admin' && (
-                            <div className="flex items-center mb-2">
-                              <div className="bg-green-500 rounded-full p-1 mr-2">
-                                <UserCircleIcon className="h-4 w-4 text-white" />
-                              </div>
-                              <span className="text-sm font-medium text-gray-600">
-                                {message.senderName} (Support Team)
-                              </span>
+                            <div className="bg-green-500 rounded-full p-1">
+                              <UserCircleIcon className="h-6 w-6 text-white" />
                             </div>
                           )}
-                          <p className="leading-relaxed">{message.message}</p>
-                          <div className={`flex items-center justify-between mt-3 text-xs ${
-                            message.sender === 'user' ? 'text-blue-200' : 'text-gray-500'
-                          }`}>
-                            <div className="flex items-center">
-                              <ClockIcon className="h-3 w-3 mr-1" />
-                              {formatTime(message.timestamp)}
+                          <div className={`max-w-xs px-4 py-3 rounded-2xl shadow-sm
+                            ${message.sender === 'user'
+                              ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-br-md'
+                              : 'bg-slate-50 text-slate-900 rounded-bl-md border border-slate-200'
+                            }`}
+                          >
+                            <p className="leading-relaxed break-words">{message.message}</p>
+                            <div className={`flex items-center justify-between mt-2 text-xs
+                              ${message.sender === 'user' ? 'text-blue-200' : 'text-slate-500'}`}>
+                              <div className="flex items-center">
+                                <ClockIcon className="h-3 w-3 mr-1" />
+                                {formatTime(message.timestamp)}
+                              </div>
+                              {message.sender === 'user' && (
+                                <CheckCircleIcon className={`h-4 w-4 ${message.isRead ? 'text-green-300' : 'text-blue-300'}`} />
+                              )}
                             </div>
-                            {message.sender === 'user' && (
-                              <CheckCircleIcon className={`h-4 w-4 ${
-                                message.isRead ? 'text-green-300' : 'text-blue-300'
-                              }`} />
-                            )}
                           </div>
                         </div>
                       </div>
@@ -325,21 +308,18 @@ const Chat = () => {
               )}
             </div>
 
-            {/* Message Input Area */}
-            <div className="border-t border-gray-200 bg-white p-6">
-              <form onSubmit={handleSendMessage} className="flex items-end space-x-4">
+            {/* Input Bar - fixed at bottom */}
+            <div className="border-t border-slate-200 bg-white px-2 sm:px-6 py-3 absolute left-0 right-0 bottom-0">
+              <form onSubmit={handleSendMessage} className="flex items-end gap-2">
                 <div className="flex-1">
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    Your Message
-                  </label>
                   <textarea
                     ref={inputRef}
                     id="message"
-                    rows={3}
+                    rows={2}
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type your message here..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Type your message..."
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     disabled={sending || !connected}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
@@ -348,14 +328,11 @@ const Chat = () => {
                       }
                     }}
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Press Enter to send, Shift+Enter for new line
-                  </p>
                 </div>
                 <button
                   type="submit"
                   disabled={sending || !newMessage.trim() || !connected}
-                  className="bg-blue-600 text-white p-4 rounded-xl hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors min-w-[60px] flex items-center justify-center"
+                  className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-3 rounded-full shadow-lg hover:scale-105 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all min-w-[48px] flex items-center justify-center"
                 >
                   {sending ? (
                     <ArrowPathIcon className="h-6 w-6 animate-spin" />
@@ -364,48 +341,12 @@ const Chat = () => {
                   )}
                 </button>
               </form>
-              
-              {/* Status Indicator */}
-              <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center text-gray-600">
-                    <div className={`w-2 h-2 rounded-full mr-2 ${
-                      connected ? 'bg-green-500' : 'bg-red-500'
-                    }`}></div>
-                    {connected ? 'Connected to support team' : 'Reconnecting...'}
-                  </div>
-                  <div className="text-gray-500">
-                    Chat Status: {chat?.status || 'Active'}
-                  </div>
+              <div className="flex items-center justify-between mt-2 text-xs text-slate-500">
+                <div className="flex items-center">
+                  <span className={`w-2 h-2 rounded-full mr-2 ${connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                  {connected ? 'Connected to support team' : 'Reconnecting...'}
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Help Information */}
-          <div className="mt-8 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Need Help?</h3>
-            <div className="grid md:grid-cols-3 gap-4 text-sm">
-              <div className="flex items-center text-gray-600">
-                <ClockIcon className="h-5 w-5 text-blue-500 mr-2" />
-                <div>
-                  <div className="font-medium">Response Time</div>
-                  <div>Usually within 5 minutes</div>
-                </div>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <ChatBubbleLeftRightIcon className="h-5 w-5 text-green-500 mr-2" />
-                <div>
-                  <div className="font-medium">Available 24/7</div>
-                  <div>We're always here to help</div>
-                </div>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <UserCircleIcon className="h-5 w-5 text-purple-500 mr-2" />
-                <div>
-                  <div className="font-medium">Expert Support</div>
-                  <div>Trained customer service</div>
-                </div>
+                <span>Chat Status: {chat?.status || 'Active'}</span>
               </div>
             </div>
           </div>

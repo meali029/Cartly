@@ -13,7 +13,8 @@ import {
   UserGroupIcon,
   HeartIcon,
   SparklesIcon,
-  ChatBubbleLeftRightIcon
+  ChatBubbleLeftRightIcon,
+  TagIcon
 } from '@heroicons/react/24/outline'
 
 const Navbar = ({ onOpenAuth }) => {
@@ -137,7 +138,7 @@ const Navbar = ({ onOpenAuth }) => {
             </button>
 
             {/* Desktop Search */}
-            <div className="hidden md:flex items-center relative group">
+            {/* <div className="hidden md:flex items-center relative group">
               <div className="absolute left-3 text-slate-400 group-focus-within:text-slate-500 transition-colors">
                 <MagnifyingGlassIcon className="h-4 w-4" />
               </div>
@@ -146,7 +147,15 @@ const Navbar = ({ onOpenAuth }) => {
                 placeholder="Search products..."
                 className="pl-10 pr-4 py-2 w-60 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-300 hover:shadow-lg focus:shadow-xl"
               />
-            </div>
+            </div> */}
+          
+<div className="hidden md:flex items-center">
+  <span className="bg-gradient-to-r from-red-500 to-red-400 text-white font-bold px-4 py-2 rounded-xl shadow-lg text-base tracking-wide border-2 border-white ring-2 ring-pink-200 flex items-center gap-2">
+    <TagIcon className="h-5 w-5 text-white" />
+    20% OFF Today!
+  </span>
+</div>
+
 
             {/* Chat Support */}
             {user && (

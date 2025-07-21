@@ -6,6 +6,7 @@ import {
   GlobeAltIcon,
   TrophyIcon
 } from '@heroicons/react/24/outline'
+import { useState, useEffect } from 'react'
 
 const AboutUs = () => {
   const stats = [
@@ -19,25 +20,25 @@ const AboutUs = () => {
     {
       name: 'Mehboob Ali',
       role: 'Founder & CEO',
-      image: '/api/placeholder/300/300',
+      image: '/Mehboobali.jpg',
       description: 'Visionary leader with 10+ years in fashion retail'
     },
     {
       name: 'Sarah Khan',
       role: 'Head of Design',
-      image: '/api/placeholder/300/300',
+      image: '/women.avif',
       description: 'Creative director with international fashion experience'
     },
     {
       name: 'Ahmed Hassan',
       role: 'Operations Manager',
-      image: '/api/placeholder/300/300',
+      image: '/man.avif',
       description: 'Expert in logistics and supply chain management'
     },
     {
-      name: 'Fatima Sheikh',
+      name: 'Fatima Anwar',
       role: 'Customer Experience',
-      image: '/api/placeholder/300/300',
+      image: '/women.avif',
       description: 'Passionate about creating exceptional customer journeys'
     }
   ]
@@ -68,6 +69,18 @@ const AboutUs = () => {
       color: 'purple'
     }
   ]
+
+  // Animation state for team reveal
+  const [visibleIndex, setVisibleIndex] = useState(-1)
+  useEffect(() => {
+    let i = 0
+    const interval = setInterval(() => {
+      setVisibleIndex(i)
+      i++
+      if (i >= team.length) clearInterval(interval)
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
@@ -125,7 +138,7 @@ const AboutUs = () => {
               
               <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-8 text-center">
                 <div className="w-32 h-32 bg-gradient-to-br from-slate-600 to-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-white font-bold text-4xl">C</span>
+                  <span className="text-white font-bold text-4xl"><img src="/Cartly-logo.png" alt="Cartly Logo" /></span>
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-4">Cartly</h3>
                 <p className="text-slate-600">Redefining Fashion Retail in Pakistan</p>
@@ -162,21 +175,37 @@ const AboutUs = () => {
         {/* Team */}
         <div className="bg-white rounded-3xl shadow-xl p-8 mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Meet Our Team</h2>
-          
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {team.map((member, index) => (
-              <div key={index} className="text-center group">
-                <div className="w-32 h-32 bg-gradient-to-br from-slate-200 to-slate-300 rounded-full mx-auto mb-4 overflow-hidden group-hover:shadow-lg transition-shadow">
-                  <div className="w-full h-full bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center">
-                    <span className="text-white font-bold text-2xl">
-                      {member.name.split(' ').map(n => n[0]).join('')}
-                    </span>
+              <div
+                key={index}
+                className={`relative text-center group transition-all duration-700 ease-in-out
+                  ${index <= visibleIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}
+                `}
+                style={{ transitionDelay: `${index * 200}ms` }}
+              >
+                {/* Profile Picture */}
+                <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden shadow-lg transition-all duration-500 group-hover:scale-90 group-hover:-translate-y-8 z-10 bg-white">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {/* Details Card on Hover */}
+                <div className="absolute left-1/2 top-1/2 w-72 max-w-[90vw] -translate-x-1/2 translate-y-8 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 z-20 pointer-events-none group-hover:pointer-events-auto">
+                  <div className="bg-white rounded-2xl shadow-2xl p-6 border border-slate-100">
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
+                    <p className="text-blue-600 font-semibold mb-2">{member.role}</p>
+                    <p className="text-gray-500 text-sm">{member.description}</p>
                   </div>
                 </div>
-                
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">{member.name}</h3>
-                <p className="text-slate-600 font-medium mb-2">{member.role}</p>
-                <p className="text-gray-500 text-sm">{member.description}</p>
+                {/* Basic Info (hidden on hover) */}
+                <div className="transition-opacity duration-300 group-hover:opacity-0">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">{member.name}</h3>
+                  <p className="text-slate-600 font-medium mb-2">{member.role}</p>
+                  <p className="text-gray-500 text-sm">{member.description}</p>
+                </div>
               </div>
             ))}
           </div>

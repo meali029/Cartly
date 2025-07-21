@@ -12,7 +12,7 @@ const ShippingInfo = () => {
     {
       name: 'Standard Shipping',
       time: '3-5 Business Days',
-      cost: 'PKR 250',
+      cost: 'PKR 200',
       description: 'Regular delivery to your doorstep',
       icon: TruckIcon,
       color: 'blue'
