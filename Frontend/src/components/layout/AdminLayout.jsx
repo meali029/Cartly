@@ -110,7 +110,7 @@ const AdminLayout = () => {
         <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center min-w-0 flex-1">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+              <div className="w-10 h-10  rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
                 <span className="text-white font-medium text-sm">
                   {<img src="/Mehboobali.jpg" alt="Cartly Logo" />}
                 </span>
@@ -152,7 +152,7 @@ const AdminLayout = () => {
               )}
             </button>
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg mr-3">
+              <div className="w-8 h-8  rounded-lg flex items-center justify-center shadow-lg mr-3">
                 <span className="text-white font-bold text-sm"><img src="/Cartly-logo.png" alt="Cartly Logo" /></span>
               </div>
               <h1 className="text-lg font-bold text-gray-900">Cartly Admin</h1>
