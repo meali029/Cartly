@@ -401,7 +401,7 @@ const Checkout = () => {
                   </div>
                   
                   <Input
-                    label="Postal Code (Optional)"
+                    label="Postal Code *"
                     name="postalCode"
                     value={form.postalCode}
                     onChange={handleChange}

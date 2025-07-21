@@ -3,7 +3,7 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 import { Outlet } from 'react-router-dom'
 import { useState } from 'react'
-import Login from '../../auth/Login'
+import AuthManager from '../auth/AuthManager'
 
 
 const MainLayout = () => {
@@ -20,7 +20,7 @@ const MainLayout = () => {
       </main>
       <Footer />
       {authModal === 'login' && (
-        <Login isOpen={true} onClose={handleCloseAuth} />
+        <AuthManager isOpen={true} onClose={handleCloseAuth} />
       )}
     </div>
   )
