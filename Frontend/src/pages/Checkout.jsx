@@ -91,7 +91,7 @@ const Checkout = () => {
 
     if (!user) {
       showToast('Please login to place an order', 'error')
-      navigate('/login')
+      navigate('/')
       return
     }
 

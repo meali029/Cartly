@@ -6,7 +6,7 @@ const PrivateRoute = ({ children, adminOnly = false }) => {
   const isAuthenticated = !!user;
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 
   // ✅ If route is admin-only and user is not admin, redirect
