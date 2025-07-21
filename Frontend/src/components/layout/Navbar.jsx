@@ -72,7 +72,8 @@ const Navbar = ({ onOpenAuth }) => {
   }
 
   return (
-    <header className="bg-white shadow-xl border-b border-slate-200 fixed top-0 left-0 right-0 z-50 backdrop-blur-lg">
+    <>
+      <header className="bg-white shadow-xl border-b border-slate-200 fixed top-0 left-0 right-0 z-50 backdrop-blur-lg">
       <div className="container mx-auto px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between">
           {/* LOGO */}
@@ -334,7 +335,10 @@ const Navbar = ({ onOpenAuth }) => {
           </div>
         )}
       </div>
-    </header>
+      </header>
+      {/* Add space below navbar */}
+      <div style={{ height: '80px' }} />
+    </>
   )
 }
 

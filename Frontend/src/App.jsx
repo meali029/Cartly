@@ -1,5 +1,6 @@
 import { BrowserRouter } from 'react-router-dom'
 import AppRoutes from './routes/AppRoutes'
+import ScrollToTop from './components/ui/ScrollToTop'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ToastProvider } from './context/ToastContext'
@@ -14,6 +15,7 @@ function App() {
       <AuthProvider>
         <CartProvider>
           <ChatNotificationProvider>
+            <ScrollToTop />
             <AppRoutes />
           </ChatNotificationProvider>
         </CartProvider>
