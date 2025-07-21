@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
-import LayoutWrapper from '../components/layout/LayoutWrapper'
+import MainLayout from '../components/layout/MainLayout'
 import AdminLayout from '../components/layout/AdminLayout'
 
 // Public Pages
@@ -46,7 +46,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Main Layout for regular users */}
-      <Route path="/" element={<LayoutWrapper />}>
+      <Route path="/" element={<MainLayout />}>
         <Route index element={<Home />} />
 
         <Route path="men" element={<Categories />} />
