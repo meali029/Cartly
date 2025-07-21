@@ -24,10 +24,10 @@ const AboutUs = () => {
       description: 'Visionary leader with 10+ years in fashion retail'
     },
     {
-      name: 'Sarah Khan',
-      role: 'Head of Design',
-      image: '/women.avif',
-      description: 'Creative director with international fashion experience'
+      name: 'Israr Ahmad',
+      role: 'co-Founder & CTO',
+      image: '/Israrahmad.jpeg',
+      description: 'Tech innovator driving our e-commerce platform'
     },
     {
       name: 'Ahmed Hassan',
