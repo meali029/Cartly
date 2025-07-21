@@ -1,3 +1,4 @@
+
 import { 
   ShoppingBagIcon,
   ChatBubbleLeftRightIcon,
@@ -6,6 +7,7 @@ import {
   CurrencyDollarIcon,
   DevicePhoneMobileIcon
 } from '@heroicons/react/24/outline'
+import { Link } from 'react-router-dom'
 
 const Footer = () => {
   const year = new Date().getFullYear()
@@ -73,34 +75,34 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3">
               <li>
-                <a href="/men" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/men" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Men's Fashion
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/women" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/women" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-400 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Women's Collection
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/kids" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/kids" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-emerald-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Kids Wear
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/sale-items" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/sale-items" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-amber-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Sale Items
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/new-arrivals" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/new-arrivals" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-300 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   New Arrivals
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -113,34 +115,34 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3">
               <li>
-                <a href="/help-center" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/help-center" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Help Center
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/size-guide" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/size-guide" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-emerald-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Size Guide
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/shipping-info" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/shipping-info" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-amber-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Shipping Info
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/returns-exchanges" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/returns-exchanges" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-red-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Returns & Exchanges
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/contact-support" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/contact-support" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-400 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Contact Support
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -153,10 +155,10 @@ const Footer = () => {
             </h4>
             <ul className="space-y-3 mb-6">
               <li>
-                <a href="/about-us" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/about-us" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   About Us
-                </a>
+                </Link>
               </li>
               {/* <li>
                 <a href="/careers" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
@@ -165,16 +167,16 @@ const Footer = () => {
                 </a>
               </li> */}
               <li>
-                <a href="/privacy-policy" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/privacy-policy" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-600 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/terms-of-service" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
+                <Link to="/terms-of-service" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-amber-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Terms of Service
-                </a>
+                </Link>
               </li>
             </ul>
 
