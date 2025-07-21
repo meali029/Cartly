@@ -116,23 +116,25 @@ const Home = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 via-slate-800/50 to-transparent"></div>
               
               {/* Content with Advanced Animations */}
-              <div className="absolute inset-0 flex items-center">
-                <div className="container mx-auto px-6 lg:px-12">
-                  <div className="max-w-2xl">
-                    <div className={`transform transition-all duration-1000 delay-300 ${
-                      index === currentSlide 
-                        ? 'translate-y-0 opacity-100' 
+              <div className="absolute inset-0 flex items-center justify-center px-4 sm:px-6 md:px-12">
+                <div className="w-full max-w-2xl mx-auto">
+                  <div
+                    className={`transform transition-all duration-1000 delay-300 ${
+                      index === currentSlide
+                        ? 'translate-y-0 opacity-100'
                         : 'translate-y-8 opacity-0'
-                    }`}>
-                      <h1 className="text-5xl md:text-7xl font-bold text-white mb-10 md:mb-14 sm:mb-16 leading-tight">
-                        {image.title}
-                      </h1>
-                      <p className="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed ml-9 sm:ml-11 sm:mb-4 md:pt-5 pt-4">
-                        {image.subtitle}
-                      </p>
-                      <Link 
+                    }`}
+                  >
+                    <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white mb-6 sm:mb-10 md:mb-14 leading-tight text-center sm:text-left">
+                      {image.title}
+                    </h1>
+                    <p className="text-base sm:text-xl md:text-2xl text-gray-200 mb-6 sm:mb-8 leading-relaxed sm:ml-6 md:ml-9 text-center sm:text-left">
+                      {image.subtitle}
+                    </p>
+                    <div className="flex justify-center sm:justify-start">
+                      <Link
                         to={image.link}
-                        className="group inline-flex items-center gap-3 bg-white text-slate-900 px-8 py-4 rounded-full text-lg font-semibold hover:bg-slate-100 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
+                        className="group inline-flex items-center gap-3 bg-white text-slate-900 px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold hover:bg-slate-100 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
                       >
                         {image.cta}
                         <ArrowRightIcon className="w-5 h-5 transition-transform group-hover:translate-x-1" />
