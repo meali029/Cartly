@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
           localStorage.removeItem('cratlyUser')
           localStorage.removeItem('cratlyToken')
           delete axios.defaults.headers.common['Authorization']
-          navigate('/login')
+          navigate('/')
         }
         return Promise.reject(error)
       }
