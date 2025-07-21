@@ -1,6 +1,8 @@
 import { BrowserRouter } from 'react-router-dom'
 import AppRoutes from './routes/AppRoutes'
 import ScrollToTop from './components/ui/ScrollToTop'
+import ScrollToTopBtn from './components/ui/ScrollToTopBtn'
+import LiveChat from './components/ui/LiveChat'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ToastProvider } from './context/ToastContext'
@@ -16,6 +18,8 @@ function App() {
         <CartProvider>
           <ChatNotificationProvider>
             <ScrollToTop />
+            <ScrollToTopBtn />
+            <LiveChat />
             <AppRoutes />
           </ChatNotificationProvider>
         </CartProvider>
