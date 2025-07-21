@@ -20,7 +20,7 @@ import {
 import { Outlet } from 'react-router-dom'
 
 const AdminLayout = () => {
-  const { user, logout } = useContext(AuthContext)
+  const { user, logout, loading } = useContext(AuthContext) // <-- Make sure AuthContext provides loading
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   // Add admin-layout class to body on mount, remove on unmount
@@ -31,6 +31,16 @@ const AdminLayout = () => {
     }
   }, [])
 
+  // Show loading spinner while user is being fetched
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    )
+  }
+
+  // Only check isAdmin after loading is false
   if (!user?.isAdmin) {
     return null
   }
