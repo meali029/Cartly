@@ -241,17 +241,17 @@ const Footer = () => {
                 </div>
 
                 {/* Credit Card */}
-                {/* <div className="w-8 h-6 bg-slate-700 rounded-lg border border-slate-600 flex items-center justify-center hover:bg-purple-600 transition-all duration-300 group relative overflow-hidden">
+                <div className="w-8 h-6 bg-slate-700 rounded-lg border border-slate-600 flex items-center justify-center hover:bg-purple-600 transition-all duration-300 group relative overflow-hidden">
                   <svg className="h-3 w-3 text-slate-300 group-hover:text-white transition-all duration-300 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M2 4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4zm2 2v2h16V6H4zm0 4v8h16v-8H4zm4 4h4v2H8v-2z"/>
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-150">
                     <div className="w-3 h-0.5 bg-white rounded-full animate-pulse"></div>
                   </div>
-                </div> */}
+                </div>
 
                 {/* Bank Transfer */}
-                {/* <div className="w-8 h-6 bg-slate-700 rounded-lg border border-slate-600 flex items-center justify-center hover:bg-indigo-600 transition-all duration-300 group relative overflow-hidden">
+                <div className="w-8 h-6 bg-slate-700 rounded-lg border border-slate-600 flex items-center justify-center hover:bg-indigo-600 transition-all duration-300 group relative overflow-hidden">
                   <svg className="h-3 w-3 text-slate-300 group-hover:text-white transition-all duration-300 group-hover:scale-105" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M2 7.5C2 6.67157 2.67157 6 3.5 6H20.5C21.3284 6 22 6.67157 22 7.5V8.5C22 9.32843 21.3284 10 20.5 10H3.5C2.67157 10 2 9.32843 2 8.5V7.5Z"/>
                     <path d="M2 12.5C2 11.6716 2.67157 11 3.5 11H20.5C21.3284 11 22 11.6716 22 12.5V16.5C22 17.3284 21.3284 18 20.5 18H3.5C2.67157 18 2 17.3284 2 16.5V12.5Z"/>
@@ -262,10 +262,10 @@ const Footer = () => {
                       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                     </svg>
                   </div>
-                </div> */}
+                </div>
 
                 {/* PayPal Style */}
-                {/* <div className="w-8 h-6 bg-slate-700 rounded-lg border border-slate-600 flex items-center justify-center hover:bg-yellow-600 transition-all duration-300 group relative overflow-hidden">
+                <div className="w-8 h-6 bg-slate-700 rounded-lg border border-slate-600 flex items-center justify-center hover:bg-yellow-600 transition-all duration-300 group relative overflow-hidden">
                   <svg className="h-3 w-3 text-slate-300 group-hover:text-white transition-all duration-300 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.26-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106h4.608a.64.64 0 0 0 .633-.74l.118-.746.946-5.985a.64.64 0 0 1 .633-.74h.4c3.773 0 6.724-1.533 7.583-5.967.358-1.85.025-3.4-.866-4.344z"/>
                   </svg>
@@ -276,7 +276,7 @@ const Footer = () => {
                       <div className="w-0.5 h-2 bg-white animate-pulse" style={{animationDelay: '0.2s'}}></div>
                     </div>
                   </div>
-                </div> */}
+                </div>
               </div>
             </div>
           </div>
