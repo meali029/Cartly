@@ -26,11 +26,16 @@ const Chat = () => {
   const [sending, setSending] = useState(false)
   const [connected, setConnected] = useState(false)
   const messagesEndRef = useRef(null)
+  const messagesContainerRef = useRef(null)
   const inputRef = useRef(null)
 
-  // Auto scroll to bottom
+  // Auto scroll to bottom of messages container only
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    setTimeout(() => {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      }
+    }, 50)
   }
 
   useEffect(() => {
@@ -75,9 +80,8 @@ const Chat = () => {
               msg.message === data.message.message &&
               Math.abs(new Date(msg.timestamp) - new Date(data.message.timestamp)) < 10000
             );
-            
             if (hasOptimistic) {
-              
+              setTimeout(scrollToBottom, 100)
               return prev.map(msg => 
                 msg.isOptimistic && msg.message === data.message.message
                   ? { ...data.message, isOptimistic: false }
@@ -85,7 +89,6 @@ const Chat = () => {
               );
             }
           }
-          
           // Enhanced duplicate prevention for all messages
           const messageExists = prev.some(msg => 
             msg.messageId === data.message.messageId ||
@@ -93,25 +96,21 @@ const Chat = () => {
              msg.sender === data.message.sender &&
              Math.abs(new Date(msg.timestamp) - new Date(data.message.timestamp)) < 5000)
           );
-          
           if (!messageExists) {
-            
+            setTimeout(scrollToBottom, 100)
             return [...prev, data.message];
           } else {
-          
+            setTimeout(scrollToBottom, 100)
             return prev;
           }
         });
-        
         // Update unread count
         setChat(prev => prev ? { 
           ...prev, 
           unreadCount: data.unreadCount 
         } : null);
-        
         // Only show notification for admin messages (removed toast spam)
         if (data.message.sender === 'admin') {
-         
           // Removed toast notification to reduce spam
         }
       }
@@ -135,16 +134,12 @@ const Chat = () => {
   // Send message
   const handleSendMessage = async (e) => {
     e.preventDefault()
-    
     if (!newMessage.trim() || sending) return
-    
     const messageText = newMessage.trim()
     const tempMessageId = Date.now().toString()
-    
     try {
       setSending(true)
       setNewMessage('')
-      
       // Optimistic update with flag
       const tempMessage = {
         sender: 'user',
@@ -153,30 +148,27 @@ const Chat = () => {
         timestamp: new Date(),
         isRead: false,
         messageId: tempMessageId,
-        isOptimistic: true // Flag to identify optimistic messages
+        isOptimistic: true
       }
-      
-      setMessages(prev => [...prev, tempMessage])
-      
+      setMessages(prev => {
+        const updated = [...prev, tempMessage]
+        setTimeout(scrollToBottom, 0)
+        return updated
+      })
       // Send to server
       const response = await sendMessage(messageText)
-      
-      // Replace optimistic message with server response
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.messageId === tempMessageId 
+      setMessages(prev => {
+        const updated = prev.map(msg =>
+          msg.messageId === tempMessageId
             ? { ...response.newMessage, isOptimistic: false }
             : msg
         )
-      )
-      
+        setTimeout(scrollToBottom, 0)
+        return updated
+      })
       setChat(response.chat)
-      // Removed success toast notification
     } catch (err) {
-      
       showToast('Failed to send message', err )
-      
-      // Remove optimistic message on error and restore text
       setMessages(prev => prev.filter(msg => msg.messageId !== tempMessageId))
       setNewMessage(messageText)
     } finally {
@@ -248,7 +240,7 @@ const Chat = () => {
         <div className="pt-16 sm:pt-24 pb-20 sm:pb-24">
           <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col h-[70vh] sm:h-[60vh] overflow-hidden">
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-2 sm:px-6 py-4 bg-gradient-to-br from-blue-50 via-white to-slate-100">
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-2 sm:px-6 py-4 bg-gradient-to-br from-blue-50 via-white to-slate-100">
               {loading ? (
                 <div className="flex items-center justify-center h-full">
                   <ArrowPathIcon className="h-8 w-8 animate-spin text-blue-600" />
@@ -308,8 +300,8 @@ const Chat = () => {
               )}
             </div>
 
-            {/* Input Bar - fixed at bottom */}
-            <div className="border-t border-slate-200 bg-white px-2 sm:px-6 py-3 absolute left-0 right-0 bottom-0">
+            {/* Input Bar - now relative, not absolute, so scroll area includes it */}
+            <div className="border-t border-slate-200 bg-white px-2 sm:px-6 py-3">
               <form onSubmit={handleSendMessage} className="flex items-end gap-2">
                 <div className="flex-1">
                   <textarea
