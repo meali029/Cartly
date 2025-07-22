@@ -2,7 +2,6 @@ html, body {
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box;
-  height: 100%;
 }
 body {
   margin: 0 !important;
@@ -11,6 +10,7 @@ body {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 /* Hide scrollbars globally */
 * {
@@ -21,7 +21,6 @@ body {
 *::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
-
 html, body {
   scrollbar-width: none;
   -ms-overflow-style: none;
