@@ -302,7 +302,7 @@ const Footer = () => {
         <div className="absolute bottom-0 w-full h-1/2 bg-gradient-to-t from-slate-900 to-transparent z-10"></div>
         
         <div
-          className="absolute bottom-0 left-0 right-0 w-full flex justify-center text-[21vw] md:text-[19vw] lg:text-[17vw] xl:text-[15vw] font-extrabold tracking-widest px-0"
+          className="absolute bottom-0 left-0 right-0 w-full flex justify-center text-[21vw] sm:text-[17vw] md:text-[14vw] lg:text-[11vw] xl:text-[9vw] 2xl:text-[8vw] font-extrabold tracking-widest px-0"
           style={{
             lineHeight: 0.7, // Brings text closer to bottom
             opacity: 0.9,
