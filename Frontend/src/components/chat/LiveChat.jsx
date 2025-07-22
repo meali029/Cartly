@@ -199,8 +199,8 @@ const LiveChat = () => {
     }
   }
 
-  if (!user) {
-    return null // Don't show chat for non-logged in users
+  if (!user || user.role === 'admin') {
+    return null // Don't show chat for non-logged in users or admin users
   }
 
   return (

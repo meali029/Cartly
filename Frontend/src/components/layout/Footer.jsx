@@ -294,7 +294,7 @@ const Footer = () => {
       className="relative w-full flex justify-center items-end select-none overflow-hidden px-4 md:px-8"
       style={{ 
         backgroundColor: 'rgb(16 24 42)',
-        height: 'clamp(110px, 10vh, 250px)', // Reduced min height for mobile
+        height: 'clamp(110px, 12vh, 250px)', // Reduced min height for mobile
         paddingTop: '0.5rem', // Less top space on mobile
       }}
     >
