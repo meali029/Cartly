@@ -199,7 +199,7 @@ const Categories = () => {
               </div>
             ) : (
               <div className="space-y-8">
-                <ProductGrid products={products} />
+                <ProductGrid products={products} enableLazyLoading={true} />
                 {totalPages > 1 && (
                   <div className="flex justify-center">
                     <Pagination

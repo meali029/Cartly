@@ -19,12 +19,31 @@ const Chat = () => {
   const { user } = useContext(AuthContext)
   const { showToast } = useToast()
   const { clearNotifications } = useChatNotifications()
-  const [chat, setChat] = useState(null)
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [connected, setConnected] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
+  const [showQuickMessages, setShowQuickMessages] = useState(true)
+
+  
+
+  // Predefined quick messages with responses
+  const quickMessages = [
+    {
+      id: 'order-status',
+      text: '📦 Check my order status',
+      userMessage: 'Hi! I want to check my order status',
+      response: 'I\'d be happy to help you check your order status! You can view your orders by going to "My Orders" in your account, or I can help you track a specific order. Do you have an order number you\'d like me to look up? 📋'
+    },
+    {
+      id: 'shipping-info',
+      text: '🚚 Shipping and delivery info',
+      userMessage: 'I need information about shipping and delivery',
+      response: 'Here\'s our shipping information:\n\n• Free delivery on orders above PKR 5,000\n• Standard delivery: 3-5 business days\n• Express delivery: 1-2 business days\n• Cash on delivery available\n\nIs there something specific about shipping you\'d like to know? 🚛'
+    }
+  ]
   const messagesEndRef = useRef(null)
   const messagesContainerRef = useRef(null)
   const inputRef = useRef(null)
@@ -50,9 +69,16 @@ const Chat = () => {
       try {
         setLoading(true)
         const chatData = await getUserChat()
-        setChat(chatData)
+       
         setMessages(chatData.messages || [])
         setConnected(true)
+        
+        // Show quick messages if chat is empty
+        if (!chatData.messages || chatData.messages.length === 0) {
+          setShowQuickMessages(true)
+        } else {
+          setShowQuickMessages(false)
+        }
         
         // Clear notifications when user opens chat
         clearNotifications()
@@ -104,29 +130,28 @@ const Chat = () => {
             return prev;
           }
         });
-        // Update unread count
-        setChat(prev => prev ? { 
-          ...prev, 
-          unreadCount: data.unreadCount 
-        } : null);
-        // Only show notification for admin messages (removed toast spam)
+        // Update unread count and last seen
+        
+        
+        // Stop typing indicator when message is received
         if (data.message.sender === 'admin') {
-          // Removed toast notification to reduce spam
+          setIsTyping(false);
         }
       }
     },
-    'chat:update': (data) => {
-      
-      if (data.userId === user?._id) {
-        setChat(prev => prev ? { ...prev, ...data } : null);
+    'chat:typing': (data) => {
+      if (data.userId === user?._id && data.sender === 'admin') {
+        setIsTyping(data.isTyping);
+        if (data.isTyping) {
+          // Auto-hide typing indicator after 5 seconds
+          setTimeout(() => setIsTyping(false), 5000);
+        }
       }
     },
-    'connect': () => {
-     
+       'connect': () => {
       setConnected(true);
     },
     'disconnect': () => {
-     
       setConnected(false);
     }
   }, user)
@@ -140,6 +165,7 @@ const Chat = () => {
     try {
       setSending(true)
       setNewMessage('')
+      setShowQuickMessages(false) // Hide quick messages after sending
       // Optimistic update with flag
       const tempMessage = {
         sender: 'user',
@@ -166,7 +192,6 @@ const Chat = () => {
         setTimeout(scrollToBottom, 0)
         return updated
       })
-      setChat(response.chat)
     } catch (err) {
       showToast('Failed to send message', err )
       setMessages(prev => prev.filter(msg => msg.messageId !== tempMessageId))
@@ -176,17 +201,103 @@ const Chat = () => {
     }
   }
 
-  // Format timestamp
+  // Handle quick message selection
+  const handleQuickMessage = async (quickMsg) => {
+    const userMessageId = Date.now().toString()
+    const adminMessageId = (Date.now() + 1).toString()
+    
+    try {
+      setSending(true)
+      setShowQuickMessages(false)
+      
+      // Add user message
+      const userMessage = {
+        sender: 'user',
+        senderName: user.name,
+        message: quickMsg.userMessage,
+        timestamp: new Date(),
+        isRead: false,
+        messageId: userMessageId,
+        isOptimistic: false
+      }
+      
+      setMessages(prev => {
+        const updated = [...prev, userMessage]
+        setTimeout(scrollToBottom, 100)
+        return updated
+      })
+      
+      // Show typing indicator
+      setIsTyping(true)
+      
+      // Simulate admin response delay
+      setTimeout(() => {
+        setIsTyping(false)
+        
+        const adminMessage = {
+          sender: 'admin',
+          senderName: 'Support Team',
+          message: quickMsg.response,
+          timestamp: new Date(),
+          isRead: false,
+          messageId: adminMessageId,
+          isOptimistic: false
+        }
+        
+        setMessages(prev => {
+          const updated = [...prev, adminMessage]
+          setTimeout(scrollToBottom, 100)
+          return updated
+        })
+      }, 1500) // 1.5 second delay for realistic response
+      
+    } catch (err) {
+      showToast('Failed to send message', err)
+    } finally {
+      setSending(false)
+    }
+  }
+
+  // Format timestamp with more detailed information
   const formatTime = (timestamp) => {
     const date = new Date(timestamp)
     const now = new Date()
     const diffMinutes = Math.floor((now - date) / (1000 * 60))
+    const diffHours = Math.floor(diffMinutes / 60)
+    const diffDays = Math.floor(diffHours / 24)
     
+    // For very recent messages (less than 1 minute)
     if (diffMinutes < 1) return 'Just now'
-    if (diffMinutes < 60) return `${diffMinutes}m ago`
-    if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}h ago`
     
-    return date.toLocaleDateString()
+    // For messages within an hour
+    if (diffMinutes < 60) return `${diffMinutes}m ago`
+    
+    // For messages within 24 hours
+    if (diffHours < 24) return `${diffHours}h ago`
+    
+    // For messages within a week
+    if (diffDays < 7) return `${diffDays}d ago`
+    
+    // For older messages, show actual date
+    return date.toLocaleDateString('en-PK', { 
+      month: 'short', 
+      day: 'numeric',
+      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+    })
+  }
+
+  // Format detailed timestamp for tooltips
+  const formatDetailedTime = (timestamp) => {
+    const date = new Date(timestamp)
+    return date.toLocaleString('en-PK', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    })
   }
 
   if (!user) {
@@ -211,120 +322,250 @@ const Chat = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-slate-100 flex items-center justify-center py-0 sm:py-0 ">
-      <div className="relative w-full max-w-2xl mx-auto">
-        {/* Floating Chat Header */}
-        <div className="absolute left-0 right-0 -top-8 sm:-top-1 z-10 flex items-center justify-between px-4 py-3 bg-white rounded-2xl shadow-lg border border-slate-200">
-          <div className="flex items-center gap-3">
-            <div className="bg-blue-100 rounded-full p-2">
-              <ChatBubbleLeftRightIcon className="h-8 w-8 text-blue-600" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-50 to-slate-200">
+      <div className="container mx-auto px-4 py-6 max-w-4xl">
+        {/* Professional Chat Header */}
+        <div className="bg-white rounded-t-2xl shadow-lg border border-slate-200 p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-full p-3 shadow-lg">
+                  <ChatBubbleLeftRightIcon className="h-8 w-8 text-white" />
+                </div>
+                <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${connected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900">Customer Support</h1>
+                <div className="flex items-center text-sm text-slate-600">
+                  <span className={`w-2 h-2 rounded-full mr-2 ${connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                  {connected ? 'Support team is online' : 'Connecting to support...'}
+                  <span className="mx-2">•</span>
+                  <span>Typically replies instantly</span>
+                </div>
+              </div>
             </div>
-            <div>
-              <h1 className="text-lg sm:text-xl font-bold text-slate-900">Live Support</h1>
-              <span className="flex items-center text-xs text-slate-500">
-                <span className={`w-2 h-2 rounded-full mr-2 ${connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                {connected ? 'Online' : 'Connecting...'}
-              </span>
+            <div className="flex items-center gap-3">
+              <div className="text-right text-sm">
+                <div className="text-slate-900 font-medium">Business Hours</div>
+                <div className="text-slate-600">24/7 Available</div>
+              </div>
+              <Link
+                to="/"
+                className="flex items-center px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
+              >
+                <HomeIcon className="h-5 w-5 mr-2" />
+                Back to Shop
+              </Link>
             </div>
           </div>
-          <Link
-            to="/"
-            className="flex items-center px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
-          >
-            <HomeIcon className="h-5 w-5 " />
-            
-          </Link>
         </div>
 
-        {/* Chat Card */}
-        <div className="pt-16 sm:pt-24 pb-20 sm:pb-24">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col h-[70vh] sm:h-[60vh] overflow-hidden">
-            {/* Messages */}
-            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-2 sm:px-6 py-4 bg-gradient-to-br from-blue-50 via-white to-slate-100">
-              {loading ? (
-                <div className="flex items-center justify-center h-full">
-                  <ArrowPathIcon className="h-8 w-8 animate-spin text-blue-600" />
-                  <span className="ml-2 text-gray-600 text-lg">Loading your conversation...</span>
+        {/* Chat Messages Container */}
+        <div className="bg-white shadow-lg border-l border-r border-slate-200 flex flex-col h-[70vh]">
+          {/* Messages Area */}
+          <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-slate-50 to-white">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center h-full">
+                <div className="bg-blue-100 rounded-full p-4 mb-4 animate-pulse">
+                  <ArrowPathIcon className="h-12 w-12 text-blue-600 animate-spin" />
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  {messages.length === 0 ? (
-                    <div className="text-center py-8">
-                      <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                        <ChatBubbleLeftRightIcon className="h-8 w-8 text-blue-600" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Welcome to Live Support!</h3>
-                      <p className="text-gray-600 mb-2">
-                        Our support team is ready to help you with any questions or concerns.
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Type your message below to get started.
-                      </p>
+                <span className="text-slate-600 text-lg font-medium">Loading your conversation...</span>
+                <span className="text-slate-500 text-sm mt-2">Please wait while we connect you to support</span>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {messages.length === 0 ? (
+                  <div className="text-center py-8">
+                    <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-full p-6 w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-lg">
+                      <ChatBubbleLeftRightIcon className="h-10 w-10 text-blue-600" />
                     </div>
-                  ) : (
-                    messages.map((message, index) => (
-                      <div
-                        key={message.messageId || index}
-                        className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                      >
-                        <div className={`flex items-end gap-2 ${message.sender === 'user' ? 'flex-row-reverse' : ''}`}>
-                          {message.sender === 'admin' && (
-                            <div className="bg-green-500 rounded-full p-1">
-                              <UserCircleIcon className="h-6 w-6 text-white" />
-                            </div>
-                          )}
-                          <div className={`max-w-xs px-4 py-3 rounded-2xl shadow-sm
-                            ${message.sender === 'user'
-                              ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-br-md'
-                              : 'bg-slate-50 text-slate-900 rounded-bl-md border border-slate-200'
-                            }`}
+                    <h3 className="text-xl font-bold text-slate-800 mb-3">Welcome to Cartly Support!</h3>
+                    <p className="text-slate-600 mb-6 max-w-md mx-auto leading-relaxed">
+                      Our dedicated support team is here to help you. Choose a topic below to get started quickly, or type your own message.
+                    </p>
+                    
+                    {/* Quick Message Options */}
+                    {showQuickMessages && (
+                      <div className="space-y-3 max-w-lg mx-auto">
+                        <h4 className="text-sm font-semibold text-slate-700 mb-4">Quick Help Options:</h4>
+                        {quickMessages.map((quickMsg) => (
+                          <button
+                            key={quickMsg.id}
+                            onClick={() => handleQuickMessage(quickMsg)}
+                            disabled={sending}
+                            className="w-full p-4 bg-white border border-slate-200 rounded-xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 text-left group shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <p className="leading-relaxed break-words">{message.message}</p>
-                            <div className={`flex items-center justify-between mt-2 text-xs
-                              ${message.sender === 'user' ? 'text-blue-200' : 'text-slate-500'}`}>
-                              <div className="flex items-center">
-                                <ClockIcon className="h-3 w-3 mr-1" />
-                                {formatTime(message.timestamp)}
+                            <div className="flex items-center justify-between">
+                              <span className="text-slate-800 font-medium group-hover:text-blue-700">
+                                {quickMsg.text}
+                              </span>
+                              <div className="text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                →
                               </div>
-                              {message.sender === 'user' && (
-                                <CheckCircleIcon className={`h-4 w-4 ${message.isRead ? 'text-green-300' : 'text-blue-300'}`} />
-                              )}
                             </div>
+                          </button>
+                        ))}
+                        
+                        <div className="mt-6 pt-4 border-t border-slate-200">
+                          <p className="text-sm text-slate-500 mb-2">Or start typing your own message below...</p>
+                          <div className="flex items-center justify-center space-x-2 text-xs text-slate-400">
+                            <span>💬 Custom message</span>
+                            <span>•</span>
+                            <span>⚡ Instant response</span>
+                            <span>•</span>
+                            <span>🔒 Secure chat</span>
                           </div>
                         </div>
                       </div>
-                    ))
-                  )}
-                  <div ref={messagesEndRef} />
-                </div>
-              )}
-            </div>
+                    )}
+                  </div>
+                ) : (
+                  messages.map((message, index) => (
+                    <div
+                      key={message.messageId || index}
+                      className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} group`}
+                    >
+                      <div className={`flex items-end gap-3 max-w-[75%] ${message.sender === 'user' ? 'flex-row-reverse' : ''}`}>
+                        {message.sender === 'admin' && (
+                          <div className="flex-shrink-0">
+                            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-full p-2 shadow-lg">
+                              <UserCircleIcon className="h-6 w-6 text-white" />
+                            </div>
+                          </div>
+                        )}
+                        <div className={`relative px-5 py-3 rounded-2xl shadow-sm transition-all duration-200 group-hover:shadow-md
+                          ${message.sender === 'user'
+                            ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-br-md shadow-lg'
+                            : 'bg-white text-slate-900 rounded-bl-md border border-slate-200 shadow-sm'
+                          }`}
+                        >
+                          {message.sender === 'admin' && (
+                            <div className="text-xs font-semibold text-green-600 mb-1">Support Team</div>
+                          )}
+                          <p className="leading-relaxed break-words">{message.message}</p>
+                          <div className={`flex items-center justify-between mt-3 text-xs
+                            ${message.sender === 'user' ? 'text-blue-200' : 'text-slate-500'}`}>
+                            <div className="flex items-center" title={formatDetailedTime(message.timestamp)}>
+                              <ClockIcon className="h-3 w-3 mr-1" />
+                              <span className="mr-2">{formatTime(message.timestamp)}</span>
+                              <span className="opacity-75">
+                                • Sent {new Date(message.timestamp).toLocaleTimeString('en-PK', { 
+                                  hour: '2-digit', 
+                                  minute: '2-digit' 
+                                })}
+                              </span>
+                            </div>
+                            {message.sender === 'user' && (
+                              <div className="flex items-center ml-3">
+                                <CheckCircleIcon className={`h-4 w-4 ${message.isRead ? 'text-green-300' : 'text-blue-300'}`} />
+                                <span className="ml-1 text-xs">
+                                  {message.isRead ? 'Read' : message.isOptimistic ? 'Sending...' : 'Delivered'}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          {message.isOptimistic && (
+                            <div className="absolute -bottom-1 -right-1">
+                              <ArrowPathIcon className="h-3 w-3 animate-spin text-blue-400" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+                
+                {/* Typing Indicator */}
+                {isTyping && (
+                  <div className="flex justify-start group">
+                    <div className="flex items-end gap-3 max-w-[75%]">
+                      <div className="flex-shrink-0">
+                        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-full p-2 shadow-lg">
+                          <UserCircleIcon className="h-6 w-6 text-white" />
+                        </div>
+                      </div>
+                      <div className="bg-white text-slate-900 rounded-2xl rounded-bl-md border border-slate-200 shadow-sm px-5 py-3">
+                        <div className="text-xs font-semibold text-green-600 mb-1">Support Team</div>
+                        <div className="flex items-center space-x-1">
+                          <div className="flex space-x-1">
+                            <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          </div>
+                          <span className="text-xs text-slate-500 ml-2">typing...</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
 
-            {/* Input Bar - now relative, not absolute, so scroll area includes it */}
-            <div className="border-t border-slate-200 bg-white px-2 sm:px-6 py-3">
-              <form onSubmit={handleSendMessage} className="flex items-end gap-2">
+          {/* Professional Input Area */}
+          <div className="border-t border-slate-200 bg-white p-6">
+            {/* Quick Messages Toggle - Show when there are existing messages */}
+            {messages.length > 0 && (
+              <div className="mb-4">
+                <button
+                  onClick={() => setShowQuickMessages(!showQuickMessages)}
+                  className="flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-700 transition-colors"
+                >
+                  <span>{showQuickMessages ? '🔽' : '🔼'}</span>
+                  <span>{showQuickMessages ? 'Hide' : 'Show'} Quick Help Options</span>
+                </button>
+                
+                {showQuickMessages && (
+                  <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {quickMessages.map((quickMsg) => (
+                      <button
+                        key={quickMsg.id}
+                        onClick={() => handleQuickMessage(quickMsg)}
+                        disabled={sending}
+                        className="p-3 bg-slate-50 border border-slate-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 text-left text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <span className="text-slate-700 hover:text-blue-700">
+                          {quickMsg.text}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+            
+            <form onSubmit={handleSendMessage} className="space-y-4">
+              <div className="flex items-end gap-4">
                 <div className="flex-1">
-                  <textarea
-                    ref={inputRef}
-                    id="message"
-                    rows={2}
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type your message..."
-                    className="w-full px-3 py-2 border border-slate-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    disabled={sending || !connected}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault()
-                        handleSendMessage(e)
-                      }
-                    }}
-                  />
+                  <label htmlFor="message" className="sr-only">Type your message</label>
+                  <div className="relative">
+                    <textarea
+                      ref={inputRef}
+                      id="message"
+                      rows={2}
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder="Type your message here..."
+                      className="w-full px-4 py-3 border border-slate-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+                      disabled={sending || !connected}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault()
+                          handleSendMessage(e)
+                        }
+                      }}
+                    />
+                    <div className="absolute bottom-2 right-2 text-xs text-slate-400">
+                      Press Enter to send
+                    </div>
+                  </div>
                 </div>
                 <button
                   type="submit"
                   disabled={sending || !newMessage.trim() || !connected}
-                  className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-3 rounded-full shadow-lg hover:scale-105 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all min-w-[48px] flex items-center justify-center"
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-4 rounded-xl shadow-lg hover:shadow-xl disabled:bg-slate-300 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 min-w-[60px] flex items-center justify-center"
                 >
                   {sending ? (
                     <ArrowPathIcon className="h-6 w-6 animate-spin" />
@@ -332,13 +573,46 @@ const Chat = () => {
                     <PaperAirplaneIcon className="h-6 w-6" />
                   )}
                 </button>
-              </form>
-              <div className="flex items-center justify-between mt-2 text-xs text-slate-500">
-                <div className="flex items-center">
+              </div>
+              
+              {/* Status Bar */}
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center text-slate-600">
                   <span className={`w-2 h-2 rounded-full mr-2 ${connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                  {connected ? 'Connected to support team' : 'Reconnecting...'}
+                  {connected ? (
+                    <span className="flex items-center">
+                      <span>Connected to support team</span>
+                      <span className="mx-2">•</span>
+                      <span className="text-green-600 font-medium">Online</span>
+                     
+                    </span>
+                  ) : (
+                    <span className="text-orange-600">Reconnecting to support...</span>
+                  )}
                 </div>
-                <span>Chat Status: {chat?.status || 'Active'}</span>
+                <div className="flex items-center text-slate-500">
+                 
+                
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Professional Footer */}
+        <div className="bg-slate-50 rounded-b-2xl shadow-lg border border-slate-200 border-t-0 p-4">
+          <div className="flex items-center justify-between text-sm text-slate-600">
+            <div className="flex items-center gap-4">
+              <span>🔒 Secure & Private</span>
+              <span>⚡ Real-time Support</span>
+              <span>📱 Mobile Optimized</span>
+              
+            </div>
+            <div className="text-right">
+              <div className="font-medium">Need immediate help?</div>
+              <div className="text-xs">
+                Our team typically responds within 2 minutes
+                
               </div>
             </div>
           </div>

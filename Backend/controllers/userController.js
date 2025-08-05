@@ -13,10 +13,10 @@ const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-// Generate JWT
+// Generate JWT token with 2-day expiration
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '7d',
+    expiresIn: '2d', // Token expires after 2 days for security
   });
 };
 

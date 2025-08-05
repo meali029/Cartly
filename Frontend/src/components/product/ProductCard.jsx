@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useContext, useState } from 'react'
-import { CartContext } from '../../context/CartContext'
+import { useState } from 'react'
 import { 
   EyeIcon, 
   ShoppingCartIcon, 
@@ -14,23 +13,10 @@ import {
 import { useToast } from '../../context/ToastContext'
 
 const ProductCard = ({ product }) => {
-  const { addToCart } = useContext(CartContext)
   const { showToast } = useToast()
   const [imageLoading, setImageLoading] = useState(true)
   const [imageError, setImageError] = useState(false)
   const [isWishlisted, setIsWishlisted] = useState(false)
-
-  const handleAddToCart = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    
-    const result = addToCart(product)
-    if (result.success) {
-      showToast(result.message, 'success')
-    } else {
-      showToast(result.message, 'error')
-    }
-  }
 
   const handleWishlist = (e) => {
     e.preventDefault()
@@ -187,17 +173,16 @@ const ProductCard = ({ product }) => {
           </div>
         )}
 
-        {/* Add to Cart Button */}
-        <button
-          onClick={handleAddToCart}
-          disabled={product.stock === 0}
-          className="w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 disabled:from-slate-400 disabled:to-slate-500 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl disabled:shadow-none group/btn transform hover:scale-105 active:scale-95"
+        {/* View Product Button */}
+        <Link
+          to={`/product/${product._id}`}
+          className={`w-full bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 disabled:from-slate-400 disabled:to-slate-500 ${product.stock === 0 ? 'pointer-events-none opacity-50' : ''} text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl group/btn transform hover:scale-105 active:scale-95 text-decoration-none`}
         >
-          <ShoppingCartIcon className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-300" />
+          <EyeIcon className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-300" />
           <span className="text-sm font-semibold">
-            {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+            {product.stock === 0 ? 'Out of Stock' : 'View Product'}
           </span>
-        </button>
+        </Link>
       </div>
     </div>
   )

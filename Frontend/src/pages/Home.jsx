@@ -228,7 +228,7 @@ const Home = () => {
               </Link>
             </div>
             <div className="bg-white rounded-3xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-500">
-              <ProductGrid products={menProducts} />
+              <ProductGrid products={menProducts} enableLazyLoading={true} />
             </div>
           </section>
 
@@ -253,7 +253,7 @@ const Home = () => {
               </Link>
             </div>
             <div className="bg-white rounded-3xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-500">
-              <ProductGrid products={womenProducts} />
+              <ProductGrid products={womenProducts} enableLazyLoading={true} />
             </div>
           </section>
 
@@ -278,7 +278,7 @@ const Home = () => {
               </Link>
             </div>
             <div className="bg-white rounded-3xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-500">
-              <ProductGrid products={kidsProducts} />
+              <ProductGrid products={kidsProducts} enableLazyLoading={true} />
             </div>
           </section>
         </div>

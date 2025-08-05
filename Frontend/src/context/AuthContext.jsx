@@ -19,18 +19,44 @@ export const AuthProvider = ({ children }) => {
     if (storedUser && storedToken) {
       try {
         const userData = JSON.parse(storedUser)
-        setUser(userData)
-        // Set axios default authorization header
-        axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`
+        
+        // Import token utilities to check if token is expired
+        import('../utils/tokenUtils').then(({ isTokenExpired }) => {
+          if (isTokenExpired(storedToken)) {
+            console.log('Stored token is expired, clearing storage')
+            localStorage.removeItem('cratlyUser')
+            localStorage.removeItem('cratlyToken')
+            setLoading(false)
+            return
+          }
+          
+          setUser(userData)
+          // Set axios default authorization header
+          axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`
+          
+          // If user is admin and on home page, redirect to dashboard
+          if (userData.isAdmin && window.location.pathname === '/') {
+            navigate('/admin/dashboard', { replace: true })
+          }
+          
+          setLoading(false)
+        }).catch((err) => {
+          console.error('Error loading token utilities:', err)
+          setUser(userData)
+          axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`
+          setLoading(false)
+        })
       } catch (err) {
         // If parsing fails, clear the storage
         console.error('Failed to parse user data:', err)
         localStorage.removeItem('cratlyUser')
         localStorage.removeItem('cratlyToken')
+        setLoading(false)
       }
+    } else {
+      setLoading(false)
     }
-    setLoading(false)
-  }, [])
+  }, [navigate])
 
   // Set up axios interceptor for token expiration
   useEffect(() => {
@@ -43,6 +69,14 @@ export const AuthProvider = ({ children }) => {
           localStorage.removeItem('cratlyUser')
           localStorage.removeItem('cratlyToken')
           delete axios.defaults.headers.common['Authorization']
+          
+          // Show expiration message to user
+          if (typeof window !== 'undefined' && window.dispatchEvent) {
+            window.dispatchEvent(new CustomEvent('token-expired', {
+              detail: { message: 'Your session has expired. Please log in again.' }
+            }))
+          }
+          
           navigate('/')
         }
         return Promise.reject(error)
@@ -71,11 +105,11 @@ export const AuthProvider = ({ children }) => {
       // Set axios default authorization header
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
       
-      // Navigate based on user type
+      // Navigate based on user type - always redirect admins to dashboard
       if (userData.isAdmin) {
-        navigate('/admin/dashboard')
+        navigate('/admin/dashboard', { replace: true })
       } else {
-        navigate('/')
+        navigate('/', { replace: true })
       }
     } catch (err) {
       // Handle email verification requirement
@@ -106,9 +140,19 @@ export const AuthProvider = ({ children }) => {
     if (!token) return false
 
     try {
-      // You can add a token validation endpoint here
-      // For now, we'll just check if token exists
-      return !!token
+      // Import token utilities
+      const { isTokenExpired } = await import('../utils/tokenUtils')
+      
+      // Check if token is expired on client-side first
+      if (isTokenExpired(token)) {
+        console.log('Token expired on client-side, logging out')
+        logout()
+        return false
+      }
+      
+      // You can add a server-side token validation endpoint here
+      // For now, we'll just check if token exists and is not expired
+      return true
     } catch (error) {
       // Token is invalid, logout user
       console.error('Token validation failed:', error)

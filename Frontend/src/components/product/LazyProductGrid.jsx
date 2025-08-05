@@ -9,14 +9,15 @@ import {
   ListBulletIcon
 } from '@heroicons/react/24/outline'
 
-const ProductGrid = ({ 
-  products, 
+const LazyProductGrid = ({ 
+  products = [], 
   loading = false, 
-  enableLazyLoading = false,
+  useLazyLoading = false,
   showLoadMore = false,
   onLoadMore = null
 }) => {
   const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
+  
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -102,57 +103,69 @@ const ProductGrid = ({
           ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' 
           : 'space-y-4'
       }`}>
-        {products.map((product, index) => (
-          <div
-            key={product._id}
-            className={`animate-fadeInUp ${
-              viewMode === 'list' ? 'bg-white rounded-3xl border border-slate-200 shadow-xl hover:shadow-2xl transition-all duration-500' : ''
-            }`}
-            style={{ animationDelay: `${index * 0.05}s` }}
-          >
-            {viewMode === 'grid' ? (
-              enableLazyLoading ? (
-                <LazyProductCard 
-                  product={product}
-                  enableLazyLoading={true}
-                />
-              ) : (
-                <ProductCard product={product} />
-              )
-            ) : (
-              <div className="flex gap-4 p-4">
-                {/* List view layout */}
-                <div className="w-24 h-24 flex-shrink-0">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="w-full h-full object-cover rounded-xl shadow-md"
+        {products.map((product, index) => {
+          // Check if product is just an ID (string) or full product object
+          const isProductId = typeof product === 'string'
+          const productId = isProductId ? product : product._id
+          const productData = isProductId ? null : product
+          
+          return (
+            <div
+              key={productId}
+              className={`animate-fadeInUp ${
+                viewMode === 'list' ? 'bg-white rounded-3xl border border-slate-200 shadow-xl hover:shadow-2xl transition-all duration-500' : ''
+              }`}
+              style={{ animationDelay: `${index * 0.05}s` }}
+            >
+              {viewMode === 'grid' ? (
+                // For grid view, use lazy loading when enabled and we don't have full product data
+                useLazyLoading && isProductId ? (
+                  <LazyProductCard 
+                    productId={productId} 
+                    fallbackProduct={productData}
                   />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-slate-900 mb-1 truncate">{product.title}</h3>
-                  <p className="text-sm text-slate-600 mb-2 line-clamp-2">{product.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-slate-900">
-                      PKR {product.price?.toLocaleString() || 'N/A'}
-                    </span>
-                    <a
-                      href={`/product/${product._id}`}
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        window.location.href = `/product/${product._id}`
-                      }}
-                      className="px-4 py-2 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all duration-300 text-sm font-medium transform hover:scale-105 shadow-lg text-decoration-none"
-                    >
-                      View Product
-                    </a>
+                ) : (
+                  <ProductCard product={productData || product} />
+                )
+              ) : (
+                <div className="flex gap-4 p-4">
+                  {/* List view layout - always load immediately for better UX */}
+                  <div className="w-24 h-24 flex-shrink-0">
+                    <img
+                      src={productData?.image || '/placeholder-image.jpg'}
+                      alt={productData?.title || 'Product'}
+                      className="w-full h-full object-cover rounded-xl shadow-md"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-slate-900 mb-1 truncate">
+                      {productData?.title || 'Loading...'}
+                    </h3>
+                    <p className="text-sm text-slate-600 mb-2 line-clamp-2">
+                      {productData?.description || 'Product description loading...'}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-bold text-slate-900">
+                        PKR {productData?.price?.toLocaleString() || 'N/A'}
+                      </span>
+                      <a
+                        href={`/product/${productId}`}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          window.location.href = `/product/${productId}`
+                        }}
+                        className="px-4 py-2 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all duration-300 text-sm font-medium transform hover:scale-105 shadow-lg text-decoration-none"
+                      >
+                        View Product
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
+              )}
+            </div>
+          )
+        })}
       </div>
 
       {/* Load More Button */}
@@ -171,4 +184,4 @@ const ProductGrid = ({
   )
 }
 
-export default ProductGrid
+export default LazyProductGrid

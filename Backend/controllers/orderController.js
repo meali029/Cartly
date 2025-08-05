@@ -36,6 +36,11 @@ const placeOrder = async (req, res) => {
     const order = await Order.create(orderData);
     console.log('✅ Order created successfully:', order._id);
 
+    // Populate the order with user and product details for email
+    const populatedOrder = await Order.findById(order._id)
+      .populate('userId', 'name email')
+      .populate('items.productId', 'title price image description category');
+
     // Real-time: Notify all clients about new order
     const io = req.app.get('io');
     if (io) io.emit('order:new', order);
@@ -43,7 +48,7 @@ const placeOrder = async (req, res) => {
     // Send confirmation email (don't block response)
     const userEmail = req.user?.email;  // make sure req.user exists (protect middleware)
     if(userEmail) {
-      sendOrderConfirmationEmail(userEmail, order).catch(err => {
+      sendOrderConfirmationEmail(userEmail, populatedOrder).catch(err => {
         console.error('📧 Email sending failed:', err.message);
       });
     }

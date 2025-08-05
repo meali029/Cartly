@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { CartContext } from '../context/CartContext'
 import { AuthContext } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
@@ -8,6 +8,7 @@ import Input from '../components/ui/Input'
 import Button from '../components/ui/Button'
 import Spinner from '../components/ui/Spinner'
 import Badge from '../components/ui/Badge'
+import LoginPromptModal from '../components/ui/LoginPromptModal'
 
 const Checkout = () => {
   const { cartItems, clearCart } = useContext(CartContext)
@@ -30,7 +31,7 @@ const Checkout = () => {
   ]
 
   const [form, setForm] = useState({
-    name: user?.name || '',
+    name: '',
     phone: '',
     alternatePhone: '',
     address: '',
@@ -40,9 +41,21 @@ const Checkout = () => {
     instructions: ''
   })
 
+  // Update form with user data when user logs in
+  useEffect(() => {
+    if (user) {
+      setForm(prev => ({
+        ...prev,
+        name: user.name || prev.name
+      }))
+    }
+  }, [user])
+
   const [loading, setLoading] = useState(false)
   const [orderStatus, setOrderStatus] = useState(null) // 'placing', 'success', 'error'
   const [errors, setErrors] = useState({})
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false)
+  const [shouldPlaceOrderAfterLogin, setShouldPlaceOrderAfterLogin] = useState(false)
 
   const getTotal = () =>
     checkoutItems.reduce(
@@ -58,48 +71,42 @@ const Checkout = () => {
 
   const getFinalTotal = () => getTotal() + getShippingCost()
 
-  const validateForm = () => {
-    const newErrors = {}
-    
-    if (!form.name.trim()) newErrors.name = 'Name is required'
-    if (!form.phone.trim()) newErrors.phone = 'Phone number is required'
-    if (!form.address.trim()) newErrors.address = 'Address is required'
-    if (!form.city.trim()) newErrors.city = 'City is required'
-    if (!form.area.trim()) newErrors.area = 'Area is required'
-    
-    // Pakistani phone number validation
-    if (form.phone && !/^(\+92|0)?[0-9]{10}$/.test(form.phone.replace(/[-\s]/g, ''))) {
-      newErrors.phone = 'Please enter a valid Pakistani phone number (e.g., 03123456789)'
+  // Auto-place order after login if user was trying to place order
+  useEffect(() => {
+    if (user && shouldPlaceOrderAfterLogin) {
+      setShouldPlaceOrderAfterLogin(false)
+      setShowLoginPrompt(false)
+      
+      // Update form with user data if available
+      setForm(prev => ({
+        ...prev,
+        name: user.name || prev.name
+      }))
+      
+      // Auto-place the order after a short delay
+      setTimeout(async () => {
+        // Validate form again
+        const newErrors = {}
+        
+        if (!form.name.trim()) newErrors.name = 'Name is required'
+        if (!form.phone.trim()) newErrors.phone = 'Phone number is required'
+        if (!form.address.trim()) newErrors.address = 'Address is required'
+        if (!form.city.trim()) newErrors.city = 'City is required'
+        if (!form.area.trim()) newErrors.area = 'Area is required'
+        
+        if (Object.keys(newErrors).length === 0) {
+          handleOrderPlacement()
+        } else {
+          setErrors(newErrors)
+          showToast('Please complete all required fields to place your order', 'warning')
+        }
+      }, 500)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, shouldPlaceOrderAfterLogin])
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm({ ...form, [name]: value })
-    
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: '' })
-    }
-  }
-
-  const handleOrder = async (e) => {
-    e.preventDefault()
-
-    if (!user) {
-      showToast('Please login to place an order', 'error')
-      navigate('/')
-      return
-    }
-
-    if (!validateForm()) {
-      showToast('Please fill all required fields correctly', 'error')
-      return
-    }
-
+  // Separate function for actual order placement
+  const handleOrderPlacement = async () => {
     if (checkoutItems.length === 0) {
       showToast('No items to order', 'error')
       return
@@ -155,14 +162,13 @@ const Checkout = () => {
       }, 1500)
       
     } catch (err) {
-      setOrderStatus(err)
+      setOrderStatus('error')
       
       const errorMessage = err?.response?.data?.message || err?.message || 'Failed to place order'
       
       if (err?.response?.status === 401) {
         showToast('Please login to place an order', 'error')
-        // Redirect to login if not authenticated
-        setTimeout(() => navigate('/'), 2000)
+        setShowLoginPrompt(true)
       } else {
         showToast('❌ ' + errorMessage, 'error')
       }
@@ -172,6 +178,51 @@ const Checkout = () => {
         setOrderStatus(null)
       }, 2000)
     }
+  }
+
+  const validateForm = () => {
+    const newErrors = {}
+    
+    if (!form.name.trim()) newErrors.name = 'Name is required'
+    if (!form.phone.trim()) newErrors.phone = 'Phone number is required'
+    if (!form.address.trim()) newErrors.address = 'Address is required'
+    if (!form.city.trim()) newErrors.city = 'City is required'
+    if (!form.area.trim()) newErrors.area = 'Area is required'
+    
+    // Pakistani phone number validation
+    if (form.phone && !/^(\+92|0)?[0-9]{10}$/.test(form.phone.replace(/[-\s]/g, ''))) {
+      newErrors.phone = 'Please enter a valid Pakistani phone number (e.g., 03123456789)'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setForm({ ...form, [name]: value })
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' })
+    }
+  }
+
+  const handleOrder = async (e) => {
+    e.preventDefault()
+
+    if (!user) {
+      setShouldPlaceOrderAfterLogin(true)
+      setShowLoginPrompt(true)
+      return
+    }
+
+    if (!validateForm()) {
+      showToast('Please fill all required fields correctly', 'error')
+      return
+    }
+
+    await handleOrderPlacement()
   }
 
   if (checkoutItems.length === 0) {
@@ -218,6 +269,11 @@ const Checkout = () => {
             }`}>
               {loading ? 'Processing...' : 'Cash on Delivery Only'}
             </Badge>
+            {!user && (
+              <Badge variant="warning" className="bg-orange-100 text-orange-700 ml-2">
+                Login Required to Place Order
+              </Badge>
+            )}
           </div>
           
           {/* Progress bar */}
@@ -443,6 +499,21 @@ const Checkout = () => {
 
                 {/* Submit Button */}
                 <div className="pt-6">
+                  {!user && (
+                    <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h4 className="font-medium text-blue-800">Login Required</h4>
+                      </div>
+                      <p className="text-sm text-blue-700">
+                        You can fill in your order details, but login is required to place the final order. 
+                        This helps us track your order and provide better service.
+                      </p>
+                    </div>
+                  )}
+                  
                   <Button
                     type="submit"
                     disabled={loading}
@@ -453,6 +524,8 @@ const Checkout = () => {
                         ? 'bg-slate-500 hover:bg-slate-600'
                         : orderStatus === 'error'
                         ? 'bg-red-500 hover:bg-red-600'
+                        : !user
+                        ? 'bg-blue-600 hover:bg-blue-700'
                         : 'bg-slate-900 hover:bg-slate-800'
                     } text-white rounded-xl`}
                   >
@@ -487,7 +560,7 @@ const Checkout = () => {
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
-                        <span>Place Order - PKR {getFinalTotal().toLocaleString()}</span>
+                        <span>{user ? `Place Order - PKR ${getFinalTotal().toLocaleString()}` : 'Login to Place Order'}</span>
                       </div>
                     )}
                   </Button>
@@ -541,6 +614,12 @@ const Checkout = () => {
           </div>
         </div>
       </div>
+
+      {/* Login Prompt Modal */}
+      <LoginPromptModal 
+        isOpen={showLoginPrompt} 
+        onClose={() => setShowLoginPrompt(false)} 
+      />
     </div>
   )
 }
