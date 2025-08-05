@@ -28,9 +28,8 @@ ChartJS.register(
 )
 
 const SalesChart = ({ salesData, period }) => {
-  const [animationComplete, setAnimationComplete] = useState(false)
   const [hoveredPoint, setHoveredPoint] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+  // const [isLoading, setIsLoading] = useState(true)
   const [chartView, setChartView] = useState('combined') // 'combined', 'revenue', 'orders'
 
   // Calculate comprehensive metrics from data with realistic business insights
@@ -212,16 +211,15 @@ const SalesChart = ({ salesData, period }) => {
       axis: 'x'
     },
     animation: {
+    animation: {
       duration: 1800,
       easing: 'easeInOutCubic',
-      onComplete: () => setAnimationComplete(true),
       delay: (context) => {
         return context.type === 'data' && context.mode === 'default' 
           ? context.dataIndex * 50 
           : 0
       }
     },
-    plugins: {
       title: {
         display: false
       },
