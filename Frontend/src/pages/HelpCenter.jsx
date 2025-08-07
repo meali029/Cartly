@@ -146,7 +146,7 @@ const HelpCenter = () => {
                   </div>
                   <div className="flex items-center text-sm text-gray-600">
                     <EnvelopeIcon className="h-4 w-4 mr-2 text-purple-500" />
-                    <span>support@cartly.com</span>
+                    <span>cartly.shopi@gmail.com</span>
                   </div>
                   <div className="flex items-center text-sm text-gray-600">
                     <ClockIcon className="h-4 w-4 mr-2 text-orange-500" />

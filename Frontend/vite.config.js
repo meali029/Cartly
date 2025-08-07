@@ -4,9 +4,12 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  
+  // SEO and Performance optimizations
   build: {
     // Increase chunk size warning limit
     chunkSizeWarningLimit: 1600,
+    
     rollupOptions: {
       output: {
         manualChunks: (id) => {
@@ -45,13 +48,25 @@ export default defineConfig({
     
     // Enable minification with esbuild (default, faster than terser)
     minify: 'esbuild',
-    // Remove console logs in production
+    
+    // Remove console logs in production for better performance
     esbuild: {
       drop: ['console', 'debugger'],
     },
     
-    // Enable source maps for debugging (optional)
-    sourcemap: false
+    // Generate source maps for debugging (disable in production for better performance)
+    sourcemap: false,
+    
+    // Better asset optimization
+    assetsInlineLimit: 4096,
+    
+    // CSS optimization
+    cssCodeSplit: true,
+    
+    // Preload module directives
+    modulePreload: {
+      polyfill: true
+    }
   },
   
   // Development server optimization
@@ -78,6 +93,19 @@ export default defineConfig({
       'react-router-dom',
       'axios',
       '@heroicons/react'
-    ]
+    ],
+    exclude: ['fsevents']
+  },
+
+  // Preview server configuration (for production builds)
+  preview: {
+    port: 4173,
+    host: true
+  },
+
+  // Define global constants for better tree-shaking
+  define: {
+    __DEV__: JSON.stringify(import.meta.env.DEV),
+    __PROD__: JSON.stringify(import.meta.env.PROD)
   }
 })

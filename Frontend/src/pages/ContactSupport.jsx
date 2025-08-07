@@ -62,7 +62,7 @@ const ContactSupport = () => {
     {
       icon: EnvelopeIcon,
       title: 'Email Support',
-      description: 'support@cartly.com',
+      description: 'cartly.shopi@gmail.com',
       availability: 'Response within 24 hours',
       action: 'Send Email',
       color: 'purple'
@@ -275,7 +275,7 @@ const ContactSupport = () => {
                   <EnvelopeIcon className="h-5 w-5 text-gray-400 mr-3 mt-1" />
                   <div>
                     <h3 className="font-semibold text-gray-900">Email</h3>
-                    <p className="text-gray-600 text-sm">support@cartly.com</p>
+                    <p className="text-gray-600 text-sm">cartly.shopi@gmail.com</p>
                   </div>
                 </div>
 

@@ -138,7 +138,7 @@ const AboutUs = () => {
               
               <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-8 text-center">
                 <div className="w-32 h-32 bg-gradient-to-br from-slate-600 to-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="text-white font-bold text-4xl"><img src="/Cartly-logo.png" alt="Cartly Logo" /></span>
+                  <span className="text-white font-bold text-4xl"><img src="public/Cartly-logo.png" alt="Cartly Logo" /></span>
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-4">Cartly</h3>
                 <p className="text-slate-600">Redefining Fashion Retail in Pakistan</p>

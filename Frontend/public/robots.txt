@@ -1,0 +1,47 @@
+User-agent: *
+Allow: /
+
+# Optimize crawling
+Disallow: /admin/
+Disallow: /api/
+Disallow: /checkout
+Disallow: /cart
+Disallow: /profile
+Disallow: /orders
+Disallow: /chat
+Disallow: /*?*sort=
+Disallow: /*?*filter=
+Disallow: /*?*page=
+
+# Allow important pages
+Allow: /men
+Allow: /women 
+Allow: /kids
+Allow: /new-arrivals
+Allow: /sale-items
+Allow: /help-center
+Allow: /about-us
+Allow: /contact-support
+Allow: /shipping-info
+Allow: /size-guide
+
+# Sitemap location
+Sitemap: https://cartly-shop.vercel.app/sitemap.xml
+
+# Crawl delay to be respectful
+Crawl-delay: 1
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /

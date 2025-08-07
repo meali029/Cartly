@@ -63,7 +63,7 @@ const Navbar = ({ onOpenAuth }) => {
   const brand = {
     name: 'Cartly',
     tagline: 'Premium Shopping',
-    logo: 'https://www.logoground.com/uploads/2018191292018-07-284631561C-Cart-logo.jpg'
+    logo: 'public/Cartly-logo.png' // Update with your logo path
   }
 
   // Don't render navbar for admin users since they have their own layout

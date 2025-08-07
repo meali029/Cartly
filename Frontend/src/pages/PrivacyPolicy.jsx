@@ -266,7 +266,7 @@ const PrivacyPolicy = () => {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-2">Email</h4>
-                      <p className="text-gray-600">privacy@cartly.com</p>
+                      <p className="text-gray-600">cartly.shopi@gmail.com</p>
                     </div>
                     
                     <div>

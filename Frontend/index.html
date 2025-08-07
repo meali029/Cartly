@@ -7,52 +7,277 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Title -->
-    <title>Cartly | Shop-Now - Affordable and Quality Online Shopping</title>
+    <title>Cartly - Pakistan's #1 Online Shopping Store | Fashion, Electronics & More</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/Cartly-logo.png" />
+    <link rel="icon" type="image/png" href="/Cartly-logo icon.png" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/Cartly-logo.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/Cartly-logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/Cartly-logo.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/Cartly-logo.png" />
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Cartly is your go-to online store for affordable and high-quality products. Shop now for electronics, fashion, home essentials, and more." />
-    <meta name="keywords" content="Cartly, online shopping, electronics, fashion, home essentials, best prices, ecommerce, shop now" />
+    <meta name="description" content="Shop at Cartly - Pakistan's leading online store for fashion, electronics, home essentials & more. ✓ Best Prices ✓ Fast Delivery ✓ 100% Authentic Products ✓ Easy Returns" />
+    <meta name="keywords" content="online shopping Pakistan, Cartly, fashion online Pakistan, electronics Pakistan, men fashion, women clothing, kids wear, home essentials, best online store Pakistan, ecommerce, shop online, discount shopping, authentic products" />
     <meta name="author" content="Mehboob Ali" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="3 days" />
+    <meta name="rating" content="General" />
+    <meta name="distribution" content="Global" />
+    <meta name="geography" content="Pakistan" />
+    <meta name="country" content="PK" />
+    <meta name="theme-color" content="#4f46e5" />
+    
+    <!-- Additional SEO Tags -->
+    <meta name="application-name" content="Cartly" />
+    <meta name="apple-mobile-web-app-title" content="Cartly" />
+    <meta name="msapplication-TileColor" content="#4f46e5" />
+    <meta name="format-detection" content="telephone=no" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://cartly-shop.vercel.app/" />
-    <meta property="og:title" content="Cartly | Shop-Now" />
-    <meta property="og:description" content="Affordable and high-quality online shopping for everyone. Shop the best deals at Cartly today!" />
+    <meta property="og:title" content="Cartly - Pakistan's #1 Online Shopping Store | Fashion & Electronics" />
+    <meta property="og:description" content="🛍️ Shop at Pakistan's most trusted online store! Fashion, Electronics, Home Essentials with ✓ Best Prices ✓ Fast Delivery ✓ Easy Returns. 10,000+ Happy Customers!" />
     <meta property="og:image" content="https://cartly-shop.vercel.app/cartly-preview.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Cartly - Pakistan's Leading Online Shopping Store" />
+    <meta property="og:site_name" content="Cartly" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="fb:app_id" content="YOUR_FACEBOOK_APP_ID" />
 
     <!-- Twitter Meta -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@cartly_official" />
+    <meta name="twitter:creator" content="@mehboobali_dev" />
     <meta name="twitter:url" content="https://cartly-shop.vercel.app/" />
-    <meta name="twitter:title" content="Cartly | Shop-Now" />
-    <meta name="twitter:description" content="Shop smarter with Cartly. Discover great deals on quality products every day!" />
+    <meta name="twitter:title" content="Cartly - Pakistan's #1 Online Shopping Store" />
+    <meta name="twitter:description" content="🛍️ Shop Fashion, Electronics & More! ✓ Best Prices ✓ Fast Delivery ✓ Authentic Products. Join 10,000+ happy customers shopping at Pakistan's most trusted online store!" />
     <meta name="twitter:image" content="https://cartly-shop.vercel.app/cartly-preview.jpg" />
+    <meta name="twitter:image:alt" content="Cartly Online Shopping Store" />
+
+    <!-- WhatsApp Meta -->
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:secure_url" content="https://cartly-shop.vercel.app/cartly-preview.jpg" />
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://cartly-shop.vercel.app/" />
+    
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cartly-production.up.railway.app" />
+    
+    <!-- Prefetch DNS for external resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//api.cartly.com" />
+    
+    <!-- Mobile App Integration -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- Alternate Languages (if you plan to support multiple languages) -->
+    <link rel="alternate" hreflang="en-pk" href="https://cartly-shop.vercel.app/" />
+    <link rel="alternate" hreflang="ur-pk" href="https://cartly-shop.vercel.app/ur/" />
+    <link rel="alternate" hreflang="x-default" href="https://cartly-shop.vercel.app/" />
 
-    <!-- Structured Data (JSON-LD) -->
+    <!-- Enhanced Structured Data (JSON-LD) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Store",
-      "name": "Cartly",
-      "url": "https://cartly-shop.vercel.app",
-      "logo": "https://cartly-shop.vercel.app/Cartly-logo.png",
-      "sameAs": [
-        "https://facebook.com/cartly",
-        "https://instagram.com/cartly",
-        "https://twitter.com/cartly"
-      ],
-      "description": "Affordable and high-quality products online - from fashion to electronics.",
-      "openingHours": "Mo-Fr 09:00-18:00",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "PK"
-      }
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://cartly-shop.vercel.app/#organization",
+          "name": "Cartly",
+          "url": "https://cartly-shop.vercel.app",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://cartly-shop.vercel.app/Cartly-logo.png",
+            "width": 512,
+            "height": 512
+          },
+          "sameAs": [
+            "https://facebook.com/cartly",
+            "https://instagram.com/cartly",
+            "https://twitter.com/cartly_official",
+            "https://youtube.com/cartly"
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+92-XXX-XXXXXXX",
+            "contactType": "customer service",
+            "availableLanguage": ["English", "Urdu"],
+            "areaServed": "PK"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "PK",
+            "addressRegion": "Punjab",
+            "addressLocality": "Lahore"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://cartly-shop.vercel.app/#website",
+          "url": "https://cartly-shop.vercel.app",
+          "name": "Cartly - Pakistan's Leading Online Shopping Store",
+          "description": "Shop at Pakistan's most trusted online store for fashion, electronics, and home essentials with best prices and fast delivery.",
+          "publisher": {
+            "@id": "https://cartly-shop.vercel.app/#organization"
+          },
+          "potentialAction": [
+            {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://cartly-shop.vercel.app/search?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          ]
+        },
+        {
+          "@type": "Store",
+          "@id": "https://cartly-shop.vercel.app/#store",
+          "name": "Cartly Online Store",
+          "image": "https://cartly-shop.vercel.app/Cartly-logo.png",
+          "url": "https://cartly-shop.vercel.app",
+          "telephone": "+92-XXX-XXXXXXX",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "PK",
+            "addressRegion": "Punjab",
+            "addressLocality": "Lahore"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "31.5497",
+            "longitude": "74.3436"
+          },
+          "openingHoursSpecification": [
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": [
+                "Monday",
+                "Tuesday", 
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+              ],
+              "opens": "00:00",
+              "closes": "23:59"
+            }
+          ],
+          "priceRange": "PKR 500 - PKR 50,000",
+          "currenciesAccepted": "PKR",
+          "paymentAccepted": ["Cash", "Credit Card", "Debit Card", "Bank Transfer", "Mobile Payment"],
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Cartly Product Catalog",
+            "itemListElement": [
+              {
+                "@type": "OfferCatalog",
+                "name": "Men's Fashion",
+                "itemListElement": [
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Product",
+                      "name": "Men's Clothing & Accessories",
+                      "category": "Fashion"
+                    }
+                  }
+                ]
+              },
+              {
+                "@type": "OfferCatalog", 
+                "name": "Women's Fashion",
+                "itemListElement": [
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Product",
+                      "name": "Women's Clothing & Accessories",
+                      "category": "Fashion"
+                    }
+                  }
+                ]
+              },
+              {
+                "@type": "OfferCatalog",
+                "name": "Electronics",
+                "itemListElement": [
+                  {
+                    "@type": "Offer", 
+                    "itemOffered": {
+                      "@type": "Product",
+                      "name": "Electronics & Gadgets",
+                      "category": "Electronics"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://cartly-shop.vercel.app/#breadcrumbs",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://cartly-shop.vercel.app/"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    
+    <!-- Additional Performance & SEO Scripts -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is Cartly a trusted online shopping site in Pakistan?",
+          "acceptedAnswer": {
+            "@type": "Answer", 
+            "text": "Yes, Cartly is Pakistan's trusted online shopping store with 10,000+ satisfied customers. We offer 100% authentic products with easy returns and fast delivery across Pakistan."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What payment methods does Cartly accept?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cartly accepts multiple payment methods including Cash on Delivery, Credit/Debit Cards, Bank Transfer, and Mobile Payment solutions for your convenience."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Cartly offer free delivery in Pakistan?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, Cartly offers free delivery on orders above PKR 2,000 across major cities in Pakistan. Fast and reliable delivery service is our priority."
+          }
+        }
+      ]
     }
     </script>
   </head>
