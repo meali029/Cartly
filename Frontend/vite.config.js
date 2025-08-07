@@ -101,11 +101,5 @@ export default defineConfig({
   preview: {
     port: 4173,
     host: true
-  },
-
-  // Define global constants for better tree-shaking
-  define: {
-    __DEV__: JSON.stringify(import.meta.env.DEV),
-    __PROD__: JSON.stringify(import.meta.env.PROD)
   }
 })
