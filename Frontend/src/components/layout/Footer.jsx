@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import { createApiUrl } from '../../config/api'
 
 
 
@@ -52,7 +53,7 @@ const Footer = () => {
       setErrorMessage('')
 
       // Call the actual newsletter API
-      const response = await fetch('/api/newsletter/subscribe', {
+      const response = await fetch(createApiUrl('newsletter/subscribe'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
