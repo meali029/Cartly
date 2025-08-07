@@ -28,9 +28,6 @@ import Careers from '../pages/Careers'
 import PrivacyPolicy from '../pages/PrivacyPolicy'
 import TermsOfService from '../pages/TermsOfService'
 
-// Debug Pages
-import ApiDebugPage from '../pages/ApiDebugPage'
-
 // Admin
 import Dashboard from '../admin/Dashboard'
 import ManageProducts from '../admin/ManageProducts'
@@ -68,9 +65,6 @@ const AppRoutes = () => {
         <Route path="careers" element={<Careers />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
         <Route path="terms-of-service" element={<TermsOfService />} />
-
-        {/* Debug Route - only for development/testing */}
-        <Route path="debug" element={<ApiDebugPage />} />
 
         <Route path="product/:id" element={<ProductDetails />} />
         <Route path="cart" element={<Cart />} />

@@ -1,5 +1,4 @@
 // API Configuration
-const isDevelopment = import.meta.env.DEV
 const isProduction = import.meta.env.PROD
 const isVercel = typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
 
@@ -18,44 +17,15 @@ export const createApiUrl = (endpoint) => {
   // Remove leading slash if present
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint
   
-  // Force production behavior if we're on Vercel or not localhost
+  // Use proxy for development
   if (!isActuallyProduction) {
     return `/api/${cleanEndpoint}`
   }
   
   // For production, always use the full Railway backend URL
   const backendUrl = import.meta.env.VITE_API_BASE_URL || RAILWAY_BACKEND_URL
-  // Ensure we don't double up on /api
   const baseUrl = backendUrl.endsWith('/api') ? backendUrl : `${backendUrl}/api`
-  const fullUrl = `${baseUrl}/${cleanEndpoint}`
-  
-  // Log for debugging
-  console.log('🔗 API URL created:', {
-    endpoint,
-    isDevelopment,
-    isProduction,
-    isVercel,
-    isActuallyProduction,
-    hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
-    envVar: import.meta.env.VITE_API_BASE_URL,
-    backendUrl,
-    fullUrl
-  })
-  
-  return fullUrl
-}
-
-// Export environment info for debugging
-export const config = {
-  isDevelopment,
-  isProduction,
-  isVercel,
-  isActuallyProduction,
-  apiBaseUrl: API_BASE_URL,
-  backendUrl: import.meta.env.VITE_API_BASE_URL || RAILWAY_BACKEND_URL,
-  railwayBackendUrl: RAILWAY_BACKEND_URL,
-  envVar: import.meta.env.VITE_API_BASE_URL,
-  hostname: typeof window !== 'undefined' ? window.location.hostname : 'server'
+  return `${baseUrl}/${cleanEndpoint}`
 }
 
 // Helper function to safely parse JSON responses
@@ -63,15 +33,13 @@ export const parseJsonResponse = async (response) => {
   const contentType = response.headers.get('content-type')
   
   if (!contentType || !contentType.includes('application/json')) {
-    const text = await response.text()
-    console.error('Expected JSON but received:', contentType, text)
+    await response.text() // Consume the response
     throw new Error(`Server returned ${response.status}: ${response.statusText}. Expected JSON response but got ${contentType}`)
   }
   
   try {
     return await response.json()
-  } catch (error) {
-    console.error('Failed to parse JSON response:', error)
+  } catch {
     throw new Error('Invalid JSON response from server')
   }
 }
@@ -89,7 +57,6 @@ export const apiRequest = async (endpoint, options = {}) => {
   }
   
   try {
-    console.log(`Making API request to: ${url}`)
     const response = await fetch(url, defaultOptions)
     
     if (!response.ok) {

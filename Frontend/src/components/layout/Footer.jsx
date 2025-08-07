@@ -12,8 +12,6 @@ import {
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { apiRequest } from '../../config/api'
-import { backupApiRequest } from '../../config/backupApi'
-import DebugLink from '../debug/DebugLink'
 
 
 
@@ -54,20 +52,11 @@ const Footer = () => {
       setSubscriptionStatus(null)
       setErrorMessage('')
 
-      // Try the main API first, then backup API if it fails
-      try {
-        await apiRequest('newsletter/subscribe', {
-          method: 'POST',
-          body: JSON.stringify({ email: email.trim() }),
-        })
-      } catch (primaryError) {
-        console.warn('Primary API failed, trying backup:', primaryError.message)
-        // Try backup API if primary fails
-        await backupApiRequest('newsletter/subscribe', {
-          method: 'POST',
-          body: JSON.stringify({ email: email.trim() }),
-        })
-      }
+      // Use the main API
+      await apiRequest('newsletter/subscribe', {
+        method: 'POST',
+        body: JSON.stringify({ email: email.trim() }),
+      })
 
       setSubscriptionStatus('success')
       setEmail('')
@@ -80,9 +69,6 @@ const Footer = () => {
     } catch (error) {
       setSubscriptionStatus('error')
       console.error('Newsletter subscription error:', error)
-      
-      // Mark that there were API errors for debug link visibility
-      localStorage.setItem('api-errors', 'true')
       
       // Handle different types of errors
       if (error.message.includes('fetch')) {
@@ -341,8 +327,6 @@ const Footer = () => {
                 <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
                 <span className="text-slate-500 text-xs">Developed BY  <a href="https://mehboobali.netlify.app" target="blank" className="text-slate-400 hover:text-slate-300 hover:underline font-semibold transition-colors duration-300">Mehboob Ali</a></span>
               </div>
-              {/* Debug link - shows when needed */}
-              <DebugLink />
             </div>
 
             {/* Payment Methods */}
