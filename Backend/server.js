@@ -14,6 +14,7 @@ const cartRoutes = require('./routes/cartRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const newsletterRoutes = require('./routes/newsletterRoutes');
 
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
@@ -49,6 +50,7 @@ connectDB().then(() => {
   app.use('/api/payment', paymentRoutes);
   app.use('/api/analytics', analyticsRoutes);
   app.use('/api/chat', chatRoutes);
+  app.use('/api/newsletter', newsletterRoutes);
 
   app.get('/', (req, res) => {
     res.send('🛍️ Welcome to Cratly');

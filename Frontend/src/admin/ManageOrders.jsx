@@ -19,7 +19,9 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   ShoppingBagIcon,
-  TagIcon
+  TagIcon,
+  PhoneIcon,
+  ClipboardDocumentIcon
 } from '@heroicons/react/24/outline'
 
 const ManageOrders = () => {
@@ -91,6 +93,54 @@ const ManageOrders = () => {
 
   const toggleOrderDetails = (orderId) => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId)
+  }
+
+  const copyOrderDetails = async (order) => {
+    const orderDetails = `
+ORDER DETAILS
+=============
+Order ID: ${order._id}
+Date: ${new Date(order.createdAt).toLocaleString()}
+Status: ${order.status}
+Total Amount: PKR ${order.totalPrice.toLocaleString()}
+
+CUSTOMER INFORMATION
+===================
+Name: ${order.userId?.name || 'Guest'}
+Email: ${order.userId?.email || 'No email'}
+Phone: ${order.customerInfo?.phone || 'No phone number'}
+
+SHIPPING ADDRESS
+===============
+Address: ${order.shippingInfo?.address || 'No address'}
+City: ${order.shippingInfo?.city || 'No city'}
+Postal Code: ${order.shippingInfo?.postalCode || 'No postal code'}
+
+ORDER ITEMS
+===========
+${order.items?.map((item, index) => `
+${index + 1}. ${item.title || 'Product'}
+   - Quantity: ${item.quantity || 1}
+   - Price: PKR ${(item.price || 0).toLocaleString()}
+   - Total: PKR ${((item.price || 0) * (item.quantity || 1)).toLocaleString()}
+   ${item.size ? `- Size: ${item.size}` : ''}
+   ${item.color ? `- Color: ${item.color}` : ''}
+`).join('') || 'No items'}
+
+PAYMENT SUMMARY
+==============
+Subtotal: PKR ${(order.totalPrice - (order.deliveryCharges || 0)).toLocaleString()}
+Delivery Charges: PKR ${(order.deliveryCharges || 0).toLocaleString()}
+Total: PKR ${order.totalPrice.toLocaleString()}
+`.trim()
+
+    try {
+      await navigator.clipboard.writeText(orderDetails)
+      showToast('Order details copied to clipboard!', 'success')
+    } catch (error) {
+      showToast('Failed to copy order details', 'error')
+      console.error('Copy failed:', error)
+    }
   }
 
   const OrderItems = ({ items }) => (
@@ -220,12 +270,13 @@ const ManageOrders = () => {
           <div className="hidden lg:block">
             <table className="w-full table-fixed">
               <colgroup>
-                <col className="w-1/5" />
-                <col className="w-1/10" />
-                <col className="w-1/10" />
-                <col className="w-1/10" />
-                <col className="w-1/5" />
+                <col className="w-1/6" />
                 <col className="w-1/12" />
+                <col className="w-1/12" />
+                <col className="w-1/12" />
+                <col className="w-1/6" />
+                <col className="w-1/12" />
+                <col className="w-1/8" />
                 <col className="w-1/6" />
               </colgroup>
               <thead className="bg-gray-50 border-b border-gray-200">
@@ -234,6 +285,12 @@ const ManageOrders = () => {
                     <div className="flex items-center space-x-1">
                       <UserIcon className="h-3 w-3" />
                       <span>Customer</span>
+                    </div>
+                  </th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div className="flex items-center space-x-1">
+                      <PhoneIcon className="h-3 w-3" />
+                      <span>Phone</span>
                     </div>
                   </th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -290,6 +347,11 @@ const ManageOrders = () => {
                         </div>
                       </td>
                       <td className="px-3 py-3">
+                        <div className="text-sm text-gray-900">
+                          {order.customerInfo?.phone || 'N/A'}
+                        </div>
+                      </td>
+                      <td className="px-3 py-3">
                         <div className="text-sm font-medium text-gray-900">
                           PKR {order.totalPrice.toLocaleString()}
                         </div>
@@ -320,22 +382,31 @@ const ManageOrders = () => {
                         </div>
                       </td>
                       <td className="px-3 py-3 text-center">
-                        <button
-                          onClick={() => toggleOrderDetails(order._id)}
-                          className="inline-flex items-center px-2 py-1 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50"
-                        >
-                          {expandedOrder === order._id ? (
-                            <>
-                              <ChevronUpIcon className="h-3 w-3 mr-1" />
-                              Hide
-                            </>
-                          ) : (
-                            <>
-                              <EyeIcon className="h-3 w-3 mr-1" />
-                              View
-                            </>
-                          )}
-                        </button>
+                        <div className="flex items-center justify-center space-x-1">
+                          <button
+                            onClick={() => toggleOrderDetails(order._id)}
+                            className="inline-flex items-center px-2 py-1 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50"
+                          >
+                            {expandedOrder === order._id ? (
+                              <>
+                                <ChevronUpIcon className="h-3 w-3 mr-1" />
+                                Hide
+                              </>
+                            ) : (
+                              <>
+                                <EyeIcon className="h-3 w-3 mr-1" />
+                                View
+                              </>
+                            )}
+                          </button>
+                          <button
+                            onClick={() => copyOrderDetails(order)}
+                            className="inline-flex items-center px-2 py-1 border border-green-300 rounded-md text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100"
+                            title="Copy order details"
+                          >
+                            <ClipboardDocumentIcon className="h-3 w-3" />
+                          </button>
+                        </div>
                       </td>
                       <td className="px-3 py-3 text-right text-sm font-medium">
                         <div className="flex items-center justify-end space-x-1">
@@ -410,7 +481,7 @@ const ManageOrders = () => {
                     </tr>
                     {expandedOrder === order._id && (
                       <tr>
-                        <td colSpan="7" className="px-6 py-4 bg-gray-50">
+                        <td colSpan="8" className="px-6 py-4 bg-gray-50">
                           <div className="max-w-4xl">
                             <OrderItems items={order.items} />
                           </div>
@@ -441,20 +512,35 @@ const ManageOrders = () => {
                         <div className="text-xs text-gray-500 truncate">
                           {order.userId?.email || 'No email'}
                         </div>
+                        {order.customerInfo?.phone && (
+                          <div className="text-xs text-gray-500 flex items-center">
+                            <PhoneIcon className="h-3 w-3 mr-1" />
+                            {order.customerInfo.phone}
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <Badge
-                      text={order.status}
-                      color={
-                        order.status === 'delivered'
-                          ? 'green'
-                          : order.status === 'shipped'
-                          ? 'blue'
-                          : order.status === 'cancelled'
-                          ? 'red'
-                          : 'yellow'
-                      }
-                    />
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => copyOrderDetails(order)}
+                        className="inline-flex items-center px-2 py-1 border border-green-300 rounded text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100"
+                        title="Copy order details"
+                      >
+                        <ClipboardDocumentIcon className="h-3 w-3" />
+                      </button>
+                      <Badge
+                        text={order.status}
+                        color={
+                          order.status === 'delivered'
+                            ? 'green'
+                            : order.status === 'shipped'
+                            ? 'blue'
+                            : order.status === 'cancelled'
+                            ? 'red'
+                            : 'yellow'
+                        }
+                      />
+                    </div>
                   </div>
 
                   {/* Details */}

@@ -98,15 +98,15 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   // ✅ Hardcoded admin login
-  if (email === 'a@c.com' && password === '123456') {
-    return res.json({
-      _id: 'admin_fake_id_123',
-      name: 'Admin',
-      email: 'a@c.com',
-      isAdmin: true,
-      token: generateToken('admin_fake_id_123')
-    });
-  }
+  // if (email === 'a@c.com' && password === '123456') {
+  //   return res.json({
+  //     _id: 'admin_fake_id_123',
+  //     name: 'Admin',
+  //     email: 'a@c.com',
+  //     isAdmin: true,
+  //     token: generateToken('admin_fake_id_123')
+  //   });
+  // }
 
   const user = await User.findOne({ email });
   if (!user) return res.status(401).json({ message: 'Invalid email or password' });

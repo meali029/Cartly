@@ -5,15 +5,82 @@ import {
   BuildingOfficeIcon,
   EnvelopeIcon,
   CurrencyDollarIcon,
-  DevicePhoneMobileIcon
+  DevicePhoneMobileIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 
 
 const Footer = () => {
   const year = new Date().getFullYear()
- const letters = 'CARTLY'.split('');
+  const letters = 'CARTLY'.split('');
+  
+  // Newsletter subscription state
+  const [email, setEmail] = useState('')
+  const [isSubscribing, setIsSubscribing] = useState(false)
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null) // 'success', 'error', null
+  const [errorMessage, setErrorMessage] = useState('')
+
+  // Email validation
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  // Handle newsletter subscription
+  const handleNewsletterSubscription = async (e) => {
+    e.preventDefault()
+    
+    if (!email.trim()) {
+      setSubscriptionStatus('error')
+      setErrorMessage('Please enter your email address')
+      return
+    }
+
+    if (!validateEmail(email)) {
+      setSubscriptionStatus('error')
+      setErrorMessage('Please enter a valid email address')
+      return
+    }
+
+    try {
+      setIsSubscribing(true)
+      setSubscriptionStatus(null)
+      setErrorMessage('')
+
+      // Call the actual newsletter API
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email.trim() }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setSubscriptionStatus('success')
+        setEmail('')
+        
+        // Auto-hide success message after 7 seconds
+        setTimeout(() => {
+          setSubscriptionStatus(null)
+        }, 7000)
+      } else {
+        throw new Error(data.message || 'Subscription failed')
+      }
+    } catch (error) {
+      setSubscriptionStatus('error')
+      setErrorMessage(error.message || 'Failed to subscribe. Please try again later.')
+      console.error('Newsletter subscription error:', error)
+    } finally {
+      setIsSubscribing(false)
+    }
+  }
   
 
   return (
@@ -137,12 +204,12 @@ const Footer = () => {
                   Shipping Info
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/returns-exchanges" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-red-500 rounded-full group-hover:w-2 transition-all duration-300"></span>
                   Returns & Exchanges
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link to="/contact-support" className="text-slate-400 hover:text-white transition-all duration-300 flex items-center gap-2 group hover:scale-105 transform">
                   <span className="w-1 h-1 bg-slate-400 rounded-full group-hover:w-2 transition-all duration-300"></span>
@@ -192,16 +259,52 @@ const Footer = () => {
                 Newsletter
               </h5>
               <p className="text-slate-400 text-xs mb-3">Get updates on sales & new arrivals</p>
-              <div className="flex gap-2">
-                <input 
-                  type="email" 
-                  placeholder="Enter email"
-                  className="flex-1 px-3 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-300"
-                />
-                <button className="px-3 py-2 bg-gradient-to-r from-slate-600 to-slate-800 text-white rounded-xl text-xs font-medium hover:from-slate-700 hover:to-slate-900 hover:shadow-lg transition-all duration-300 hover:scale-105">
-                  Subscribe
-                </button>
-              </div>
+              
+              {/* Subscription Form */}
+              <form onSubmit={handleNewsletterSubscription} className="space-y-3">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter email"
+                    disabled={isSubscribing}
+                    className="flex-1 px-3 py-2 bg-slate-700 border border-slate-600 rounded-xl text-white text-xs sm:text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                  />
+                  <button 
+                    type="submit"
+                    disabled={isSubscribing || !email.trim()}
+                    className="px-3 py-2 bg-gradient-to-r from-slate-600 to-slate-800 text-white rounded-xl text-xs font-medium hover:from-slate-700 hover:to-slate-900 hover:shadow-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none min-w-[70px] sm:min-w-[70px] w-full sm:w-auto flex items-center justify-center"
+                  >
+                    {isSubscribing ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      'Subscribe'
+                    )}
+                  </button>
+                </div>
+
+                {/* Status Messages */}
+                {subscriptionStatus === 'success' && (
+                  <div className="flex items-start gap-2 text-green-400 text-xs animate-fade-in">
+                    <CheckCircleIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                    <span className="leading-relaxed">Successfully subscribed! Check your email for a welcome message with exclusive offers.</span>
+                  </div>
+                )}
+
+                {subscriptionStatus === 'error' && (
+                  <div className="flex items-start gap-2 text-red-400 text-xs animate-fade-in">
+                    <ExclamationTriangleIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                    <span className="leading-relaxed">{errorMessage}</span>
+                  </div>
+                )}
+
+                {subscriptionStatus === null && !isSubscribing && (
+                  <div className="text-slate-500 text-xs leading-relaxed">
+                    Join 10,000+ customers getting exclusive deals
+                  </div>
+                )}
+              </form>
             </div>
           </div>
         </div>
