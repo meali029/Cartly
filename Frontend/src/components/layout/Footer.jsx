@@ -98,7 +98,7 @@ const Footer = () => {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-xl overflow-hidden">
                 <img
-                  src='Frontend/public/Cartly-logo.png'
+                  src='/Cartly-logo.png'
                   alt='Cartly Logo'
                   className="w-10 h-10 object-contain"
                 />
