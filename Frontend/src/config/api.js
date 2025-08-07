@@ -1,11 +1,15 @@
 // API Configuration
 const isDevelopment = import.meta.env.DEV
 const isProduction = import.meta.env.PROD
+const isVercel = typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
 
 // Configure your backend URL here
 const RAILWAY_BACKEND_URL = 'https://cartly-production.up.railway.app'
 
-export const API_BASE_URL = isDevelopment 
+// Force production mode if we're on Vercel
+const isActuallyProduction = isProduction || isVercel || (typeof window !== 'undefined' && window.location.hostname !== 'localhost')
+
+export const API_BASE_URL = !isActuallyProduction 
   ? '/api'  // Development: uses Vite proxy
   : import.meta.env.VITE_API_BASE_URL || `${RAILWAY_BACKEND_URL}/api`  // Production: Railway backend
 
@@ -14,7 +18,8 @@ export const createApiUrl = (endpoint) => {
   // Remove leading slash if present
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint
   
-  if (isDevelopment) {
+  // Force production behavior if we're on Vercel or not localhost
+  if (!isActuallyProduction) {
     return `/api/${cleanEndpoint}`
   }
   
@@ -22,16 +27,35 @@ export const createApiUrl = (endpoint) => {
   const backendUrl = import.meta.env.VITE_API_BASE_URL || RAILWAY_BACKEND_URL
   // Ensure we don't double up on /api
   const baseUrl = backendUrl.endsWith('/api') ? backendUrl : `${backendUrl}/api`
-  return `${baseUrl}/${cleanEndpoint}`
+  const fullUrl = `${baseUrl}/${cleanEndpoint}`
+  
+  // Log for debugging
+  console.log('🔗 API URL created:', {
+    endpoint,
+    isDevelopment,
+    isProduction,
+    isVercel,
+    isActuallyProduction,
+    hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
+    envVar: import.meta.env.VITE_API_BASE_URL,
+    backendUrl,
+    fullUrl
+  })
+  
+  return fullUrl
 }
 
 // Export environment info for debugging
 export const config = {
   isDevelopment,
   isProduction,
+  isVercel,
+  isActuallyProduction,
   apiBaseUrl: API_BASE_URL,
   backendUrl: import.meta.env.VITE_API_BASE_URL || RAILWAY_BACKEND_URL,
-  railwayBackendUrl: RAILWAY_BACKEND_URL
+  railwayBackendUrl: RAILWAY_BACKEND_URL,
+  envVar: import.meta.env.VITE_API_BASE_URL,
+  hostname: typeof window !== 'undefined' ? window.location.hostname : 'server'
 }
 
 // Helper function to safely parse JSON responses
