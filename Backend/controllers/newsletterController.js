@@ -65,144 +65,73 @@ const sendNewsletterWelcomeEmail = async (toEmail) => {
 
   const unsubscribeLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/newsletter/unsubscribe?email=${encodeURIComponent(toEmail)}`
 
-  const mailOptions = {
-    from: `"Cartly Newsletter" <${process.env.EMAIL_USER}>`,
-    to: toEmail,
-    subject: '🎉 Welcome to Cartly Newsletter - Exclusive Deals Await!',
-    html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to Cartly Newsletter</title>
-      </head>
-      <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
-        <div style="max-width: 600px; margin: 0 auto; background-color: white;">
-          
-          <!-- Header -->
-          <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 40px 30px; text-align: center;">
-            <h1 style="margin: 0; font-size: 32px; font-weight: 700;">🎉 Welcome to Cartly!</h1>
-            <p style="margin: 15px 0 0 0; font-size: 18px; opacity: 0.9;">You're now part of our exclusive newsletter family</p>
+ const mailOptions = {
+  from: `"Cartly Newsletter" <${process.env.EMAIL_USER}>`,
+  to: toEmail,
+  subject: '🎉 Welcome to Cartly! Enjoy 15% OFF Your Next Order',
+  html: `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Welcome to Cartly Newsletter</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #f5f5f5; font-family: 'Segoe UI', Tahoma, sans-serif;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #fff; text-align: center; padding: 30px 20px;">
+          <h1 style="margin: 0; font-size: 28px;">🎉 Welcome to Cartly</h1>
+          <p style="margin: 10px 0 0; font-size: 16px; opacity: 0.9;">Thanks for joining our newsletter</p>
+        </div>
+
+        <!-- Main Content -->
+        <div style="padding: 30px 20px; text-align: center; color: #333;">
+          <h2 style="font-size: 22px; margin-bottom: 10px;">Here's What to Expect</h2>
+          <ul style="list-style: none; padding: 0; margin: 20px 0; font-size: 15px; color: #555;">
+            <li>🏷️ Early Access to Sales</li>
+            <li>👗 Latest Fashion Arrivals</li>
+            <li>⚡ Flash Deals & Trends</li>
+          </ul>
+
+          <!-- Welcome Offer -->
+          <div style="background: #10b981; color: #fff; border-radius: 10px; padding: 20px; margin: 30px 0;">
+            <h3 style="margin: 0 0 10px; font-size: 20px;">🎁 15% OFF Just for You!</h3>
+            <p style="margin: 0 0 10px;">Use code <strong>WELCOME15</strong> on your next order.</p>
+            <p style="margin: 0; font-size: 12px; opacity: 0.8;">Valid for 7 days • Min. PKR 2,000</p>
           </div>
 
-          <!-- Main Content -->
-          <div style="padding: 40px 30px;">
-            <div style="text-align: center; margin-bottom: 30px;">
-              <h2 style="margin: 0 0 15px 0; color: #333; font-size: 24px;">🛍️ Thanks for Subscribing!</h2>
-              <p style="margin: 0; color: #666; font-size: 16px; line-height: 1.6;">
-                You've successfully subscribed to our newsletter! Get ready for exclusive deals, new arrivals, and fashion inspiration delivered straight to your inbox.
-              </p>
-            </div>
-
-            <!-- Benefits -->
-            <div style="background: #f8f9fa; border-radius: 15px; padding: 30px; margin: 30px 0;">
-              <h3 style="margin: 0 0 20px 0; color: #333; font-size: 20px; text-align: center;">✨ What You'll Get</h3>
-              <div style="display: grid; gap: 15px;">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                  <div style="width: 40px; height: 40px; background: #4f46e5; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <span style="color: white; font-size: 20px;">🏷️</span>
-                  </div>
-                  <div>
-                    <h4 style="margin: 0; color: #333; font-size: 16px;">Exclusive Discounts</h4>
-                    <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Be the first to know about sales and special offers</p>
-                  </div>
-                </div>
-                
-                <div style="display: flex; align-items: center; gap: 15px;">
-                  <div style="width: 40px; height: 40px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <span style="color: white; font-size: 20px;">👗</span>
-                  </div>
-                  <div>
-                    <h4 style="margin: 0; color: #333; font-size: 16px;">New Arrivals</h4>
-                    <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Get early access to our latest fashion collections</p>
-                  </div>
-                </div>
-                
-                <div style="display: flex; align-items: center; gap: 15px;">
-                  <div style="width: 40px; height: 40px; background: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <span style="color: white; font-size: 20px;">💡</span>
-                  </div>
-                  <div>
-                    <h4 style="margin: 0; color: #333; font-size: 16px;">Style Tips</h4>
-                    <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Fashion advice and styling inspiration from our experts</p>
-                  </div>
-                </div>
-                
-                <div style="display: flex; align-items: center; gap: 15px;">
-                  <div style="width: 40px; height: 40px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <span style="color: white; font-size: 20px;">⚡</span>
-                  </div>
-                  <div>
-                    <h4 style="margin: 0; color: #333; font-size: 16px;">Flash Sales</h4>
-                    <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Limited-time offers and lightning deals</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Welcome Offer -->
-            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 15px; padding: 30px; margin: 30px 0; text-align: center;">
-              <h3 style="margin: 0 0 15px 0; font-size: 22px;">🎁 Welcome Gift</h3>
-              <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; opacity: 0.9;">
-                As a thank you for joining us, enjoy <strong>15% OFF</strong> your next purchase!
-              </p>
-              <div style="background: rgba(255,255,255,0.2); border-radius: 10px; padding: 15px; margin: 20px 0;">
-                <p style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 2px;">
-                  Code: WELCOME15
-                </p>
-              </div>
-              <p style="margin: 0; font-size: 14px; opacity: 0.8;">
-                Valid for 7 days • Minimum order PKR 2,000
-              </p>
-            </div>
-
-            <!-- Social Media -->
-            <div style="text-align: center; margin: 40px 0;">
-              <h3 style="margin: 0 0 20px 0; color: #333; font-size: 18px;">Follow Us for More</h3>
-              <div style="display: flex; justify-content: center; gap: 15px;">
-                <a href="#" style="width: 45px; height: 45px; background: #1877f2; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
-                  <span style="color: white; font-size: 20px;">📘</span>
-                </a>
-                <a href="#" style="width: 45px; height: 45px; background: #e4405f; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
-                  <span style="color: white; font-size: 20px;">📷</span>
-                </a>
-                <a href="#" style="width: 45px; height: 45px; background: #1da1f2; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
-                  <span style="color: white; font-size: 20px;">🐦</span>
-                </a>
-                <a href="#" style="width: 45px; height: 45px; background: #ff0000; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
-                  <span style="color: white; font-size: 20px;">📺</span>
-                </a>
-              </div>
-            </div>
-
-            <!-- Footer -->
-            <div style="border-top: 1px solid #eee; padding-top: 30px; text-align: center;">
-              <p style="margin: 0 0 15px 0; color: #333; font-size: 16px; font-weight: 600;">
-                Happy Shopping! 💜
-              </p>
-              <p style="margin: 0 0 20px 0; color: #666; font-size: 14px; line-height: 1.6;">
-                You're receiving this email because you subscribed to Cartly newsletter.<br>
-                We respect your privacy and will never share your email with third parties.
-              </p>
-              
-              <div style="margin: 20px 0;">
-                <a href="${unsubscribeLink}" style="color: #999; font-size: 12px; text-decoration: underline;">
-                  Unsubscribe from newsletter
-                </a>
-              </div>
-              
-              <p style="margin: 0; color: #999; font-size: 12px;">
-                Cartly Store - Pakistan's Leading Fashion Destination<br>
-                Email sent to: ${toEmail}
-              </p>
-            </div>
+          <!-- Social Icons -->
+          <p style="margin-top: 30px; font-size: 14px;">Follow us for updates</p>
+          <div style="display: flex; justify-content: center; gap: 12px;">
+            <a href="#" style="width: 40px; height: 40px; background: #1877f2; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              <span style="color: white;">📘</span>
+            </a>
+            <a href="#" style="width: 40px; height: 40px; background: #e4405f; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              <span style="color: white;">📷</span>
+            </a>
+            <a href="#" style="width: 40px; height: 40px; background: #ff0000; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              <span style="color: white;">📺</span>
+            </a>
           </div>
         </div>
-      </body>
-      </html>
-    `
-  }
+
+        <!-- Footer -->
+        <div style="padding: 20px; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #eee;">
+          <p style="margin: 0;">Sent to: ${toEmail}</p>
+          <a href="${unsubscribeLink}" style="color: #999; text-decoration: underline; display: inline-block; margin-top: 8px;">
+            Unsubscribe
+          </a>
+          <p style="margin-top: 10px;">© 2025 Cartly - All rights reserved</p>
+        </div>
+
+      </div>
+    </body>
+    </html>
+  `
+};
+
 
   await transporter.sendMail(mailOptions)
 }
@@ -247,6 +176,7 @@ const subscribeToNewsletter = async (req, res) => {
     // Send welcome email
     try {
       await sendNewsletterWelcomeEmail(email)
+      console.log(`Welcome email sent successfully to: ${email}`)
     } catch (emailError) {
       console.error('Failed to send welcome email:', emailError)
       // Still consider subscription successful even if email fails
@@ -262,7 +192,8 @@ const subscribeToNewsletter = async (req, res) => {
     console.error('Newsletter subscription error:', error)
     res.status(500).json({
       success: false,
-      message: 'Failed to subscribe. Please try again later.'
+      message: 'Failed to subscribe. Please try again later.',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     })
   }
 }

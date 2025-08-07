@@ -32,11 +32,14 @@ connectDB().then(() => {
   const corsOptions = {
     origin: [
       'http://localhost:5173', // Local development
-      'https://cartly-shop.vercel.app' // Production frontend
+      'https://cartly-shop.vercel.app', // Production frontend on Vercel
+      'https://*.vercel.app', // Allow all Vercel preview deployments
+      'https://cartly-*.vercel.app' // Allow Cartly-specific Vercel deployments
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true, // if you use cookies/auth headers
+    optionsSuccessStatus: 200 // Some legacy browsers choke on 204
   };
 
   app.use(cors(corsOptions)); // <-- Enable CORS with options here
@@ -64,7 +67,10 @@ connectDB().then(() => {
       environment: process.env.NODE_ENV || 'development',
       mongoConnected: !!process.env.MONGO_URI,
       jwtSecret: !!process.env.JWT_SECRET,
-      stripeKey: !!process.env.STRIPE_SECRET_KEY
+      stripeKey: !!process.env.STRIPE_SECRET_KEY,
+      emailConfigured: !!(process.env.EMAIL_USER && process.env.EMAIL_PASS),
+      corsOrigins: corsOptions.origin,
+      version: '1.0.0'
     });
   });
 
@@ -76,7 +82,9 @@ connectDB().then(() => {
     cors: {
       origin: [
         'http://localhost:5173', // Local development
-        'https://cartly-shop.vercel.app' // Production frontend
+        'https://cartly-shop.vercel.app', // Production frontend on Vercel
+        'https://*.vercel.app', // Allow all Vercel preview deployments
+        'https://cartly-*.vercel.app' // Allow Cartly-specific Vercel deployments
       ],
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       credentials: true,

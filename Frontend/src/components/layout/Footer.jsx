@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
-import { createApiUrl } from '../../config/api'
+import { apiRequest } from '../../config/api'
 
 
 
@@ -52,32 +52,34 @@ const Footer = () => {
       setSubscriptionStatus(null)
       setErrorMessage('')
 
-      // Call the actual newsletter API
-      const response = await fetch(createApiUrl('newsletter/subscribe'), {
+      // Use the improved apiRequest function with better error handling
+      await apiRequest('newsletter/subscribe', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ email: email.trim() }),
       })
 
-      const data = await response.json()
+      setSubscriptionStatus('success')
+      setEmail('')
+      
+      // Auto-hide success message after 7 seconds
+      setTimeout(() => {
+        setSubscriptionStatus(null)
+      }, 7000)
 
-      if (response.ok) {
-        setSubscriptionStatus('success')
-        setEmail('')
-        
-        // Auto-hide success message after 7 seconds
-        setTimeout(() => {
-          setSubscriptionStatus(null)
-        }, 7000)
-      } else {
-        throw new Error(data.message || 'Subscription failed')
-      }
     } catch (error) {
       setSubscriptionStatus('error')
-      setErrorMessage(error.message || 'Failed to subscribe. Please try again later.')
       console.error('Newsletter subscription error:', error)
+      
+      // Handle different types of errors
+      if (error.message.includes('fetch')) {
+        setErrorMessage('Unable to connect to server. Please check your internet connection and try again.')
+      } else if (error.message.includes('405')) {
+        setErrorMessage('Service temporarily unavailable. Please try again later.')
+      } else if (error.message.includes('already subscribed')) {
+        setErrorMessage('You are already subscribed to our newsletter!')
+      } else {
+        setErrorMessage(error.message || 'Failed to subscribe. Please try again later.')
+      }
     } finally {
       setIsSubscribing(false)
     }
