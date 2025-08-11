@@ -1,6 +1,7 @@
 
 import Navbar from './Navbar'
 import Footer from './Footer'
+import BottomNav from './BottomNav'
 import { Outlet } from 'react-router-dom'
 import { useState, useContext, useEffect } from 'react'
 import { AuthContext } from '../../context/AuthContext'
@@ -22,11 +23,15 @@ const MainLayout = () => {
 
   return (
     <div key={key} className="flex flex-col min-h-screen bg-gray-50">
-      <Navbar onOpenAuth={handleOpenAuth} />
+  <Navbar onOpenAuth={handleOpenAuth} />
       <main className="flex-1">
         <Outlet />
       </main>
       <Footer />
+  {/* Mobile bottom spacer so content isn't hidden behind BottomNav */}
+  <div className="h-20 md:h-0 bg-gray-900 border-0" />
+  {/* Mobile Bottom Navigation (hidden for admin via Navbar null when admin) */}
+  {!user?.isAdmin && <BottomNav onOpenAuth={handleOpenAuth} />}
       {authModal === 'login' && (
         <AuthManager isOpen={true} onClose={handleCloseAuth} />
       )}
