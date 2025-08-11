@@ -36,9 +36,18 @@ const orderSchema = mongoose.Schema({
       }
     }
   ],
+  // Optional customer info provided at checkout (e.g., phone numbers, notes)
+  customerInfo: {
+    phone: { type: String },
+    alternatePhone: { type: String },
+    instructions: { type: String }
+  },
   shippingInfo: {
+    // Address for delivery
     address: { type: String, required: true },
     city: { type: String, required: true },
+    // Some UIs capture area/sector separately
+    area: { type: String },
     postalCode: { type: String, required: true },
     country: { type: String, required: true }
   },

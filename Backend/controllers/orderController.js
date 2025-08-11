@@ -9,7 +9,7 @@ const placeOrder = async (req, res) => {
     console.log('📦 Request body:', JSON.stringify(req.body, null, 2));
     console.log('📦 Authenticated user:', req.user ? { id: req.user._id, email: req.user.email } : 'No user');
 
-    const { userId, items, totalPrice, shippingInfo, paymentStatus, paymentMethod } = req.body;
+  const { userId, items, totalPrice, shippingInfo, paymentStatus, paymentMethod, customerInfo } = req.body;
 
     console.log('📦 Placing order:', { userId, items: items?.length, totalPrice });
 
@@ -26,6 +26,7 @@ const placeOrder = async (req, res) => {
       userId: orderUserId,
       items,
       shippingInfo,
+      customerInfo, // save phone numbers and instructions
       paymentStatus,
       paymentMethod,
       totalPrice

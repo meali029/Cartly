@@ -4,20 +4,17 @@ import { useToast } from '../context/ToastContext'
 import { getAllOrders, updateOrderStatus, cancelOrder } from '../services/orderService'
 import Badge from '../components/ui/Badge'
 import { useSocket } from '../hooks/useSocket'
-import { 
+import {
   ClipboardDocumentListIcon,
   TruckIcon,
   CheckCircleIcon,
   XMarkIcon,
-  ExclamationCircleIcon,
   MapPinIcon,
   CalendarDaysIcon,
   UserIcon,
   CurrencyDollarIcon,
   ArrowPathIcon,
   EyeIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
   ShoppingBagIcon,
   TagIcon,
   PhoneIcon,
@@ -32,7 +29,8 @@ const ManageOrders = () => {
   const [cancelId, setCancelId] = useState(null)
   const [loading, setLoading] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
-  const [expandedOrder, setExpandedOrder] = useState(null)
+  const [selectedOrder, setSelectedOrder] = useState(null)
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -91,8 +89,16 @@ const ManageOrders = () => {
     }
   }
 
-  const toggleOrderDetails = (orderId) => {
-    setExpandedOrder(expandedOrder === orderId ? null : orderId)
+  const openDetails = (order) => {
+    setSelectedOrder(order)
+    setIsDetailsOpen(true)
+  }
+
+  const closeDetails = () => {
+    setIsDetailsOpen(false)
+    setSelectedOrder(null)
+    setCancelId(null)
+    setCancelReason('')
   }
 
   const copyOrderDetails = async (order) => {
@@ -215,7 +221,7 @@ Total: PKR ${order.totalPrice.toLocaleString()}
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Manage Orders
+              Orders
               {orders.length > 0 && (
                 <span className="ml-2 text-lg font-normal text-gray-500">
                   ({orders.length})
@@ -223,7 +229,7 @@ Total: PKR ${order.totalPrice.toLocaleString()}
               )}
             </h1>
             <p className="text-gray-600">
-              View and manage all customer orders
+              View orders and open details in a popup
               {lastUpdated && (
                 <span className="ml-2 text-sm text-gray-500">
                   • Last updated: {lastUpdated.toLocaleTimeString()}
@@ -242,442 +248,248 @@ Total: PKR ${order.totalPrice.toLocaleString()}
         </button>
       </div>
 
-      {/* Orders List */}
-      {loading && orders.length === 0 ? (
+      {/* Loading / Empty */}
+      {loading && orders.length === 0 && (
         <div className="bg-white rounded-lg shadow p-8 text-center">
           <ArrowPathIcon className="h-12 w-12 text-gray-400 mx-auto mb-4 animate-spin" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">Loading orders...</h3>
           <p className="text-gray-500">Please wait while we fetch the latest orders.</p>
         </div>
-      ) : orders.length === 0 ? (
+      )}
+
+      {!loading && orders.length === 0 && (
         <div className="bg-white rounded-lg shadow p-8 text-center">
           <ClipboardDocumentListIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
           <p className="text-gray-500">Orders will appear here when customers place them.</p>
         </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          {loading && (
-            <div className="bg-blue-50 border-b border-blue-200 px-6 py-3">
-              <div className="flex items-center">
-                <ArrowPathIcon className="h-4 w-4 text-blue-600 mr-2 animate-spin" />
-                <span className="text-sm text-blue-800">Refreshing orders...</span>
+      )}
+
+      {/* Simple, responsive list of orders */}
+      <div className="grid grid-cols-1 gap-3">
+        {orders.map((order) => (
+          <div key={order._id} className="bg-white rounded-lg shadow p-4 flex items-start justify-between">
+            <div className="flex items-start space-x-3 min-w-0">
+              <div className="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                <UserIcon className="h-5 w-5 text-gray-500" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="text-sm font-semibold text-gray-900 truncate max-w-[180px] sm:max-w-[260px]">
+                    {order.userId?.name || 'Guest'}
+                  </div>
+                  <Badge
+                    text={order.status}
+                    color={
+                      order.status === 'delivered'
+                        ? 'green'
+                        : order.status === 'shipped'
+                        ? 'blue'
+                        : order.status === 'cancelled'
+                        ? 'red'
+                        : 'yellow'
+                    }
+                  />
+                </div>
+                <div className="text-xs text-gray-500 truncate max-w-[260px]">
+                  {order.userId?.email || 'No email'}
+                </div>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-gray-600 mt-2">
+                  <div className="flex items-center">
+                    <PhoneIcon className="h-4 w-4 mr-1 text-gray-400" />
+                    {order.customerInfo?.phone || 'N/A'}
+                  </div>
+                  <div className="flex items-center">
+                    <CurrencyDollarIcon className="h-4 w-4 mr-1 text-gray-400" />
+                    PKR {order.totalPrice.toLocaleString()}
+                  </div>
+                  <div className="flex items-center">
+                    <CalendarDaysIcon className="h-4 w-4 mr-1 text-gray-400" />
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </div>
+                  <div className="flex items-center truncate max-w-[220px]">
+                    <MapPinIcon className="h-4 w-4 mr-1 text-gray-400" />
+                    <span className="truncate">{order.shippingInfo?.city}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          )}
-          
-          {/* Desktop Table View */}
-          <div className="hidden lg:block">
-            <table className="w-full table-fixed">
-              <colgroup>
-                <col className="w-1/6" />
-                <col className="w-1/12" />
-                <col className="w-1/12" />
-                <col className="w-1/12" />
-                <col className="w-1/6" />
-                <col className="w-1/12" />
-                <col className="w-1/8" />
-                <col className="w-1/6" />
-              </colgroup>
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <div className="flex items-center space-x-1">
-                      <UserIcon className="h-3 w-3" />
-                      <span>Customer</span>
-                    </div>
-                  </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <div className="flex items-center space-x-1">
-                      <PhoneIcon className="h-3 w-3" />
-                      <span>Phone</span>
-                    </div>
-                  </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <div className="flex items-center space-x-1">
-                      <CurrencyDollarIcon className="h-3 w-3" />
-                      <span>Total</span>
-                    </div>
-                  </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <div className="flex items-center space-x-1">
-                      <CalendarDaysIcon className="h-3 w-3" />
-                      <span>Date</span>
-                    </div>
-                  </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <div className="flex items-center space-x-1">
-                      <MapPinIcon className="h-3 w-3" />
-                      <span>Address</span>
-                    </div>
-                  </th>
-                  <th className="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <div className="flex items-center justify-center space-x-1">
-                      <EyeIcon className="h-3 w-3" />
-                      <span>Details</span>
-                    </div>
-                  </th>
-                  <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {orders.map((order) => (
-                  <>
-                    <tr key={order._id} className="hover:bg-gray-50">
-                      <td className="px-3 py-3">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-6 w-6">
-                            <div className="h-6 w-6 rounded-full bg-gray-100 flex items-center justify-center">
-                              <UserIcon className="h-3 w-3 text-gray-500" />
-                            </div>
-                          </div>
-                          <div className="ml-2 min-w-0 flex-1">
-                            <div className="text-sm font-medium text-gray-900 truncate">
-                              {order.userId?.name || 'Guest'}
-                            </div>
-                            <div className="text-xs text-gray-500 truncate">
-                              {order.userId?.email || 'No email'}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-3 py-3">
-                        <div className="text-sm text-gray-900">
-                          {order.customerInfo?.phone || 'N/A'}
-                        </div>
-                      </td>
-                      <td className="px-3 py-3">
-                        <div className="text-sm font-medium text-gray-900">
-                          PKR {order.totalPrice.toLocaleString()}
-                        </div>
-                      </td>
-                      <td className="px-3 py-3">
-                        <Badge
-                          text={order.status}
-                          color={
-                            order.status === 'delivered'
-                              ? 'green'
-                              : order.status === 'shipped'
-                              ? 'blue'
-                              : order.status === 'cancelled'
-                              ? 'red'
-                              : 'yellow'
-                          }
-                        />
-                      </td>
-                      <td className="px-3 py-3 text-sm text-gray-900">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-3 py-3">
-                        <div className="text-sm text-gray-900">
-                          <div className="font-medium truncate">{order.shippingInfo?.address}</div>
-                          <div className="text-xs text-gray-500 truncate">
-                            {order.shippingInfo?.city}, {order.shippingInfo?.postalCode}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-3 py-3 text-center">
-                        <div className="flex items-center justify-center space-x-1">
-                          <button
-                            onClick={() => toggleOrderDetails(order._id)}
-                            className="inline-flex items-center px-2 py-1 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50"
-                          >
-                            {expandedOrder === order._id ? (
-                              <>
-                                <ChevronUpIcon className="h-3 w-3 mr-1" />
-                                Hide
-                              </>
-                            ) : (
-                              <>
-                                <EyeIcon className="h-3 w-3 mr-1" />
-                                View
-                              </>
-                            )}
-                          </button>
-                          <button
-                            onClick={() => copyOrderDetails(order)}
-                            className="inline-flex items-center px-2 py-1 border border-green-300 rounded-md text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100"
-                            title="Copy order details"
-                          >
-                            <ClipboardDocumentIcon className="h-3 w-3" />
-                          </button>
-                        </div>
-                      </td>
-                      <td className="px-3 py-3 text-right text-sm font-medium">
-                        <div className="flex items-center justify-end space-x-1">
-                          {order.status === 'pending' && (
-                            <>
-                              <button
-                                onClick={() => handleStatusUpdate(order._id, 'shipped')}
-                                className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
-                              >
-                                <TruckIcon className="h-3 w-3 mr-1" />
-                                Ship
-                              </button>
-                              {cancelId === order._id ? (
-                                <div className="flex flex-col gap-1 min-w-40">
-                                  <input
-                                    type="text"
-                                    placeholder="Reason"
-                                    value={cancelReason}
-                                    onChange={e => setCancelReason(e.target.value)}
-                                    className="border border-gray-300 px-2 py-1 rounded text-xs focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                                  />
-                                  <div className="flex gap-1">
-                                    <button
-                                      onClick={() => handleCancel(order._id)}
-                                      className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200"
-                                    >
-                                      <XMarkIcon className="h-3 w-3 mr-1" />
-                                      Cancel
-                                    </button>
-                                    <button
-                                      onClick={() => { setCancelId(null); setCancelReason('') }}
-                                      className="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
-                                    >
-                                      Dismiss
-                                    </button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <button
-                                  onClick={() => setCancelId(order._id)}
-                                  className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200"
-                                >
-                                  <XMarkIcon className="h-3 w-3 mr-1" />
-                                  Cancel
-                                </button>
-                              )}
-                            </>
-                          )}
-                          {order.status === 'shipped' && (
-                            <button
-                              onClick={() => handleStatusUpdate(order._id, 'delivered')}
-                              className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-green-700 bg-green-100 hover:bg-green-200"
-                            >
-                              <CheckCircleIcon className="h-3 w-3 mr-1" />
-                              Deliver
-                            </button>
-                          )}
-                          {order.status === 'delivered' && (
-                            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium text-green-800 bg-green-100">
-                              <CheckCircleIcon className="h-3 w-3 mr-1" />
-                              Done
-                            </span>
-                          )}
-                          {order.status === 'cancelled' && (
-                            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium text-red-800 bg-red-100">
-                              <XMarkIcon className="h-3 w-3 mr-1" />
-                              Cancelled
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                    {expandedOrder === order._id && (
-                      <tr>
-                        <td colSpan="8" className="px-6 py-4 bg-gray-50">
-                          <div className="max-w-4xl">
-                            <OrderItems items={order.items} />
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </>
-                ))}
-              </tbody>
-            </table>
+            <div className="flex items-center gap-2 ml-3">
+              <button
+                onClick={() => copyOrderDetails(order)}
+                className="inline-flex items-center px-2 py-1 border border-green-300 rounded-md text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100"
+                title="Copy order details"
+              >
+                <ClipboardDocumentIcon className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => openDetails(order)}
+                className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              >
+                <EyeIcon className="h-4 w-4 mr-1" />
+                View
+              </button>
+            </div>
           </div>
+        ))}
+      </div>
 
-          {/* Mobile Card View */}
-          <div className="lg:hidden">
-            <div className="divide-y divide-gray-200">
-              {orders.map((order) => (
-                <div key={order._id} className="p-3 space-y-2">
-                  {/* Header */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 min-w-0 flex-1">
-                      <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                        <UserIcon className="h-4 w-4 text-gray-500" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-sm font-medium text-gray-900 truncate">
-                          {order.userId?.name || 'Guest'}
-                        </div>
-                        <div className="text-xs text-gray-500 truncate">
-                          {order.userId?.email || 'No email'}
-                        </div>
-                        {order.customerInfo?.phone && (
-                          <div className="text-xs text-gray-500 flex items-center">
-                            <PhoneIcon className="h-3 w-3 mr-1" />
-                            {order.customerInfo.phone}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => copyOrderDetails(order)}
-                        className="inline-flex items-center px-2 py-1 border border-green-300 rounded text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100"
-                        title="Copy order details"
-                      >
-                        <ClipboardDocumentIcon className="h-3 w-3" />
-                      </button>
-                      <Badge
-                        text={order.status}
-                        color={
-                          order.status === 'delivered'
-                            ? 'green'
-                            : order.status === 'shipped'
-                            ? 'blue'
-                            : order.status === 'cancelled'
-                            ? 'red'
-                            : 'yellow'
-                        }
-                      />
-                    </div>
-                  </div>
+      {/* Details Modal */}
+      {isDetailsOpen && selectedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50" onClick={closeDetails} />
+          <div className="relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden">
+            {/* Modal header */}
+            <div className="px-5 py-4 border-b flex items-center justify-between">
+              <div>
+                <div className="text-xs text-gray-500">Order ID</div>
+                <div className="text-sm font-semibold text-gray-900 truncate">{selectedOrder._id}</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge
+                  text={selectedOrder.status}
+                  color={
+                    selectedOrder.status === 'delivered'
+                      ? 'green'
+                      : selectedOrder.status === 'shipped'
+                      ? 'blue'
+                      : selectedOrder.status === 'cancelled'
+                      ? 'red'
+                      : 'yellow'
+                  }
+                />
+                <button
+                  onClick={closeDetails}
+                  className="inline-flex items-center px-2 py-1 text-sm text-gray-600 hover:text-gray-900"
+                >
+                  <XMarkIcon className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
 
-                  {/* Details */}
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <div className="flex items-center space-x-1 text-gray-500 mb-1">
-                        <CurrencyDollarIcon className="h-3 w-3" />
-                        <span>Total</span>
-                      </div>
-                      <div className="font-medium text-gray-900">
-                        PKR {order.totalPrice.toLocaleString()}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex items-center space-x-1 text-gray-500 mb-1">
-                        <CalendarDaysIcon className="h-3 w-3" />
-                        <span>Date</span>
-                      </div>
-                      <div className="text-gray-900">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </div>
-                    </div>
+            {/* Modal body */}
+            <div className="p-5 space-y-5 max-h-[75vh] overflow-y-auto">
+              {/* Customer & Summary */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <div className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                    <UserIcon className="h-4 w-4 text-gray-500" />
+                    {selectedOrder.userId?.name || 'Guest'}
                   </div>
+                  <div className="text-xs text-gray-600 truncate">{selectedOrder.userId?.email || 'No email'}</div>
+                  <div className="text-xs text-gray-600 flex items-center gap-2">
+                    <PhoneIcon className="h-4 w-4 text-gray-500" />
+                    {selectedOrder.customerInfo?.phone || 'N/A'}
+                    {selectedOrder.customerInfo?.alternatePhone && (
+                      <span className="text-gray-400">• Alt: {selectedOrder.customerInfo.alternatePhone}</span>
+                    )}
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-xs text-gray-600 flex items-center gap-2">
+                    <CalendarDaysIcon className="h-4 w-4 text-gray-500" />
+                    {new Date(selectedOrder.createdAt).toLocaleString()}
+                  </div>
+                  <div className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                    <CurrencyDollarIcon className="h-4 w-4 text-gray-500" />
+                    PKR {selectedOrder.totalPrice.toLocaleString()}
+                  </div>
+                </div>
+              </div>
 
-                  {/* Shipping Address */}
-                  <div>
-                    <div className="flex items-center space-x-1 text-gray-500 mb-1">
-                      <MapPinIcon className="h-3 w-3" />
-                      <span>Address</span>
-                    </div>
-                    <div className="text-sm text-gray-900">
-                      <div className="font-medium truncate">{order.shippingInfo?.address}</div>
-                      <div className="text-gray-500 truncate">
-                        {order.shippingInfo?.city}, {order.shippingInfo?.postalCode}
-                      </div>
-                    </div>
+              {/* Address */}
+              <div className="bg-gray-50 p-4 rounded-xl">
+                <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-1">
+                  <MapPinIcon className="h-4 w-4" />
+                  Shipping Address
+                </div>
+                <div className="text-sm text-gray-700">
+                  <div className="font-medium">{selectedOrder.shippingInfo?.address}</div>
+                  <div className="text-gray-600">
+                    {selectedOrder.shippingInfo?.area ? `${selectedOrder.shippingInfo.area}, ` : ''}
+                    {selectedOrder.shippingInfo?.city}, {selectedOrder.shippingInfo?.postalCode}, {selectedOrder.shippingInfo?.country}
                   </div>
-
-                  {/* Actions */}
-                  <div className="pt-2 border-t border-gray-100">
-                    <div className="flex flex-wrap gap-2">
-                      {/* View Details Button - Always visible */}
-                      <button
-                        onClick={() => toggleOrderDetails(order._id)}
-                        className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
-                      >
-                        {expandedOrder === order._id ? (
-                          <>
-                            <ChevronUpIcon className="h-4 w-4 mr-1" />
-                            Hide Details
-                          </>
-                        ) : (
-                          <>
-                            <EyeIcon className="h-4 w-4 mr-1" />
-                            View Details
-                          </>
-                        )}
-                      </button>
-                      
-                      {/* Status Action Buttons */}
-                      {order.status === 'pending' && (
-                        <>
-                          <button
-                            onClick={() => handleStatusUpdate(order._id, 'shipped')}
-                            className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
-                          >
-                            <TruckIcon className="h-4 w-4 mr-1" />
-                            Ship
-                          </button>
-                          {cancelId === order._id ? (
-                            <div className="w-full mt-2 space-y-2">
-                              <input
-                                type="text"
-                                placeholder="Cancellation reason"
-                                value={cancelReason}
-                                onChange={e => setCancelReason(e.target.value)}
-                                className="w-full border border-gray-300 px-2 py-1 rounded text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                              />
-                              <div className="flex gap-2">
-                                <button
-                                  onClick={() => handleCancel(order._id)}
-                                  className="flex-1 inline-flex items-center justify-center px-2 py-1 border border-transparent text-sm font-medium rounded text-red-700 bg-red-100 hover:bg-red-200"
-                                >
-                                  <XMarkIcon className="h-4 w-4 mr-1" />
-                                  Cancel
-                                </button>
-                                <button
-                                  onClick={() => { setCancelId(null); setCancelReason('') }}
-                                  className="flex-1 inline-flex items-center justify-center px-2 py-1 border border-gray-300 text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
-                                >
-                                  Dismiss
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => setCancelId(order._id)}
-                              className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded text-red-700 bg-red-100 hover:bg-red-200"
-                            >
-                              <XMarkIcon className="h-4 w-4 mr-1" />
-                              Cancel
-                            </button>
-                          )}
-                        </>
-                      )}
-                      {order.status === 'shipped' && (
-                        <button
-                          onClick={() => handleStatusUpdate(order._id, 'delivered')}
-                          className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded text-green-700 bg-green-100 hover:bg-green-200"
-                        >
-                          <CheckCircleIcon className="h-4 w-4 mr-1" />
-                          Mark Delivered
-                        </button>
-                      )}
-                      {order.status === 'delivered' && (
-                        <span className="w-full inline-flex items-center justify-center px-3 py-2 rounded text-sm font-medium text-green-800 bg-green-100">
-                          <CheckCircleIcon className="h-4 w-4 mr-1" />
-                          Completed
-                        </span>
-                      )}
-                      {order.status === 'cancelled' && (
-                        <span className="w-full inline-flex items-center justify-center px-3 py-2 rounded text-sm font-medium text-red-800 bg-red-100">
-                          <XMarkIcon className="h-4 w-4 mr-1" />
-                          Cancelled
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {/* Expandable Order Details for Mobile */}
-                  {expandedOrder === order._id && (
-                    <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                      <OrderItems items={order.items} />
-                    </div>
+                  {selectedOrder.customerInfo?.instructions && (
+                    <div className="text-gray-600 mt-1">Note: {selectedOrder.customerInfo.instructions}</div>
                   )}
                 </div>
-              ))}
+              </div>
+
+              {/* Items */}
+              <OrderItems items={selectedOrder.items} />
+
+              {/* Actions */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t">
+                <div className="flex items-center gap-2">
+                  {selectedOrder.status === 'pending' && (
+                    <>
+                      <button
+                        onClick={() => handleStatusUpdate(selectedOrder._id, 'shipped')}
+                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
+                      >
+                        <TruckIcon className="h-4 w-4 mr-1" />
+                        Mark Shipped
+                      </button>
+                      {cancelId === selectedOrder._id ? (
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            placeholder="Reason"
+                            value={cancelReason}
+                            onChange={e => setCancelReason(e.target.value)}
+                            className="border border-gray-300 px-2 py-1 rounded text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                          />
+                          <button
+                            onClick={() => handleCancel(selectedOrder._id)}
+                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded text-red-700 bg-red-100 hover:bg-red-200"
+                          >
+                            <XMarkIcon className="h-4 w-4 mr-1" />
+                            Confirm Cancel
+                          </button>
+                          <button
+                            onClick={() => { setCancelId(null); setCancelReason('') }}
+                            className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
+                          >
+                            Dismiss
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setCancelId(selectedOrder._id)}
+                          className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded text-red-700 bg-red-100 hover:bg-red-200"
+                        >
+                          <XMarkIcon className="h-4 w-4 mr-1" />
+                          Cancel Order
+                        </button>
+                      )}
+                    </>
+                  )}
+                  {selectedOrder.status === 'shipped' && (
+                    <button
+                      onClick={() => handleStatusUpdate(selectedOrder._id, 'delivered')}
+                      className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded text-green-700 bg-green-100 hover:bg-green-200"
+                    >
+                      <CheckCircleIcon className="h-4 w-4 mr-1" />
+                      Mark Delivered
+                    </button>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => copyOrderDetails(selectedOrder)}
+                    className="inline-flex items-center px-3 py-2 border border-green-300 rounded-md text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100"
+                  >
+                    <ClipboardDocumentIcon className="h-4 w-4 mr-1" />
+                    Copy Details
+                  </button>
+                  <button
+                    onClick={closeDetails}
+                    className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

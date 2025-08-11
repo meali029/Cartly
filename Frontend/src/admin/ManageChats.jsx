@@ -1,9 +1,7 @@
-import { useState, useEffect, useRef, useContext } from 'react'
+import { useState, useEffect, useRef, useContext, useMemo } from 'react'
 import { 
   ChatBubbleLeftRightIcon,
-  UserGroupIcon,
   ClockIcon,
-  CheckBadgeIcon,
   XCircleIcon,
   EyeIcon,
   TrashIcon,
@@ -17,7 +15,6 @@ import { AuthContext } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { 
   getAllChats, 
-  getChatStats, 
   getChatById, 
   updateChatStatus, 
   deleteChat,
@@ -29,19 +26,21 @@ const ManageChats = () => {
   const { user } = useContext(AuthContext)
   const { showToast } = useToast()
   const [chats, setChats] = useState([])
-  const [stats, setStats] = useState({})
+  // const [stats, setStats] = useState({}) // removed in simplified view
   const [selectedChat, setSelectedChat] = useState(null)
   const [selectedChatMessages, setSelectedChatMessages] = useState([])
   const [loading, setLoading] = useState(true)
   const [chatLoading, setChatLoading] = useState(false)
   const [newMessage, setNewMessage] = useState('')
   const [sending, setSending] = useState(false)
-  const [connected, setConnected] = useState(false)
+  // const [connected, setConnected] = useState(false) // not used in simplified view
   const [filters, setFilters] = useState({
     status: 'all',
     search: '',
-    page: 1
+    page: 1,
+    showUnreadOnly: false
   })
+  const [isChatOpen, setIsChatOpen] = useState(false)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
 
@@ -66,12 +65,8 @@ const ManageChats = () => {
     const loadChatsData = async () => {
       try {
         setLoading(true)
-        const [chatsData, statsData] = await Promise.all([
-          getAllChats(filters.status, filters.page),
-          getChatStats()
-        ])
-        setChats(chatsData.chats)
-        setStats(statsData)
+  const chatsData = await getAllChats(filters.status, filters.page)
+  setChats(chatsData.chats)
       } catch (err) {
         showToast('Failed to load chats', err)
       } finally {
@@ -85,12 +80,8 @@ const ManageChats = () => {
   const loadChats = async () => {
     try {
       setLoading(true)
-      const [chatsData, statsData] = await Promise.all([
-        getAllChats(filters.status, filters.page),
-        getChatStats()
-      ])
-      setChats(chatsData.chats)
-      setStats(statsData)
+  const chatsData = await getAllChats(filters.status, filters.page)
+  setChats(chatsData.chats)
     } catch (err) {
       console.error('Failed to load chats:', err)
       showToast('Failed to load chats', 'error')
@@ -107,6 +98,7 @@ const ManageChats = () => {
       setSelectedChat(chatData)
       setSelectedChatMessages(chatData.messages || [])
       setTimeout(() => inputRef.current?.focus(), 100)
+  setIsChatOpen(true)
     } catch (err) {
       console.error('Failed to load chat:', err)
       showToast('Failed to load chat', 'error')
@@ -188,11 +180,9 @@ const ManageChats = () => {
     },
     'connect': () => {
       console.log('🔌 Admin socket connected - joining admin room');
-      setConnected(true);
     },
     'disconnect': () => {
       console.log('❌ Admin socket disconnected');
-      setConnected(false);
     }
   }, user)
 
@@ -285,6 +275,7 @@ const ManageChats = () => {
       if (selectedChat && selectedChat._id === chatId) {
         setSelectedChat(null)
         setSelectedChatMessages([])
+  setIsChatOpen(false)
       }
     } catch (err) {
       console.error('Failed to delete chat:', err)
@@ -320,6 +311,23 @@ const ManageChats = () => {
     )
   }
 
+  // Filtered chats (client-side search)
+  const filteredChats = useMemo(() => {
+    const term = filters.search.trim().toLowerCase()
+    const byStatus = (c) => filters.status === 'all' ? true : c.status === filters.status
+    const byUnread = (c) => !filters.showUnreadOnly ? true : (c.unreadCount?.admin || 0) > 0
+    if (!term) return chats.filter(c => byStatus(c) && byUnread(c))
+    return chats.filter(c => {
+      if (!byStatus(c)) return false
+      if (!byUnread(c)) return false
+      const name = c.userId?.name?.toLowerCase() || ''
+      const email = c.userId?.email?.toLowerCase() || ''
+      return name.includes(term) || email.includes(term)
+    })
+  }, [chats, filters.status, filters.search, filters.showUnreadOnly])
+
+  // Removed copy transcript as requested
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -330,157 +338,176 @@ const ManageChats = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-2 sm:p-4 md:p-6">
-      {/* Header with Stats */}
-      <div className="mb-6 sm:mb-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Chat Management</h1>
-            <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">Manage customer support conversations</p>
-          </div>
-          <button
-            onClick={loadChats}
-            className="flex items-center px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
-          >
-            <ArrowPathIcon className="h-5 w-5 mr-2" />
-            Refresh
-          </button>
+    <div className="max-w-6xl mx-auto p-2 sm:p-4 md:p-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Chats</h1>
+          <p className="text-gray-600 mt-1 text-sm">View and manage chats in a single view</p>
         </div>
+        <button
+          onClick={loadChats}
+          className="flex items-center px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
+        >
+          <ArrowPathIcon className="h-5 w-5 mr-2" />
+          Refresh
+        </button>
+      </div>
 
-       
-             </div>
-
-      {/* Main Content */}
-      <div className="flex flex-col gap-4 sm:gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-5">
-        {/* Chat List */}
-        <div className="w-full sm:col-span-1 lg:col-span-2 bg-white rounded-xl shadow-sm border mb-4 sm:mb-0">
-          <div className="p-3 sm:p-4 border-b">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2">
-              <h2 className="text-base sm:text-lg font-semibold">Conversations</h2>
-              <div className="flex items-center space-x-2">
-                <FunnelIcon className="h-5 w-5 text-gray-400" />
-                <select
-                  value={filters.status}
-                  onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                  className="border border-gray-300 rounded-lg px-2 sm:px-3 py-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="all">All Status</option>
-                  <option value="active">Active</option>
-                  <option value="pending">Pending</option>
-                  <option value="closed">Closed</option>
-                </select>
-              </div>
-            </div>
-            <div className="relative">
-              <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search conversations..."
-                value={filters.search}
-                onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+      {/* Filters */}
+      <div className="bg-white rounded-xl shadow-sm border p-3 sm:p-4 mb-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center space-x-2">
+            <FunnelIcon className="h-5 w-5 text-gray-400" />
+            <select
+              value={filters.status}
+              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+              className="border border-gray-300 rounded-lg px-2 sm:px-3 py-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="pending">Pending</option>
+              <option value="closed">Closed</option>
+            </select>
           </div>
-          <div className="max-h-48 sm:max-h-72 md:max-h-[340px] lg:max-h-96 overflow-y-auto">
-            {chats.length === 0 ? (
-              <div className="p-6 sm:p-8 text-center">
-                <ChatBubbleLeftRightIcon className="h-10 w-10 sm:h-12 sm:w-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 text-sm">No conversations found</p>
-              </div>
-            ) : (
-              chats.map(chat => (
-                <div
-                  key={chat._id}
-                  onClick={() => loadChat(chat._id)}
-                  className={`p-3 sm:p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                    selectedChat?._id === chat._id ? 'bg-blue-50 border-blue-200' : ''
-                  }`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-2 sm:space-x-3">
-                      <UserCircleIcon className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400 mt-1" />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-medium text-gray-900 text-sm sm:text-base">
-                            {chat.userId?.name || 'Unknown User'}
-                          </h3>
-                          <StatusBadge status={chat.status} />
-                        </div>
-                        <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                          {chat.userId?.email || 'No email'}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-2">
-                          Last activity: {formatTime(chat.lastActivity)}
-                        </p>
-                      </div>
+          <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              checked={filters.showUnreadOnly}
+              onChange={(e) => setFilters(prev => ({ ...prev, showUnreadOnly: e.target.checked }))}
+              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            Unread only
+          </label>
+          <div className="relative w-full sm:w-80">
+            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search by name or email..."
+              value={filters.search}
+              onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Chats list */}
+      <div className="grid grid-cols-1 gap-3">
+        {filteredChats.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-sm border p-8 text-center">
+            <ChatBubbleLeftRightIcon className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+            <div className="text-gray-600">No conversations found</div>
+          </div>
+        ) : (
+          filteredChats.map(chat => (
+            <div key={chat._id} className="bg-white rounded-xl shadow-sm border p-3 sm:p-4 flex items-start justify-between">
+              <div className="flex items-start gap-3 min-w-0">
+                <UserCircleIcon className="h-10 w-10 text-gray-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="font-semibold text-gray-900 truncate max-w-[200px] sm:max-w-[260px]">
+                      {chat.userId?.name || 'Unknown User'}
                     </div>
+                    <StatusBadge status={chat.status} />
                     {chat.unreadCount?.admin > 0 && (
-                      <span className="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">
                         {chat.unreadCount.admin > 9 ? '9+' : chat.unreadCount.admin}
                       </span>
                     )}
                   </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Chat View */}
-        <div className="w-full sm:col-span-1 lg:col-span-3">
-          {selectedChat ? (
-            <div className="bg-white rounded-xl shadow-sm border h-[320px] sm:h-[340px] md:h-[420px] lg:h-[600px] flex flex-col">
-              {/* Chat Header */}
-              <div className="p-3 sm:p-4 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <UserCircleIcon className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400" />
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-base sm:text-lg">
-                      {selectedChat.userId?.name}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      {selectedChat.userId?.email}
-                    </p>
-                  </div>
-                  <StatusBadge status={selectedChat.status} />
-                </div>
-                <div className="flex items-center space-x-2">
-                  {selectedChat.status === 'active' && (
-                    <button
-                      onClick={() => handleUpdateStatus(selectedChat._id, 'closed')}
-                      className="px-2 sm:px-3 py-1 bg-red-100 text-red-700 rounded-lg text-xs sm:text-sm hover:bg-red-200 transition-colors"
-                    >
-                      Close Chat
-                    </button>
-                  )}
-                  {selectedChat.status === 'closed' && (
-                    <button
-                      onClick={() => handleUpdateStatus(selectedChat._id, 'active')}
-                      className="px-2 sm:px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs sm:text-sm hover:bg-green-200 transition-colors"
-                    >
-                      Reopen Chat
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleDeleteChat(selectedChat._id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
+                  <div className="text-xs text-gray-500 truncate max-w-[260px]">{chat.userId?.email || 'No email'}</div>
+                  <div className="text-xs text-gray-500 mt-1">Last activity: {formatTime(chat.lastActivity)}</div>
                 </div>
               </div>
+              <div className="flex items-center gap-2 ml-3">
+                {chat.status === 'active' ? (
+                  <button
+                    onClick={() => handleUpdateStatus(chat._id, 'closed')}
+                    className="inline-flex items-center px-2 py-1 border border-red-200 rounded-md text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100"
+                    title="Close chat"
+                  >
+                    Close
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleUpdateStatus(chat._id, 'active')}
+                    className="inline-flex items-center px-2 py-1 border border-green-200 rounded-md text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100"
+                    title="Reopen chat"
+                  >
+                    Reopen
+                  </button>
+                )}
+                <button
+                  onClick={() => loadChat(chat._id)}
+                  className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  <EyeIcon className="h-4 w-4 mr-1" />
+                  Open
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
 
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-2 sm:space-y-3 md:space-y-4 min-h-[80px] sm:min-h-[120px] md:min-h-[180px]">
+      {/* Chat modal */}
+      {isChatOpen && selectedChat && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setIsChatOpen(false)} />
+          <div className="relative bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden">
+            {/* Header */}
+            <div className="px-4 sm:px-5 py-3 border-b flex items-center justify-between">
+              <div className="flex items-center gap-3 min-w-0">
+                <UserCircleIcon className="h-8 w-8 text-gray-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <div className="font-semibold text-gray-900 truncate">{selectedChat.userId?.name}</div>
+                  <div className="text-xs text-gray-600 truncate">{selectedChat.userId?.email}</div>
+                </div>
+                <StatusBadge status={selectedChat.status} />
+              </div>
+              <div className="flex items-center gap-2">
+                {selectedChat.status === 'active' ? (
+                  <button
+                    onClick={() => handleUpdateStatus(selectedChat._id, 'closed')}
+                    className="px-3 py-2 bg-red-100 text-red-700 rounded-lg text-xs sm:text-sm hover:bg-red-200"
+                  >
+                    Close Chat
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleUpdateStatus(selectedChat._id, 'active')}
+                    className="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-xs sm:text-sm hover:bg-green-200"
+                  >
+                    Reopen Chat
+                  </button>
+                )}
+                <button
+                  onClick={() => handleDeleteChat(selectedChat._id)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                >
+                  <TrashIcon className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => setIsChatOpen(false)}
+                  className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg"
+                >
+                  <XCircleIcon className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Messages */}
+            <div className="h-[60vh] sm:h-[70vh] flex flex-col">
+              <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3">
                 {chatLoading ? (
                   <div className="flex items-center justify-center h-full">
-                    <ArrowPathIcon className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-blue-600" />
+                    <ArrowPathIcon className="h-6 w-6 animate-spin text-blue-600" />
                     <span className="ml-2 text-gray-600 text-sm">Loading messages...</span>
                   </div>
                 ) : selectedChatMessages.length === 0 ? (
                   <div className="text-center py-8">
-                    <ChatBubbleLeftRightIcon className="h-10 w-10 sm:h-12 sm:w-12 text-gray-300 mx-auto mb-4" />
+                    <ChatBubbleLeftRightIcon className="h-12 w-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-500 text-sm">No messages yet</p>
                   </div>
                 ) : (
@@ -489,7 +516,7 @@ const ManageChats = () => {
                       key={message.messageId || index}
                       className={`flex ${message.sender === 'admin' ? 'justify-end' : 'justify-start'}`}
                     >
-                      <div className={`max-w-[80vw] sm:max-w-xs lg:max-w-md px-3 sm:px-4 py-2 rounded-2xl ${
+                      <div className={`max-w-[85vw] sm:max-w-md px-3 sm:px-4 py-2 rounded-2xl ${
                         message.sender === 'admin'
                           ? 'bg-blue-600 text-white rounded-br-sm'
                           : 'bg-gray-100 text-gray-900 rounded-bl-sm'
@@ -515,23 +542,21 @@ const ManageChats = () => {
                 )}
                 <div ref={messagesEndRef} />
               </div>
-
-              {/* Message Input */}
-              <div className="p-2 sm:p-4 border-t">
-                <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
+              <div className="p-2 sm:p-3 border-t flex items-center gap-2">
+                <form onSubmit={handleSendMessage} className="flex-1 flex items-center gap-2">
                   <input
                     ref={inputRef}
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type your response..."
-                    className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-base"
+                    placeholder={selectedChat.status === 'closed' ? 'Chat is closed' : 'Type your response...'}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                     disabled={sending || selectedChat.status === 'closed'}
                   />
                   <button
                     type="submit"
                     disabled={sending || !newMessage.trim() || selectedChat.status === 'closed'}
-                    className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                    className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                   >
                     {sending ? (
                       <ArrowPathIcon className="h-5 w-5 animate-spin" />
@@ -540,24 +565,11 @@ const ManageChats = () => {
                     )}
                   </button>
                 </form>
-                {selectedChat.status === 'closed' && (
-                  <p className="text-xs text-gray-500 mt-2">
-                    This chat is closed. Reopen to continue messaging.
-                  </p>
-                )}
               </div>
             </div>
-          ) : (
-            <div className="bg-white rounded-xl shadow-sm border h-[180px] sm:h-[220px] md:h-[420px] lg:h-[600px] flex items-center justify-center">
-              <div className="text-center">
-                <ChatBubbleLeftRightIcon className="h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-base sm:text-lg font-medium text-gray-700 mb-2">Select a conversation</h3>
-                <p className="text-gray-500 text-sm">Choose a chat from the list to view and respond to messages</p>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
