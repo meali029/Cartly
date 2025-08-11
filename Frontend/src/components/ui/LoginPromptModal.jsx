@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { 
   XMarkIcon, 
-  ShoppingCartIcon, 
+  ShoppingBagIcon, 
   UserCircleIcon,
   ArrowRightIcon,
   ShieldCheckIcon,
@@ -73,7 +73,7 @@ const LoginPromptModal = ({ isOpen, onClose }) => {
           <div className="bg-gradient-to-br from-slate-900 to-slate-800 px-6 py-8 text-center">
             <div className="flex items-center justify-center mb-4">
               <div className="bg-white/10 backdrop-blur-sm p-4 rounded-2xl">
-                <ShoppingCartIcon className="w-12 h-12 text-white" />
+                <ShoppingBagIcon className="w-12 h-12 text-white" />
               </div>
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">

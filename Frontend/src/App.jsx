@@ -2,8 +2,6 @@ import { BrowserRouter } from 'react-router-dom'
 import { useEffect } from 'react'
 import AppRoutes from './routes/AppRoutes'
 import ScrollToTop from './components/ui/ScrollToTop'
-import ScrollToTopBtn from './components/ui/ScrollToTopButton'
-import LiveChat from './components/chat/LiveChat'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ToastProvider, useToast } from './context/ToastContext'
@@ -38,8 +36,6 @@ function App() {
           <ChatNotificationProvider>
             <TokenExpirationHandler />
             <ScrollToTop />
-            <ScrollToTopBtn />
-            <LiveChat />
             <AppRoutes />
           </ChatNotificationProvider>
         </CartProvider>

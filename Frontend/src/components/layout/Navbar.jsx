@@ -5,7 +5,7 @@ import { CartContext } from '../../context/CartContext'
 import { useChatNotifications } from '../../context/ChatNotificationContext'
 import {
   MagnifyingGlassIcon,
-  ShoppingCartIcon,
+  ShoppingBagIcon,
   UserIcon,
   LockClosedIcon,
   Bars3Icon,
@@ -200,10 +200,10 @@ const Navbar = ({ onOpenAuth }) => {
               </Link>
             )}
 
-            {/* Cart */}
-            <Link to="/cart" className="relative group">
+      {/* Bag */}
+      <Link to="/bag" className="relative group">
               <div className="p-2 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 hover:border-slate-300 transition-all duration-300 group-hover:scale-105 shadow-lg hover:shadow-xl">
-                <ShoppingCartIcon className="h-5 w-5 text-slate-600 group-hover:text-slate-800" />
+        <ShoppingBagIcon className="h-5 w-5 text-slate-600 group-hover:text-slate-800" />
               </div>
               {cartItems?.length > 0 && (
                 <div className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center shadow-xl">

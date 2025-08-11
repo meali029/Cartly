@@ -50,7 +50,7 @@ const Cart = () => {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-y-4 md:gap-y-0">
             <div className="flex items-center gap-3">
               <ShoppingBagIcon className="h-8 w-8 text-slate-600" />
-              <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Shopping Cart</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Shopping Bag</h1>
               {cartItems.length > 0 && (
                 <Badge variant="primary" className="bg-slate-100 text-slate-700">
                   {getTotalItems()} {getTotalItems() === 1 ? 'item' : 'items'}
@@ -74,8 +74,8 @@ const Cart = () => {
             <div className="text-slate-400 mb-6">
               <ShoppingBagIcon className="h-16 w-16 sm:h-24 sm:w-24 mx-auto mb-4" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4">Your cart is empty</h2>
-            <p className="text-slate-600 mb-8 text-sm sm:text-base">Looks like you haven't added any items to your cart yet.</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4">Your bag is empty</h2>
+            <p className="text-slate-600 mb-8 text-sm sm:text-base">Looks like you haven't added any items to your bag yet.</p>
             <Link to="/">
               <Button size="lg" className="bg-slate-900 hover:bg-slate-800 w-full sm:w-auto">
                 Start Shopping
@@ -87,7 +87,7 @@ const Cart = () => {
             {/* Cart Items */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 transform hover:shadow-2xl transition-all duration-500">
-                <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-4 sm:mb-6">Cart Items</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-4 sm:mb-6">Bag Items</h2>
                 <div className="space-y-4">
                   {cartItems.map(({ product, quantity, size }) => (
                     <div
@@ -178,7 +178,7 @@ const Cart = () => {
                   ))}
                 </div>
 
-                {/* Clear Cart Button */}
+        {/* Clear Bag Button */}
                 <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-slate-200">
                   <Button
                     variant="outline"
@@ -186,7 +186,7 @@ const Cart = () => {
                     className="text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400 w-full sm:w-auto"
                   >
                     <TrashIcon className="h-4 w-4 mr-2" />
-                    Clear Cart
+          Clear Bag
                   </Button>
                 </div>
               </div>

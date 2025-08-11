@@ -8,7 +8,7 @@ import {
   Squares2X2Icon,
   ClipboardDocumentListIcon,
   UserIcon,
-  ShoppingCartIcon,
+  ShoppingBagIcon,
   ChatBubbleLeftRightIcon,
   ChevronUpDownIcon,
   LockClosedIcon,
@@ -134,12 +134,12 @@ const BottomNav = ({ onOpenAuth }) => {
         <div className="pointer-events-none absolute -top-6 left-1/2 -translate-x-1/2">
           <div className="pointer-events-auto relative">
             <NavLink
-              to="/cart"
+              to="/bag"
               className="group block"
-              aria-label="Open cart"
+              aria-label="Open bag"
             >
               <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-slate-600 to-slate-800 text-white shadow-2xl ring-2 ring-white">
-                <ShoppingCartIcon className="h-8 w-8 drop-shadow-sm" />
+                <ShoppingBagIcon className="h-8 w-8 drop-shadow-sm" />
                 {cartItems?.length > 0 && (
                   <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-[10px] font-bold leading-5 text-white text-center shadow">
                     {cartItems.length > 99 ? '99+' : cartItems.length}

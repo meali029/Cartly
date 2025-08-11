@@ -422,7 +422,7 @@ const Profile = () => {
                                 <div>
                                     <h3 className="text-sm font-medium text-slate-800 mb-1">Shopping Tips</h3>
                                     <p className="text-sm text-slate-700">
-                                        Get free shipping on orders over PKR 5,000. Add more items to your cart to qualify!
+                                        Get free shipping on orders over PKR 5,000. Add more items to your bag to qualify!
                                     </p>
                                 </div>
                             </div>

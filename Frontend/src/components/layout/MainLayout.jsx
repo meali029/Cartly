@@ -2,6 +2,8 @@
 import Navbar from './Navbar'
 import Footer from './Footer'
 import BottomNav from './BottomNav'
+import LiveChat from '../chat/LiveChat'
+import AccessibilityFab from '../ui/AccessibilityFab'
 import { Outlet } from 'react-router-dom'
 import { useState, useContext, useEffect } from 'react'
 import { AuthContext } from '../../context/AuthContext'
@@ -32,6 +34,10 @@ const MainLayout = () => {
   <div className="h-20 md:h-0 bg-gray-900 border-0" />
   {/* Mobile Bottom Navigation (hidden for admin via Navbar null when admin) */}
   {!user?.isAdmin && <BottomNav onOpenAuth={handleOpenAuth} />}
+  {/* Live Chat controlled by AccessibilityFab; hide its own toggle */}
+  {!user?.isAdmin && <LiveChat showToggle={false} />}
+  {/* Unified accessibility button for Chat + Top (mobile only) */}
+  {!user?.isAdmin && <AccessibilityFab />}
       {authModal === 'login' && (
         <AuthManager isOpen={true} onClose={handleCloseAuth} />
       )}

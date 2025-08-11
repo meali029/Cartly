@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import MainLayout from '../components/layout/MainLayout'
 import AdminLayout from '../components/layout/AdminLayout'
 
@@ -50,7 +50,7 @@ const AppRoutes = () => {
         <Route index element={<Home />} />
 
         <Route path="men" element={<Categories />} />
-        <Route path="women" element={<Categories />} />
+    <Route path="cart" element={<Navigate to="/bag" replace />} />
         <Route path="kids" element={<Categories />} />
 
         {/* Footer Pages */}
@@ -67,7 +67,8 @@ const AppRoutes = () => {
         <Route path="terms-of-service" element={<TermsOfService />} />
 
         <Route path="product/:id" element={<ProductDetails />} />
-        <Route path="cart" element={<Cart />} />
+  <Route path="cart" element={<Cart />} />
+  <Route path="bag" element={<Cart />} />
         <Route path="checkout" element={<Checkout />} />
 
         {/* Protected Routes */}

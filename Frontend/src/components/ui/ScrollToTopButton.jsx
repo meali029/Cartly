@@ -26,9 +26,10 @@ const ScrollToTopButton = ({
   }
 
   const positionStyles = {
-    'bottom-right': 'bottom-6 right-6',
-    'bottom-left': 'bottom-6 left-6',
-    'bottom-center': 'bottom-6 left-1/2 transform -translate-x-1/2',
+    // On mobile, lift above BottomNav; on larger screens keep original spacing
+    'bottom-right': 'bottom-[92px] right-4 sm:bottom-6 sm:right-6',
+    'bottom-left': 'bottom-[92px] left-4 sm:bottom-6 sm:left-6',
+    'bottom-center': 'bottom-[92px] left-1/2 transform -translate-x-1/2 sm:bottom-6',
     'top-right': 'top-6 right-6',
     'top-left': 'top-6 left-6'
   }
@@ -42,7 +43,7 @@ const ScrollToTopButton = ({
   if (!isVisible) return null
 
   return (
-    <div className={`fixed ${positionStyles[position]} z-50 ${className}`}>
+    <div className={`fixed ${positionStyles[position]} z-[70] ${className}`}>
       <button
         onClick={handleClick}
         className={`relative ${sizeStyles[size]} bg-gradient-to-r from-slate-600 to-slate-800 text-white rounded-full shadow-xl hover:from-slate-700 hover:to-slate-900 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-110 active:scale-95 group ${

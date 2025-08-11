@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from 'react'
+import { useState, useEffect, useRef, useContext, useCallback } from 'react'
 import { 
   ChatBubbleLeftRightIcon,
   PaperAirplaneIcon,
@@ -14,10 +14,11 @@ import { useChatNotifications } from '../../context/ChatNotificationContext'
 import { getUserChat, sendMessage } from '../../services/chatService'
 import { useSocket } from '../../hooks/useSocket'
 
-const LiveChat = () => {
+const LiveChat = ({ showToggle = true }) => {
   const { user } = useContext(AuthContext)
   const { showToast } = useToast()
   const { clearNotifications, unreadCount: chatUnreadCount } = useChatNotifications()
+  // eslint-disable-next-line no-unused-vars
   const [chat, setChat] = useState(null)
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
@@ -190,14 +191,36 @@ const LiveChat = () => {
   }
 
   // Toggle chat widget
-  const toggleChat = () => {
+  const toggleChat = useCallback(() => {
     setIsOpen(!isOpen)
     if (!isOpen) {
       // Clear notifications when opening chat
       clearNotifications()
       setTimeout(() => inputRef.current?.focus(), 100)
     }
-  }
+  }, [isOpen, clearNotifications])
+
+  // External control via window events for accessibility FAB
+  useEffect(() => {
+    const openHandler = () => {
+      if (!isOpen) {
+        setIsOpen(true)
+        clearNotifications()
+        setTimeout(() => inputRef.current?.focus(), 100)
+      }
+    }
+    const closeHandler = () => setIsOpen(false)
+    const toggleHandler = () => toggleChat()
+
+    window.addEventListener('livechat:open', openHandler)
+    window.addEventListener('livechat:close', closeHandler)
+    window.addEventListener('livechat:toggle', toggleHandler)
+    return () => {
+      window.removeEventListener('livechat:open', openHandler)
+      window.removeEventListener('livechat:close', closeHandler)
+      window.removeEventListener('livechat:toggle', toggleHandler)
+    }
+  }, [isOpen, clearNotifications, toggleChat])
 
 
 
@@ -208,7 +231,7 @@ if (!user || user.isAdmin) {
 }
 
   return (
-    <div className="fixed bottom-20 right-2 sm:right-5 z-50">
+    <div className="fixed right-2 sm:right-5 z-[70] bottom-[130px] sm:bottom-20">
       {/* Chat Widget */}
       {isOpen && (
         <div className="mb-4 w-80 sm:w-72 max-w-[calc(100vw-1rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
@@ -323,22 +346,22 @@ if (!user || user.isAdmin) {
         </div>
       )}
 
-      {/* Chat Toggle Button */}
-      <button
-        onClick={toggleChat}
-        className={`bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-200 transform relative ${
-          isOpen ? 'scale-95' : 'scale-100 hover:scale-105'
-        }`}
-      >
-        <ChatBubbleLeftRightIcon className="h-6 w-6" />
-        
-        {/* Unread indicator */}
-        {chatUnreadCount > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center shadow-lg animate-pulse">
-            {chatUnreadCount > 9 ? '9+' : chatUnreadCount}
-          </span>
-        )}
-      </button>
+      {/* Chat Toggle Button (optional) */}
+      {showToggle && (
+        <button
+          onClick={toggleChat}
+          className={`bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-200 transform relative ${
+            isOpen ? 'scale-95' : 'scale-100 hover:scale-105'
+          }`}
+        >
+          <ChatBubbleLeftRightIcon className="h-6 w-6" />
+          {chatUnreadCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center shadow-lg animate-pulse">
+              {chatUnreadCount > 9 ? '9+' : chatUnreadCount}
+            </span>
+          )}
+        </button>
+      )}
     </div>
   )
 }

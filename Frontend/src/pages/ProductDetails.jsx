@@ -6,7 +6,7 @@ import { useToast } from '../context/ToastContext'
 import Spinner from '../components/ui/Spinner'
 import Badge from '../components/ui/Badge'
 import { 
-  ShoppingCartIcon, 
+  ShoppingBagIcon, 
   BoltIcon, 
   MagnifyingGlassIcon,
   XMarkIcon,
@@ -73,7 +73,7 @@ const ProductDetails = () => {
 
     const result = addToCart(product, selectedSize, quantity)
     if (result.success) {
-      showToast(`Added ${quantity} item(s) to cart 🛒`, 'success')
+  showToast(`Added ${quantity} item(s) to your bag �️`, 'success')
     } else {
       showToast(result.message, 'error')
     }
@@ -232,7 +232,7 @@ const ProductDetails = () => {
               {/* Header */}
               <div>
                 <div className="flex items-start justify-between mb-2">
-                  <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 transform hover:scale-105 transition-all duration-300">
+                  <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 transform hover:scale-105 transition-all duration-300">
                     {product.title || product.name || 'Product Name'}
                   </h1>
                   <button
@@ -246,7 +246,7 @@ const ProductDetails = () => {
                     )}
                   </button>
                 </div>
-                <p className="text-slate-600 text-lg leading-relaxed mb-4">
+                <p className="text-slate-600 text-base leading-relaxed mb-4">
                   {product.description || 'No description available'}
                 </p>
                 
@@ -263,12 +263,12 @@ const ProductDetails = () => {
               </div>
 
               {/* Price */}
-              <div className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-3xl p-6 shadow-lg">
+              <div className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-3xl p-3 shadow-lg">
                 <div className="flex items-center gap-2">
-                  <span className="text-4xl font-bold text-slate-900">
+                  <span className="text-3xl font-bold text-slate-900">
                     PKR {typeof product.price === 'number' ? product.price.toLocaleString() : 'N/A'}
                   </span>
-                  <span className="text-lg text-slate-500 line-through">
+                  <span className="text-base text-slate-500 line-through">
                     PKR {typeof product.price === 'number' ? (product.price * 1.2).toLocaleString() : ''}
                   </span>
                   <Badge text="20% OFF" color="red" />
@@ -343,8 +343,8 @@ const ProductDetails = () => {
                       onClick={handleAddToCart}
                       className="w-full bg-white border-2 border-slate-600 text-slate-900 py-4 px-6 rounded-3xl font-semibold text-lg hover:bg-slate-50 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                     >
-                      <ShoppingCartIcon className="w-6 h-6" />
-                      Add to Cart
+                      <ShoppingBagIcon className="w-6 h-6" />
+                      Add to Bag
                     </button>
                   </>
                 ) : (
@@ -366,10 +366,10 @@ const ProductDetails = () => {
                   <TruckIcon className="w-5 h-5 text-slate-600" />
                   <span className="text-sm text-slate-700">Shipping: PKR 200 (Free on orders over PKR 5,000)</span>
                 </div>
-                <div className="flex items-center gap-3">
+                {/* <div className="flex items-center gap-3">
                   <ShieldCheckIcon className="w-5 h-5 text-slate-600" />
-                  <span className="text-sm text-slate-700">30-day return policy</span>
-                </div>
+                  <span className="text-sm text-slate-700"> </span>
+                </div> */}
                 <div className="flex items-center gap-3">
                   <HeartIcon className="w-5 h-5 text-slate-600" />
                   <span className="text-sm text-slate-700">100% authentic products</span>

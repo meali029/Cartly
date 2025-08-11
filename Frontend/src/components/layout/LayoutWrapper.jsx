@@ -1,6 +1,7 @@
 import Navbar from './Navbar'
 import Footer from './Footer'
 import ScrollManager from '../ui/ScrollManager'
+import AccessibilityFab from '../ui/AccessibilityFab'
 import AuthManager from '../auth/AuthManager'
 import LiveChat from '../chat/LiveChat'
 import { Outlet } from 'react-router-dom'
@@ -45,7 +46,7 @@ const LayoutWrapper = () => {
       {!user?.isAdmin && <Footer />}
       
       {/* Live Chat Widget - only show for non-admin users */}
-      {!user?.isAdmin && <LiveChat />}
+  {!user?.isAdmin && <LiveChat showToggle={false} />}
       
       {/* Scroll Management */}
       <ScrollManager 
@@ -54,7 +55,11 @@ const LayoutWrapper = () => {
         showProgress={true}
         size="md"
         position="bottom-right"
+        showButton={false}
       />
+
+      {/* Unified accessibility fab for chat + top */}
+      {!user?.isAdmin && <AccessibilityFab />}
       
       {/* Auth Modal - Rendered at top level for proper positioning */}
       <AuthManager
