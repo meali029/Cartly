@@ -336,19 +336,11 @@ const Chat = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-slate-900">Customer Support</h1>
-                <div className="flex items-center text-sm text-slate-600">
-                  <span className={`w-2 h-2 rounded-full mr-2 ${connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                  {connected ? 'Support team is online' : 'Connecting to support...'}
-                  <span className="mx-2">•</span>
-                  <span>Typically replies instantly</span>
-                </div>
+              
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="text-right text-sm">
-                <div className="text-slate-900 font-medium">Business Hours</div>
-                <div className="text-slate-600">24/7 Available</div>
-              </div>
+           
               <Link
                 to="/"
                 className="flex items-center px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"

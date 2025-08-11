@@ -11,7 +11,8 @@ import {
   ShoppingCartIcon,
   ChatBubbleLeftRightIcon,
   ChevronUpDownIcon,
-  LockClosedIcon
+  LockClosedIcon,
+  LifebuoyIcon
 } from '@heroicons/react/24/outline'
 
 // Mobile bottom navigation with a prominent center Cart button
@@ -41,7 +42,7 @@ const BottomNav = ({ onOpenAuth }) => {
     >
       {/* Bar background */}
       <div className="relative mx-auto w-100">
-        <div className="rounded-t-md border border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/50 shadow-[0_10px_30px_rgba(2,6,23,0.08)]">
+        <div className="rounded-t-2xl border border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/50 shadow-[0_10px_30px_rgba(2,6,23,0.08)]">
           <div className={`grid grid-cols-5 text-[11px] font-medium text-slate-700`}>
             {/* Home */}
             <NavLink
@@ -112,8 +113,20 @@ const BottomNav = ({ onOpenAuth }) => {
                 <span className="mt-0.5">Login</span>
               </button>
             )}
-            {/* Trailing filler to keep symmetry when logged out */}
-            {!user && <div aria-hidden className="opacity-0 pointer-events-none select-none" />}
+            {/* Contact Support visible when logged out */}
+            {!user && (
+              <NavLink
+                to="/contact-support"
+                className={({ isActive }) =>
+                  `flex flex-col items-center justify-center py-3 rounded-3xl transition-colors ${
+                    isActive ? 'text-slate-900' : 'hover:text-slate-900'
+                  }`
+                }
+              >
+                <LifebuoyIcon className="h-6 w-6 drop-shadow-sm" />
+                <span className="mt-0.5">Support</span>
+              </NavLink>
+            )}
           </div>
         </div>
 
