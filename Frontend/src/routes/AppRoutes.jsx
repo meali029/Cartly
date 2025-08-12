@@ -51,6 +51,7 @@ const AppRoutes = () => {
 
         <Route path="men" element={<Categories />} />
     <Route path="cart" element={<Navigate to="/bag" replace />} />
+        <Route path="women" element={<Categories />} />
         <Route path="kids" element={<Categories />} />
 
         {/* Footer Pages */}
