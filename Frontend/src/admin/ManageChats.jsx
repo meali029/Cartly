@@ -60,27 +60,28 @@ const ManageChats = () => {
     return () => clearTimeout(timeoutId)
   }, [selectedChatMessages])
 
-  // Load data
-  useEffect(() => {
-    const loadChatsData = async () => {
-      try {
-        setLoading(true)
-  const chatsData = await getAllChats(filters.status, filters.page)
-  setChats(chatsData.chats)
-      } catch (err) {
-        showToast('Failed to load chats', err)
-      } finally {
-        setLoading(false)
+    // Load data
+    useEffect(() => {
+      const loadChatsData = async () => {
+        try {
+          setLoading(true)
+          // Use cached result within TTL to reduce server load
+          const chatsData = await getAllChats(filters.status, filters.page, 20)
+          setChats(chatsData.chats)
+        } catch (err) {
+          showToast('Failed to load chats', err)
+        } finally {
+          setLoading(false)
+        }
       }
-    }
 
-    loadChatsData()
-  }, [filters.status, filters.page, showToast])
+      loadChatsData()
+    }, [filters.status, filters.page, showToast])
 
   const loadChats = async () => {
     try {
       setLoading(true)
-  const chatsData = await getAllChats(filters.status, filters.page)
+  const chatsData = await getAllChats(filters.status, filters.page, 20, { force: true })
   setChats(chatsData.chats)
     } catch (err) {
       console.error('Failed to load chats:', err)

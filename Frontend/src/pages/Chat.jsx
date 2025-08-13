@@ -68,7 +68,7 @@ const Chat = () => {
       
       try {
         setLoading(true)
-        const chatData = await getUserChat()
+  const chatData = await getUserChat()
        
         setMessages(chatData.messages || [])
         setConnected(true)

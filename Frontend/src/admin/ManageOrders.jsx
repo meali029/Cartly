@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useCallback } from 'react'
+import { useEffect, useState, useContext, useCallback, useMemo } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { getAllOrders, updateOrderStatus, cancelOrder } from '../services/orderService'
@@ -18,7 +18,8 @@ import {
   ShoppingBagIcon,
   TagIcon,
   PhoneIcon,
-  ClipboardDocumentIcon
+  ClipboardDocumentIcon,
+  MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
 
 const ManageOrders = () => {
@@ -31,6 +32,7 @@ const ManageOrders = () => {
   const [lastUpdated, setLastUpdated] = useState(null)
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -62,6 +64,24 @@ const ManageOrders = () => {
     await fetchOrders()
     showToast('Orders refreshed successfully', 'success')
   }
+
+  // Normalizes input: strips 'order', spaces, and non-alphanumerics
+  const normalizeQuery = (str) =>
+    (str || '')
+      .toString()
+      .toLowerCase()
+      .replace(/order/g, '')
+      .replace(/[^a-z0-9]/g, '')
+
+  const filteredOrders = useMemo(() => {
+    const q = normalizeQuery(searchTerm)
+    if (!q) return orders
+    return orders.filter((o) => {
+      const full = (o._id || '').toString().toLowerCase()
+      const shortId = full.slice(-6)
+      return full.includes(q) || shortId.includes(q)
+    })
+  }, [orders, searchTerm])
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
@@ -214,7 +234,7 @@ Total: PKR ${order.totalPrice.toLocaleString()}
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center space-x-3">
           <div className="bg-blue-100 p-2 rounded-lg">
             <ClipboardDocumentListIcon className="h-6 w-6 text-blue-600" />
@@ -224,7 +244,7 @@ Total: PKR ${order.totalPrice.toLocaleString()}
               Orders
               {orders.length > 0 && (
                 <span className="ml-2 text-lg font-normal text-gray-500">
-                  ({orders.length})
+                  ({searchTerm ? `${filteredOrders.length} of ${orders.length}` : orders.length})
                 </span>
               )}
             </h1>
@@ -238,14 +258,29 @@ Total: PKR ${order.totalPrice.toLocaleString()}
             </p>
           </div>
         </div>
-        <button
-          onClick={handleRefresh}
-          disabled={loading}
-          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <ArrowPathIcon className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          {loading ? 'Refreshing...' : 'Refresh'}
-        </button>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          {/* Search by Order ID (supports short ID e.g., last 6 chars) */}
+          <div className="relative flex-1 min-w-[220px] sm:min-w-[260px]">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+              <MagnifyingGlassIcon className="h-4 w-4" />
+            </div>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by Order ID (e.g., 7b8131 or full ID)"
+              className="w-full pl-9 pr-3 py-2 bg-white border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <button
+            onClick={handleRefresh}
+            disabled={loading}
+            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ArrowPathIcon className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            {loading ? 'Refreshing...' : 'Refresh'}
+          </button>
+        </div>
       </div>
 
       {/* Loading / Empty */}
@@ -266,8 +301,14 @@ Total: PKR ${order.totalPrice.toLocaleString()}
       )}
 
       {/* Simple, responsive list of orders */}
+      {orders.length > 0 && searchTerm && filteredOrders.length === 0 && (
+        <div className="bg-white rounded-lg shadow p-6 text-center text-gray-600">
+          No orders match “{searchTerm}”. Try the last 6 characters (e.g., Order #abcdef).
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-3">
-        {orders.map((order) => (
+        {filteredOrders.map((order) => (
           <div key={order._id} className="bg-white rounded-lg shadow p-4 flex items-start justify-between">
             <div className="flex items-start space-x-3 min-w-0">
               <div className="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
@@ -290,11 +331,16 @@ Total: PKR ${order.totalPrice.toLocaleString()}
                         : 'yellow'
                     }
                   />
+                  <span className="text-xs text-gray-500">• Order #{(order._id || '').toString().slice(-6)}</span>
                 </div>
                 <div className="text-xs text-gray-500 truncate max-w-[260px]">
                   {order.userId?.email || 'No email'}
                 </div>
                 <div className="flex flex-wrap items-center gap-3 text-xs text-gray-600 mt-2">
+                  <div className="flex items-center">
+                    <ClipboardDocumentIcon className="h-4 w-4 mr-1 text-gray-400" />
+                    Order #{(order._id || '').toString().slice(-6)}
+                  </div>
                   <div className="flex items-center">
                     <PhoneIcon className="h-4 w-4 mr-1 text-gray-400" />
                     {order.customerInfo?.phone || 'N/A'}
@@ -339,11 +385,12 @@ Total: PKR ${order.totalPrice.toLocaleString()}
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50" onClick={closeDetails} />
           <div className="relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden">
-            {/* Modal header */}
+      {/* Modal header */}
             <div className="px-5 py-4 border-b flex items-center justify-between">
               <div>
                 <div className="text-xs text-gray-500">Order ID</div>
-                <div className="text-sm font-semibold text-gray-900 truncate">{selectedOrder._id}</div>
+        <div className="text-sm font-semibold text-gray-900 truncate">{selectedOrder._id}</div>
+        <div className="text-xs text-gray-500">Short: #{(selectedOrder._id || '').toString().slice(-6)}</div>
               </div>
               <div className="flex items-center gap-2">
                 <Badge

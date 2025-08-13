@@ -9,11 +9,42 @@ const getAuthHeaders = () => {
 }
 
 // 💬 Get user's chat
-export const getUserChat = async () => {
-  const res = await axios.get(`${API}/chat/my-chat`, {
-    headers: getAuthHeaders()
-  })
-  return res.data
+// Simple in-memory cache and in-flight deduplication
+const _cache = new Map()
+const _inflight = new Map()
+const setCache = (key, data, ttlMs = 10000) => {
+  _cache.set(key, { data, expires: Date.now() + ttlMs })
+}
+const getCache = (key) => {
+  const entry = _cache.get(key)
+  if (!entry) return null
+  if (Date.now() > entry.expires) {
+    _cache.delete(key)
+    return null
+  }
+  return entry.data
+}
+
+export const getUserChat = async ({ force = false, ttlMs = 10000 } = {}) => {
+  const key = 'my-chat'
+  if (!force) {
+    const cached = getCache(key)
+    if (cached) return cached
+  }
+  if (_inflight.has(key)) return _inflight.get(key)
+  const req = axios
+    .get(`${API}/chat/my-chat`, { headers: getAuthHeaders() })
+    .then((res) => {
+      setCache(key, res.data, ttlMs)
+      _inflight.delete(key)
+      return res.data
+    })
+    .catch((err) => {
+      _inflight.delete(key)
+      throw err
+    })
+  _inflight.set(key, req)
+  return req
 }
 
 // 📤 Send message
@@ -27,12 +58,29 @@ export const sendMessage = async (message, attachments = []) => {
 
 // Admin Chat Services
 // 📋 Get all chats (admin only)
-export const getAllChats = async (status = 'all', page = 1, limit = 20) => {
-  const res = await axios.get(`${API}/chat/admin/all`, {
-    params: { status, page, limit },
-    headers: getAuthHeaders()
-  })
-  return res.data
+export const getAllChats = async (status = 'all', page = 1, limit = 20, { force = false, ttlMs = 5000 } = {}) => {
+  const key = `admin-all:${status}:${page}:${limit}`
+  if (!force) {
+    const cached = getCache(key)
+    if (cached) return cached
+  }
+  if (_inflight.has(key)) return _inflight.get(key)
+  const req = axios
+    .get(`${API}/chat/admin/all`, {
+      params: { status, page, limit },
+      headers: getAuthHeaders()
+    })
+    .then((res) => {
+      setCache(key, res.data, ttlMs)
+      _inflight.delete(key)
+      return res.data
+    })
+    .catch((err) => {
+      _inflight.delete(key)
+      throw err
+    })
+  _inflight.set(key, req)
+  return req
 }
 
 // 🔍 Get specific chat (admin only)
